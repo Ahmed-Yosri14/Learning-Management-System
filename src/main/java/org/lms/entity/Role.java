@@ -1,4 +1,7 @@
 package org.lms.entity;
 
-public class Role {
+public enum Role {
+    ADMIN,
+    INSTRUCTOR,
+    STUDENT
 }

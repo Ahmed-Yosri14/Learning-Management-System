@@ -10,11 +10,6 @@ public abstract class Question {
     private long id ;
     private String question;
 
-    public Question() {
-
-    }
-
-
     public long getId() {
         return id;
     }

@@ -1,22 +1,40 @@
 package org.lms.entity;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+
+@Entity
 public class FeedBack {
+    @Id
+    long id;
     String feedback;
-    String assessmentID;
-    FeedBack(String feedback, String assessmentID) {
-        this.feedback = feedback;
-        this.assessmentID = assessmentID;
+    long assessmentID;
+
+    public FeedBack() {
     }
+
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
     public String getFeedback() {
         return feedback;
     }
+
     public void setFeedback(String feedback) {
         this.feedback = feedback;
     }
-    public String getAssessmentID() {
+
+    public long getAssessmentID() {
         return assessmentID;
     }
-    public void setAssessmentID(String assessmentID) {
+
+    public void setAssessmentID(long assessmentID) {
         this.assessmentID = assessmentID;
     }
 }

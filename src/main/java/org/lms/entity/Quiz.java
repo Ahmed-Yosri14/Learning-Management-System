@@ -1,4 +1,9 @@
 package org.lms.entity;
 
-public class Quiz {
+import java.util.List;
+
+public class Quiz extends Assessment {
+    Quiz(){
+        super();
+    }
 }

@@ -1,23 +1,35 @@
 package org.lms.entity;
 
-public class Assessment {
-    String ID;
-    String type;
-    public Assessment(String ID, String type) {
-        this.ID = ID;
-        this.type = type;
-    }
-    public String getID() {
-        return ID;
-    }
-    public void setID(String ID) {
-        this.ID = ID;
-    }
-    public String getType() {
-        return type;
-    }
-    public void setType(String type) {
-        this.type = type;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+
+import java.util.List;
+
+@Entity
+public abstract class Assessment {
+    @Id
+    long ID;
+
+    @OneToMany
+    List<Question> questions;
+    public Assessment() {
+
     }
 
+    public long getID() {
+        return ID;
+    }
+
+    public void setID(long ID) {
+        this.ID = ID;
+    }
+
+    public List<Question> getQuestions() {
+        return questions;
+    }
+
+    public void setQuestions(List<Question> questions) {
+        this.questions = questions;
+    }
 }

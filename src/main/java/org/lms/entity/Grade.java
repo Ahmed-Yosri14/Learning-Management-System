@@ -1,28 +1,44 @@
 package org.lms.entity;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+
+@Entity
 public class Grade {
-    String studentID;
-    String assessmentID;
+    @Id
+    long id;
+    long studentID;
+    long assessmentID;
     double grade;
-    public  Grade(String studentID, String assessmentID, double grade) {
-        this.studentID = studentID;
-        this.assessmentID = assessmentID;
+
+    public long getId() {
+        return id;
     }
-    public String getStudentID() {
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public long getStudentID() {
         return studentID;
     }
-    public void setStudentID(String studentID) {
+
+    public void setStudentID(long studentID) {
         this.studentID = studentID;
     }
-    public String getAssessmentID() {
+
+    public long getAssessmentID() {
         return assessmentID;
     }
-    public void setAssessmentID(String assessmentID) {
+
+    public void setAssessmentID(long assessmentID) {
         this.assessmentID = assessmentID;
     }
+
     public double getGrade() {
         return grade;
     }
+
     public void setGrade(double grade) {
         this.grade = grade;
     }

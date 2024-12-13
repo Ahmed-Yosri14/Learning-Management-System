@@ -6,25 +6,23 @@ import jakarta.persistence.Id;
 @Entity
 public class Notification {
     @Id
-    private int id;
-    private String studentId;
+    private long id;
+    private long studentId;
     private String title;
     private String content;
-    public Notification() {}
-
-    public int getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 
-    public String getStudentId() {
+    public long getStudentId() {
         return studentId;
     }
 
-    public void setStudentId(String studentId) {
+    public void setStudentId(long studentId) {
         this.studentId = studentId;
     }
 

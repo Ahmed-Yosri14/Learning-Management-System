@@ -1,15 +1,17 @@
 package org.lms.entity;
 
-import jakarta.persistence.ManyToMany;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.*;
 
 import java.util.List;
-
+@Entity
 public class Course {
+    public Course() {
+
+    }
     String name;
     String description;
-    String ID;
+    @Id
+    long ID;
     @ManyToMany
     List<User> users;
     @OneToMany
@@ -44,6 +46,8 @@ public class Course {
         this.assessments = assessments;
     }
 
+
+
     public List<Lesson> getLessons() {
         return Lessons;
     }
@@ -51,11 +55,10 @@ public class Course {
     public void setLessons(List<Lesson> lessons) {
         Lessons = lessons;
     }
-
-    public String getID(){
+    public long getID(){
         return ID;
     }
-    public void setID(String ID){
+    public void setID(long ID){
         this.ID = ID;
     }
 

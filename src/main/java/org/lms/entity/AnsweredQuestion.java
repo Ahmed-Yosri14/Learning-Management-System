@@ -1,5 +1,10 @@
 package org.lms.entity;
 
-public abstract class AnsweredQuestion {
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
 
+@Entity
+public abstract class AnsweredQuestion {
+    @Id
+    long id ;
 }
