@@ -1,5 +1,6 @@
 package org.lms.entity;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 
 
 @Entity
@@ -7,17 +8,25 @@ import jakarta.persistence.*;
 public class AppUser {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    @NotNull
+    private Long id;
+
     private String email;
+
+    @NotNull
     private String name;
+
+    @NotNull
     private String password;
+
+    @NotNull
     private Role role;
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

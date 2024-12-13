@@ -14,6 +14,15 @@ public class CourseService {
     public void createCourse(Course course) {
         courseRepository.save(course);
     }
+    public void editCourse(Course course) {
+        if (courseRepository.findById(course.getId()) == null){
+            return;
+        }
+        courseRepository.save(course);
+    }
+    public void deleteCourse(Course course) {
+        courseRepository.delete(course);
+    }
     public Course getCourse(Long id) {
         return courseRepository.findById(id).get();
     }

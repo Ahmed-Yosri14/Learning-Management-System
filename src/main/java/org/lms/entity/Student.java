@@ -1,24 +1,20 @@
 package org.lms.entity;
 
 import jakarta.persistence.Entity;
-import jakarta.persistence.ManyToMany;
+import jakarta.persistence.OneToMany;
 
 import java.util.List;
 
 @Entity
 public class Student extends AppUser {
-    @ManyToMany(mappedBy = "students")
-    List<Course> courses;
+    @OneToMany(mappedBy = "student")
+    private List<Enrollment> enrollments;
 
-    public Student() {
-        super();
+    public List<Enrollment> getEnrollments() {
+        return enrollments;
     }
 
-    public List<Course> getCourses() {
-        return courses;
-    }
-
-    public void setCourses(List<Course> courses) {
-        this.courses = courses;
+    public void setEnrollments(List<Enrollment> enrollments) {
+        this.enrollments = enrollments;
     }
 }
