@@ -1,20 +1,15 @@
 package org.lms.entity;
-
 import jakarta.persistence.*;
 
 import java.util.List;
-
-
 @Entity
 public class Course {
     public Course() {}
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     long ID;
-
     String name;
     String description;
-
     @ManyToMany
     @JoinTable(
             name = "course_student",
@@ -22,7 +17,6 @@ public class Course {
             inverseJoinColumns = @JoinColumn(name = "student_id")
     )
     List<Student> students;
-
     @ManyToMany
     @JoinTable(
             name = "course_instructor",
@@ -30,7 +24,6 @@ public class Course {
             inverseJoinColumns = @JoinColumn(name = "instructor_id")
     )
     List<Instructor> instructors;
-
     public String getName(){
         return name;
     }
@@ -72,7 +65,7 @@ public class Course {
 //    public void setLessons(List<Lesson> lessons) {
 //        Lessons = lessons;
 //    }
-    public long getID(){
+    public long getID() {
         return ID;
     }
     public void setID(long ID){
