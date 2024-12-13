@@ -1,0 +1,10 @@
+C:\Code\GitHub\Learning-Management-System\src\main\java\org\lms\controller\CourseRestController.java
+C:\Code\GitHub\Learning-Management-System\src\main\java\org\lms\entity\Admin.java
+C:\Code\GitHub\Learning-Management-System\src\main\java\org\lms\entity\AppUser.java
+C:\Code\GitHub\Learning-Management-System\src\main\java\org\lms\entity\Course.java
+C:\Code\GitHub\Learning-Management-System\src\main\java\org\lms\entity\Instructor.java
+C:\Code\GitHub\Learning-Management-System\src\main\java\org\lms\entity\Role.java
+C:\Code\GitHub\Learning-Management-System\src\main\java\org\lms\entity\Student.java
+C:\Code\GitHub\Learning-Management-System\src\main\java\org\lms\LmsApplication.java
+C:\Code\GitHub\Learning-Management-System\src\main\java\org\lms\repository\CourseRepository.java
+C:\Code\GitHub\Learning-Management-System\src\main\java\org\lms\service\CourseService.java

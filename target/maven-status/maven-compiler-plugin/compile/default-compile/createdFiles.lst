@@ -1,0 +1,10 @@
+org\lms\entity\AppUser.class
+org\lms\entity\Role.class
+org\lms\entity\Student.class
+org\lms\controller\CourseRestController.class
+org\lms\entity\Admin.class
+org\lms\entity\Instructor.class
+org\lms\repository\CourseRepository.class
+org\lms\entity\Course.class
+org\lms\LmsApplication.class
+org\lms\service\CourseService.class

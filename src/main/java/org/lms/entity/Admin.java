@@ -1,6 +1,9 @@
 package org.lms.entity;
 
-public class Admin extends User {
+import jakarta.persistence.Entity;
+
+@Entity
+public class Admin extends AppUser {
     public Admin() {
         super();
     }

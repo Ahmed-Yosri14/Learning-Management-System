@@ -3,20 +3,34 @@ package org.lms.entity;
 import jakarta.persistence.*;
 
 import java.util.List;
+
+
 @Entity
 public class Course {
-    public Course() {
+    public Course() {}
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    long ID;
 
-    }
     String name;
     String description;
-    @Id
-    long ID;
+
     @ManyToMany
-    List<User> users;
-    @OneToMany
-    List<Assessment> assessments;
-    List<Lesson> Lessons;
+    @JoinTable(
+            name = "course_student",
+            joinColumns = @JoinColumn(name = "course_id"),
+            inverseJoinColumns = @JoinColumn(name = "student_id")
+    )
+    List<Student> students;
+
+    @ManyToMany
+    @JoinTable(
+            name = "course_instructor",
+            joinColumns = @JoinColumn(name = "course_id"),
+            inverseJoinColumns = @JoinColumn(name = "instructor_id")
+    )
+    List<Instructor> instructors;
+
     public String getName(){
         return name;
     }
@@ -30,36 +44,38 @@ public class Course {
         this.description = description;
     }
 
-    public List<User> getUsers() {
-        return users;
+    public List<Student> getStudents() {
+        return students;
     }
 
-    public void setUsers(List<User> users) {
-        this.users = users;
+    public void setStudents(List<Student> students) {
+        this.students = students;
     }
 
-    public List<Assessment> getAssessments() {
-        return assessments;
+    public List<Instructor> getInstructors() {
+        return instructors;
     }
 
-    public void setAssessments(List<Assessment> assessments) {
-        this.assessments = assessments;
+    public void setInstructors(List<Instructor> instructors) {
+        this.instructors = instructors;
     }
 
-
-
-    public List<Lesson> getLessons() {
-        return Lessons;
-    }
-
-    public void setLessons(List<Lesson> lessons) {
-        Lessons = lessons;
-    }
+//    public List<Assessment> getAssessments() {
+//        return assessments;
+//    }
+//    public void setAssessments(List<Assessment> assessments) {
+//        this.assessments = assessments;
+//    }
+//    public List<Lesson> getLessons() {
+//        return Lessons;
+//    }
+//    public void setLessons(List<Lesson> lessons) {
+//        Lessons = lessons;
+//    }
     public long getID(){
         return ID;
     }
     public void setID(long ID){
         this.ID = ID;
     }
-
 }
