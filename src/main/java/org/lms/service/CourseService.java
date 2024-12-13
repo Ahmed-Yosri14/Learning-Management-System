@@ -11,22 +11,38 @@ import java.util.List;
 public class CourseService {
     @Autowired
     private CourseRepository courseRepository;
-    public void createCourse(Course course) {
-        courseRepository.save(course);
-    }
-    public void editCourse(Course course) {
-        if (courseRepository.findById(course.getId()) == null){
-            return;
+    public boolean createCourse(Course course) {
+        try{
+            courseRepository.save(course);
+            return true;
         }
-        courseRepository.save(course);
+        catch(Exception e){}
+        return false;
     }
-    public void deleteCourse(Course course) {
-        courseRepository.delete(course);
+    public boolean updateCourse(Course course) {
+        try {
+            if (courseRepository.existsById(course.getId())) {
+                courseRepository.save(course);
+            }
+            return true;
+        }
+        catch(Exception e){}
+        return false;
     }
-    public Course getCourse(Long id) {
+    public boolean deleteCourse(Long id) {
+        try {
+            if (courseRepository.existsById(id)) {
+                courseRepository.deleteById(id);
+            }
+            return true;
+        }
+        catch(Exception e){}
+        return false;
+    }
+    public Course getCourseById(Long id) {
         return courseRepository.findById(id).get();
     }
-    public List<Course> getCourses() {
+    public List<Course> getAllCourses() {
         return courseRepository.findAll();
     }
 }
