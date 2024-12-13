@@ -13,16 +13,11 @@ public class Grade {
     @NotNull
     private long id;
 
-    @Min(0)
-    @Max(100)
     @NotNull
-    private double value; // The numeric value of the grade
+    private long value;
 
     @NotNull
-    private String description; // A description or label for the grade (e.g., "A", "B", "Excellent")
-
-    @ManyToOne
-    private Feedback feedback; // Association with feedback (optional, depending on design)
+    private String description;
 
     public long getId() {
         return id;
@@ -32,14 +27,11 @@ public class Grade {
         this.id = id;
     }
 
-    public double getValue() {
+    public long getValue() {
         return value;
     }
 
-    public void setValue(double value) {
-        if (value < 0 || value > 100) {
-            throw new IllegalArgumentException("Grade value must be between 0 and 100.");
-        }
+    public void setValue(long value) {
         this.value = value;
     }
 
@@ -51,11 +43,5 @@ public class Grade {
         this.description = description;
     }
 
-    public Feedback getFeedback() {
-        return feedback;
-    }
 
-    public void setFeedback(Feedback feedback) {
-        this.feedback = feedback;
-    }
 }

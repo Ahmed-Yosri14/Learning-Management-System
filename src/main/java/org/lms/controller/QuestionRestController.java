@@ -15,8 +15,8 @@ public class QuestionRestController {
     @Autowired
     private QuestionService questionService;
 
-    @PutMapping("/")
-    public String createCourse(@Valid Question question, BindingResult result) {
+    @PostMapping("/")
+    public String createCourse(@Valid @RequestBody  Question question, BindingResult result) {
         if (result.hasErrors()) {
             return result.getAllErrors().toString();
         }
