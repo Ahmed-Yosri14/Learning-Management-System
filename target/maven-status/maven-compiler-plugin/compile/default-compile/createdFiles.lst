@@ -1,5 +1,6 @@
 org\lms\entity\AppUser.class
 org\lms\entity\Role.class
+org\lms\entity\Enrollment.class
 org\lms\entity\Student.class
 org\lms\controller\CourseRestController.class
 org\lms\entity\Admin.class
