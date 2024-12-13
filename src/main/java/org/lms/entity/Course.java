@@ -1,5 +1,7 @@
 package org.lms.entity;
 
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 
 import java.util.List;
@@ -8,15 +10,11 @@ public class Course {
     String name;
     String description;
     String ID;
+    @ManyToMany
     List<User> users;
+    @OneToMany
     List<Assessment> assessments;
     List<Lesson> Lessons;
-//    public Course(String Name, String Description, String ID)
-//    {
-//        this.Name = Name;
-//        this.Description = Description;
-//        this.ID = ID;
-//    }
     public String getName(){
         return name;
     }
@@ -29,25 +27,36 @@ public class Course {
     public void setDescription(String description){
         this.description = description;
     }
-//    public void AddAssessment(Assessment assessment){
-//        assessments.add(assessment);
-//    }
-//    public void DeleteAssessment(Assessment assessment){
-//        assessments.remove(assessment);
-//    }
-//    public void AddLesson(Lesson lesson){
-//        Lessons.add(lesson);
-//    }
-//    public void DeleteLesson(Lesson ){
-//
-//    }
+
+    public List<User> getUsers() {
+        return users;
+    }
+
+    public void setUsers(List<User> users) {
+        this.users = users;
+    }
+
+    public List<Assessment> getAssessments() {
+        return assessments;
+    }
+
+    public void setAssessments(List<Assessment> assessments) {
+        this.assessments = assessments;
+    }
+
+    public List<Lesson> getLessons() {
+        return Lessons;
+    }
+
+    public void setLessons(List<Lesson> lessons) {
+        Lessons = lessons;
+    }
+
     public String getID(){
         return ID;
     }
     public void setID(String ID){
         this.ID = ID;
     }
-
-
 
 }

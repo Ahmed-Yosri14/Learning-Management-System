@@ -3,8 +3,8 @@ package org.lms.entity;
 import jakarta.persistence.Entity;
 
 @Entity
-public class TrueFalse extends Question{
-    public TrueFalse() {
+public class TFQuestion extends Question{
+    public TFQuestion() {
         super();
     }
 }
