@@ -4,7 +4,8 @@ import jakarta.validation.constraints.NotNull;
 
 
 @Entity
-@Table(name = "app_user")
+@Inheritance(strategy = InheritanceType.JOINED)  // Use Joined Inheritance Strategy
+@DiscriminatorColumn(name = "user_type", discriminatorType = DiscriminatorType.STRING)
 public class AppUser {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -19,6 +20,7 @@ public class AppUser {
     @NotNull
     private String password;
 
+    @Enumerated(EnumType.STRING)
     @NotNull
     private Role role;
 
