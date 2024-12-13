@@ -1,4 +1,5 @@
 package org.lms.entity;
 
-public class AnsweredQuestion {
+public abstract class AnsweredQuestion {
+
 }
