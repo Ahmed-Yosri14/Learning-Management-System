@@ -10,26 +10,22 @@ public class Course {
     public Course() {}
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    long ID;
+    private long ID;
 
-    String name;
-    String description;
-
+    private String name;
+    private String description;
+    private long duration;
     @ManyToMany
     @JoinTable(
             name = "course_student",
             joinColumns = @JoinColumn(name = "course_id"),
             inverseJoinColumns = @JoinColumn(name = "student_id")
     )
-    List<Student> students;
+    private List<Student> students;
 
-    @ManyToMany
-    @JoinTable(
-            name = "course_instructor",
-            joinColumns = @JoinColumn(name = "course_id"),
-            inverseJoinColumns = @JoinColumn(name = "instructor_id")
-    )
-    List<Instructor> instructors;
+    @OneToMany(mappedBy = "courses")
+    @JoinColumn(name = "course_id", nullable = false)
+    private Instructor instructor;
 
     public String getName(){
         return name;
@@ -52,15 +48,23 @@ public class Course {
         this.students = students;
     }
 
-    public List<Instructor> getInstructors() {
-        return instructors;
+    public long getDuration() {
+        return duration;
     }
 
-    public void setInstructors(List<Instructor> instructors) {
-        this.instructors = instructors;
+    public void setDuration(long duration) {
+        this.duration = duration;
     }
 
-//    public List<Assessment> getAssessments() {
+    public Instructor getInstructor() {
+        return instructor;
+    }
+
+    public void setInstructor(Instructor instructor) {
+        this.instructor = instructor;
+    }
+
+    //    public List<Assessment> getAssessments() {
 //        return assessments;
 //    }
 //    public void setAssessments(List<Assessment> assessments) {
