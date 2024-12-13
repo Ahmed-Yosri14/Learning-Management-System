@@ -2,12 +2,11 @@ package org.lms.entity;
 
 import jakarta.persistence.Entity;
 
-import java.util.ArrayList;
 @Entity
-public class Mcq extends Question {
+public class MCQQuestion extends Question {
     int answer;
 
-    public Mcq() {
+    public MCQQuestion() {
         super();
     }
 
