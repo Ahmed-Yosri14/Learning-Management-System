@@ -1,23 +1,32 @@
 package org.lms.entity;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+
+@Entity
 public class User {
-    private Long id;
+    @Id
+    private int id;
     private String email;
     private String password;
     private Integer role;
 
-    public User(Long id, String email, String password, Integer role) {
+    public User(int id, String email, String password, Integer role) {
         this.id = id;
         this.email = email;
         this.password = password;
         this.role = role;
     }
 
-    public Long getId() {
+    public User() {
+
+    }
+
+    public int getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(int id) {
         this.id = id;
     }
 
