@@ -1,29 +1,49 @@
 package org.lms.entity;
+
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 
 import java.util.List;
+
+
 @Entity
 public class Course {
     public Course() {}
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    long ID;
-    String name;
-    String description;
-    @ManyToMany
-    @JoinTable(
-            name = "course_student",
-            joinColumns = @JoinColumn(name = "course_id"),
-            inverseJoinColumns = @JoinColumn(name = "student_id")
-    )
-    List<Student> students;
-    @ManyToMany
-    @JoinTable(
-            name = "course_instructor",
-            joinColumns = @JoinColumn(name = "course_id"),
-            inverseJoinColumns = @JoinColumn(name = "instructor_id")
-    )
-    List<Instructor> instructors;
+    @NotNull
+    private Long id;
+
+    @NotNull
+    private String name;
+
+    @NotNull
+    private String description;
+
+    @NotNull
+    private long duration;
+
+    @OneToMany(mappedBy = "course")
+    List<Enrollment> enrollments;
+
+    @ManyToOne
+    @JoinColumn  // Foreign key column
+    private Instructor instructor;
+
+
+
+    public void setDuration(@NotNull long duration) {
+        this.duration = duration;
+    }
+
+    public List<Enrollment> getEnrollments() {
+        return enrollments;
+    }
+
+    public void setEnrollments(List<Enrollment> enrollments) {
+        this.enrollments = enrollments;
+    }
+
     public String getName(){
         return name;
     }
@@ -37,23 +57,23 @@ public class Course {
         this.description = description;
     }
 
-    public List<Student> getStudents() {
-        return students;
+    public long getDuration() {
+        return duration;
     }
 
-    public void setStudents(List<Student> students) {
-        this.students = students;
+    public void setDuration(Long duration) {
+        this.duration = duration;
     }
 
-    public List<Instructor> getInstructors() {
-        return instructors;
+    public Instructor getInstructor() {
+        return instructor;
     }
 
-    public void setInstructors(List<Instructor> instructors) {
-        this.instructors = instructors;
+    public void setInstructor(Instructor instructor) {
+        this.instructor = instructor;
     }
 
-//    public List<Assessment> getAssessments() {
+    //    public List<Assessment> getAssessments() {
 //        return assessments;
 //    }
 //    public void setAssessments(List<Assessment> assessments) {
@@ -65,10 +85,10 @@ public class Course {
 //    public void setLessons(List<Lesson> lessons) {
 //        Lessons = lessons;
 //    }
-    public long getID() {
-        return ID;
+    public Long getId(){
+        return id;
     }
-    public void setID(long ID){
-        this.ID = ID;
+    public void setId(Long ID){
+        this.id = ID;
     }
 }
