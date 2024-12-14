@@ -22,21 +22,21 @@ public class LessonRestController {
         return ResponseEntity.badRequest().body("Something went wrong");
 
     }
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/{id}/")
     public ResponseEntity<String> delete(@PathVariable("courseId") Long courseId, @PathVariable("id") Long id) {
         if (lessonService.delete(courseId, id)) {
             return ResponseEntity.ok("Lesson deleted successfully!");
         }
         return ResponseEntity.badRequest().body("Failed to delete lesson.");
     }
-    @PatchMapping("/{id}")
+    @PatchMapping("/{id}/")
     public ResponseEntity<String> update(@PathVariable("courseId") Long courseId,@PathVariable("id") Long id, @RequestBody Lesson lesson) {
         if (lessonService.update(id, lesson,courseId)){
             return ResponseEntity.ok("All good!");
         }
         return ResponseEntity.badRequest().body("Something went wrong");
     }
-    @GetMapping("/{id}")
+    @GetMapping("/{id}/")
     public ResponseEntity<Lesson> getById(@PathVariable("courseId") Long courseId, @PathVariable("id") Long id) {
         Lesson lesson = lessonService.getById(courseId,id);
         if (lesson == null) {

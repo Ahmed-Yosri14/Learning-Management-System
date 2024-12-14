@@ -1,26 +1,100 @@
 package org.lms.service;
 
+import org.lms.entity.Assignment;
+import org.lms.entity.Course;
 import org.lms.entity.Quiz;
 import org.lms.repository.QuizRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.List;
+import java.util.Objects;
+
 @Service
 public class QuizService {
 
     @Autowired
     private QuizRepository quizRepository;
-
-    public Quiz createQuiz(Quiz quiz) {
-        return quizRepository.save(quiz);
+    @Autowired
+    private CourseService courseService;
+    public boolean create(Long courseId, Quiz quiz)
+    {
+        try{
+            if(courseService.getById(courseId) == null){
+                System.out.println("course not found");
+                return false;
+            }
+            quiz.setCourse(courseService.getById(courseId));
+            quizRepository.save(quiz);
+            return true;
+        }catch (Exception e){
+        }
+        return false;
     }
 
-    public Quiz getQuiz(Long id) {
-        return quizRepository.findById(id).get();
+    public boolean update(Long courseid,Long id,Quiz quiz)
+    {
+        try{
+            Quiz oldQuiz = quizRepository.findById(id).get();
+            Course oldCourse = courseService.getById(courseid);
+            if(oldCourse == null || !Objects.equals(oldCourse.getId(), oldQuiz.getCourse().getId())){
+                return false;
+            }
+            if (quiz.getTitle() != null){
+                oldQuiz.setTitle(quiz.getTitle());
+            }
+            if (quiz.getDescription() != null){
+                oldQuiz.setDescription(quiz.getDescription());
+            }
+            if (quiz.getDuration() != null){
+                oldQuiz.setDuration(quiz.getDuration());
+            }
+            quizRepository.save(oldQuiz);
+            return true;
+        }
+        catch (Exception e){}
+        return false;
     }
 
-    public List<Quiz> getQuizzesByCourseId(Long courseId) {
-        return quizRepository.findAll();
+    public Quiz getById(Long courseId,Long id)
+    {
+        try {
+            Quiz quiz = quizRepository.findById(id).get();
+            if (quiz.getCourse() != null && quiz.getCourse().getId().equals(courseId)) {
+                return quiz;
+            } else {
+                System.out.println("assignment not found or does not belong to the specified course.");
+                return null;
+            }
+        } catch (Exception e) {
+            System.out.println("Error retrieving assignment: " + e.getMessage());
+            return null;
+        }
     }
-
+    public List<Quiz> getAll(Long courseId){
+        try {
+            Course course = courseService.getById(courseId);
+            if(course == null){
+                return null;
+            }
+            return quizRepository.findByCourse(course);
+        } catch (Exception e) {
+            System.out.println("Error fetching assignments for course ID " + courseId + ": " + e.getMessage());
+            return null;
+        }
+    }
+    public boolean delete(Long courseId, Long id) {
+        try {
+            if (courseService.getById(courseId)==null || !quizRepository.existsById(id)) {
+                return false;
+            }
+            Quiz quiz = quizRepository.findById(id).orElse(null);
+            if (quiz == null || !quiz.getCourse().getId().equals(courseId)) {
+                return false;
+            }
+            quizRepository.deleteById(id);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
 }
