@@ -2,6 +2,7 @@ package org.lms.controller;
 
 
 import org.lms.entity.AppUser;
+import org.lms.entity.UserRole;
 import org.lms.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -48,7 +49,7 @@ public class UserRestController {
         return ResponseEntity.ok(user);
     }
     @GetMapping("")
-    public List<AppUser> getAll() {
-        return userService.getAll();
+    public List<AppUser> getAll(@RequestParam(required = false) UserRole role) {
+        return userService.getAll(role);
     }
 }

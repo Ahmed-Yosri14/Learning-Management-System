@@ -2,20 +2,17 @@ package org.lms.service;
 
 import org.lms.entity.Course;
 import org.lms.entity.Lesson;
-import org.lms.repository.CourseRepository;
 import org.lms.repository.LessonRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Objects;
+import java.util.Random;
 
 @Service
 public class LessonService {
     @Autowired
     private LessonRepository lessonRepository;
-    @Autowired
-    private CourseRepository courseRepository;
     @Autowired
     private CourseService courseService;
 
@@ -36,7 +33,7 @@ public class LessonService {
     public boolean update(Long id, Lesson lesson,Long courseId) {
         try {
             Lesson oldLesson = lessonRepository.findById(id).get();
-            Course oldCourse = courseRepository.findById(courseId).get();
+            Course oldCourse = courseService.getById(courseId);
             if(oldCourse.getId()!=oldLesson.getCourse().getId()){
                 return false;
             }
@@ -59,7 +56,7 @@ public class LessonService {
     }
     public boolean delete(Long courseId, Long id) {
         try {
-            if (!courseRepository.existsById(courseId) || !lessonRepository.existsById(id)) {
+            if (courseService.getById(courseId) == null || !lessonRepository.existsById(id)) {
                 return false;
             }
             Lesson lesson = lessonRepository.findById(id).orElse(null);
@@ -72,7 +69,14 @@ public class LessonService {
             return false;
         }
     }
-
+    public Lesson getById(Long id) {
+        try {
+            return lessonRepository.findById(id).orElse(null);
+        } catch (Exception e) {
+            System.out.println("Error retrieving lesson: " + e.getMessage());
+            return null;
+        }
+    }
     public Lesson getById(Long courseId, Long id) {
         try {
             Lesson lesson = lessonRepository.findById(id).orElse(null);
@@ -90,11 +94,44 @@ public class LessonService {
 
     public List<Lesson> getAll(Long courseId) {
         try {
-            return lessonRepository.findAllByCourseId(courseId);
+            return lessonRepository.findByCourseId(courseId);
         } catch (Exception e) {
             System.out.println("Error fetching lessons for course ID " + courseId + ": " + e.getMessage());
             return null;
         }
     }
-
+    public String generateOtp(Long courseId, Long id){
+        try {
+            Lesson lesson = lessonRepository.findById(id).orElse(null);
+            assert lesson != null && lesson.getCourse().getId().equals(courseId);
+            Random random = new Random();
+            String otp = generateRandomNumber();
+            while (lessonRepository.existsByOtp(otp)) {
+                otp = generateRandomNumber();
+            }
+            lesson.setOpt(otp);
+            lessonRepository.save(lesson);
+            return otp;
+        }
+        catch(Exception e){
+            System.out.println(e);
+        }
+        return null;
+    }
+    private String generateRandomNumber(){
+        Random random = new Random();
+        int number = random.nextInt(1000000);
+        return String.format("%06d", number);
+    }
+    public boolean checkLessonOtp(Long id, Long otp){
+        try {
+            assert otp != null;
+            Lesson lesson = lessonRepository.findById(id).orElse(null);
+            return lesson.getOpt().equals(otp);
+        }
+        catch(Exception e){
+            System.out.println(e);
+        }
+        return false;
+    }
 }

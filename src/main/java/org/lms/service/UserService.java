@@ -1,6 +1,7 @@
 package org.lms.service;
 
 import org.lms.entity.AppUser;
+import org.lms.entity.UserRole;
 import org.lms.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -56,7 +57,10 @@ public class UserService {
     public AppUser getById(Long id) {
         return userRepository.findById(id).get();
     }
-    public List<AppUser> getAll() {
-        return userRepository.findAll();
+    public List<AppUser> getAll(UserRole userRole) {
+        if (userRole == null) {
+            return userRepository.findAll();
+        }
+        return userRepository.findAllByRole(userRole.toString());
     }
 }

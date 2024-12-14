@@ -9,5 +9,7 @@ import java.util.List;
 
 public interface LessonRepository extends JpaRepository<Lesson, Long> {
     @Query("SELECT l FROM Lesson l WHERE l.course.id = :courseId")
-    List<Lesson> findAllByCourseId(@Param("courseId") Long courseId);
+    List<Lesson> findByCourseId(@Param("courseId") Long courseId);
+
+    boolean existsByOtp(String otp);
 }

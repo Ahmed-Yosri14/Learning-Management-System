@@ -38,7 +38,7 @@ public class EnrollmentService {
         try {
             Course course = courseService.getById(courseId);
             Student student = (Student)userService.getById(studentId);
-            enrollmentRepository.deleteById(enrollmentRepository.findByStudentAndCourse(student, course).get(0).getId());
+            enrollmentRepository.deleteById(enrollmentRepository.findByStudentAndCourse(student, course).getId());
             return true;
         } catch (Exception e) {
             System.out.println(e);
@@ -50,7 +50,7 @@ public class EnrollmentService {
         try {
             Course course = courseService.getById(courseId);
             Student student = (Student)userService.getById(studentId);
-            return !enrollmentRepository.findByStudentAndCourse(student, course).isEmpty();
+            return enrollmentRepository.findByStudentAndCourse(student, course) != null;
         }
         catch(Exception e){
             System.out.println(e);

@@ -10,9 +10,21 @@ public class Lesson {
     private String description;
     private Long duration;
     private String title;
+
+    @Column(unique = true)
+    private String opt;
+
     @ManyToOne
     @JoinColumn
     public Course course;
+
+    public String getOpt() {
+        return opt;
+    }
+
+    public void setOpt(String opt) {
+        this.opt = opt;
+    }
 
     public String getTitle() {
         return title;
