@@ -1,17 +1,16 @@
 package org.lms.entity;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.validation.constraints.NotNull;
 
 @Entity
 public class AutomatedFeedback extends Feedback {
-    @NotNull
     @ManyToOne
+    @JoinColumn(name = "quiz_id")
     private Quiz quiz;
 
-    @NotNull
-    private double calculatedScore;
 
     public Quiz getQuiz() {
         return quiz;
@@ -21,11 +20,5 @@ public class AutomatedFeedback extends Feedback {
         this.quiz = quiz;
     }
 
-    public double getCalculatedScore() {
-        return calculatedScore;
-    }
 
-    public void setCalculatedScore(double calculatedScore) {
-        this.calculatedScore = calculatedScore;
-    }
 }

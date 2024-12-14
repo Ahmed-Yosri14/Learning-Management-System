@@ -1,6 +1,7 @@
 package org.lms.service;
 
 import org.apache.coyote.Request;
+import org.lms.entity.AppUser;
 import org.lms.entity.Feedback;
 import org.lms.repository.FeedbackRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,8 +26,24 @@ public class FeedbackService {
     public Feedback saveFeedback(Feedback feedback) {
         return feedbackRepository.save(feedback);
     }
-
-    public void deleteFeedback(Long id) {
-        feedbackRepository.deleteById(id);
+    public boolean updateFeedback(Feedback feedback) {
+        try {
+            if (feedbackRepository.existsById(feedback.getId())) {
+                feedbackRepository.save(feedback);
+            }
+            return true;
+        }
+        catch(Exception e){}
+        return false;
+    }
+    public boolean deleteFeedback(Long id) {
+        try {
+            if (feedbackRepository.existsById(id)) {
+                feedbackRepository.deleteById(id);
+            }
+            return true;
+        }
+        catch(Exception e){}
+        return false;
     }
 }

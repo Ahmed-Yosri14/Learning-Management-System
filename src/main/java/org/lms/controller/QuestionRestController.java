@@ -16,7 +16,7 @@ public class QuestionRestController {
     private QuestionService questionService;
 
     @PostMapping("/")
-    public String createCourse(@Valid @RequestBody  Question question, BindingResult result) {
+    public String createQuestion(@Valid @RequestBody   Question question, BindingResult result) {
         if (result.hasErrors()) {
             return result.getAllErrors().toString();
         }
@@ -30,7 +30,7 @@ public class QuestionRestController {
         return questionService.getQuestionById(id);
     }
     @GetMapping("/")
-    public List<Question> getCourses() {
+    public List<Question> getAllQuestions() {
         return questionService.getAllQuestions();
     }
 }
