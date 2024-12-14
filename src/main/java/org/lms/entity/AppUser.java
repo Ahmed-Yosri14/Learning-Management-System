@@ -3,6 +3,9 @@ package org.lms.entity;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 
 @Entity
@@ -13,6 +16,9 @@ import jakarta.persistence.*;
         @JsonSubTypes.Type(value = Instructor.class, name = "INSTRUCTOR"),
         @JsonSubTypes.Type(value = Admin.class, name = "ADMIN")
 })
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class AppUser {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,6 +30,15 @@ public class AppUser {
 
     private String password;
 
+    private String roles;
+
+    public String getRoles() {
+        return roles;
+    }
+
+    public void setRoles(String roles) {
+        this.roles = roles;
+    }
 
     public Long getId() {
         return id;

@@ -4,12 +4,17 @@ import org.lms.entity.AppUser;
 import org.lms.entity.UserRole;
 import org.lms.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
-public class UserService {
+public class UserService implements UserDetailsService {
 
     @Autowired
     private UserRepository userRepository;
@@ -62,5 +67,23 @@ public class UserService {
             return userRepository.findAll();
         }
         return userRepository.findAllByRole(userRole.toString());
+    }
+
+    private final PasswordEncoder encoder;
+    public UserService(UserRepository repository, PasswordEncoder encoder) {
+        this.userRepository = repository;
+        this.encoder = encoder;
+    }
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        Optional<AppUser> userDetail = userRepository.findByName(username);
+        // Converting userDetail to UserDetails
+        return userDetail.map(UserInfoDetails::new)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found " + username));
+    }
+    public String addUser(AppUser userInfo) {
+        userInfo.setPassword(encoder.encode(userInfo.getPassword()));
+        userRepository.save(userInfo);
+        return "User Added Successfully";
     }
 }
