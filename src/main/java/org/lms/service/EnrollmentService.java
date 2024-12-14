@@ -39,6 +39,7 @@ public class EnrollmentService {
             Course course = courseService.getById(courseId);
             Student student = (Student)userService.getById(studentId);
             enrollmentRepository.deleteById(enrollmentRepository.findByStudentAndCourse(student, course).get(0).getId());
+            return true;
         } catch (Exception e) {
             System.out.println(e);
         }

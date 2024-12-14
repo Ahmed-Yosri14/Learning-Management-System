@@ -10,13 +10,13 @@ import java.util.List;
 
 
 @RestController
-@RequestMapping("api/course")
+@RequestMapping("api/course/")
 public class CourseRestController {
     @Autowired
     private CourseService courseService;
 
 
-    @PutMapping("/")
+    @PutMapping("")
     public ResponseEntity<String> create(@RequestBody Course course, @RequestParam Long instructorId) {
         if (courseService.create(course, instructorId)){
             return ResponseEntity.ok("All good!");
@@ -24,21 +24,21 @@ public class CourseRestController {
         return ResponseEntity.badRequest().body("Something went wrong");
 
     }
-    @PatchMapping("/{id}")
+    @PatchMapping("{id}/")
     public ResponseEntity<String> update(@PathVariable("id") Long id, @RequestBody Course course) {
         if (courseService.update(id, course)){
             return ResponseEntity.ok("All good!");
         }
         return ResponseEntity.badRequest().body("Something went wrong");
     }
-    @DeleteMapping("/{id}")
+    @DeleteMapping("{id}/")
     public ResponseEntity<String> delete(@PathVariable("id") Long id) {
         if (courseService.delete(id)){
             return ResponseEntity.ok("All good!");
         }
         return ResponseEntity.badRequest().body("Something went wrong");
     }
-    @GetMapping("/{id}")
+    @GetMapping("{id}/")
     public ResponseEntity<Course> getById(@PathVariable("id") Long id) {
         Course course = courseService.getById(id);
         if (course == null) {
@@ -46,7 +46,7 @@ public class CourseRestController {
         }
         return ResponseEntity.ok(course);
     }
-    @GetMapping("/")
+    @GetMapping("")
     public List<Course> getAll() {
         return courseService.getAll();
     }

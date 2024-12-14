@@ -10,14 +10,14 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("api/user")
+@RequestMapping("api/user/")
 public class UserRestController {
 
     @Autowired
     private UserService userService;
 
 
-    @PutMapping("/")
+    @PutMapping("")
     public ResponseEntity<String> create(@RequestBody AppUser user) {
         if (userService.create(user)){
             return ResponseEntity.ok("All good!");
@@ -25,21 +25,21 @@ public class UserRestController {
         return ResponseEntity.badRequest().body("Something went wrong");
 
     }
-    @PatchMapping("/{id}")
+    @PatchMapping("{id}/")
     public ResponseEntity<String> update(@PathVariable("id") Long id, @RequestBody AppUser user) {
         if (userService.update(id, user)){
             return ResponseEntity.ok("All good!");
         }
         return ResponseEntity.badRequest().body("Something went wrong");
     }
-    @DeleteMapping("/{id}")
+    @DeleteMapping("{id}/")
     public ResponseEntity<String> delete(@PathVariable("id") Long id) {
         if (userService.delete(id)){
             return ResponseEntity.ok("All good!");
         }
         return ResponseEntity.badRequest().body("Something went wrong");
     }
-    @GetMapping("/{id}")
+    @GetMapping("{id}/")
     public ResponseEntity<AppUser> getById(@PathVariable("id") Long id) {
         AppUser user = userService.getById(id);
         if (user == null) {
@@ -47,7 +47,7 @@ public class UserRestController {
         }
         return ResponseEntity.ok(user);
     }
-    @GetMapping("/")
+    @GetMapping("")
     public List<AppUser> getAll() {
         return userService.getAll();
     }
