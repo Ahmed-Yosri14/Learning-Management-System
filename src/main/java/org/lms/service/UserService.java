@@ -45,9 +45,7 @@ public class UserService {
     }
     public boolean delete(Long id) {
         try {
-            if (userRepository.existsById(id)) {
-                userRepository.deleteById(id);
-            }
+            userRepository.deleteById(id);
             return true;
         }
         catch(Exception e){

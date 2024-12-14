@@ -32,6 +32,13 @@ public class UserRestController {
         }
         return ResponseEntity.badRequest().body("Something went wrong");
     }
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> delete(@PathVariable("id") Long id) {
+        if (userService.delete(id)){
+            return ResponseEntity.ok("All good!");
+        }
+        return ResponseEntity.badRequest().body("Something went wrong");
+    }
     @GetMapping("/{id}")
     public ResponseEntity<AppUser> getById(@PathVariable("id") Long id) {
         AppUser user = userService.getById(id);

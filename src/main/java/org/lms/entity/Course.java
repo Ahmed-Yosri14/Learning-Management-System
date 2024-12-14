@@ -2,8 +2,6 @@ package org.lms.entity;
 
 import jakarta.persistence.*;
 
-import java.util.List;
-
 
 @Entity
 public class Course {
@@ -18,23 +16,12 @@ public class Course {
 
     private Long duration;
 
-    @OneToMany(mappedBy = "course")
-    List<Enrollment> enrollments;
-
     @ManyToOne
     @JoinColumn
     private Instructor instructor;
 
     public void setDuration(long duration) {
         this.duration = duration;
-    }
-
-    public List<Enrollment> getEnrollments() {
-        return enrollments;
-    }
-
-    public void setEnrollments(List<Enrollment> enrollments) {
-        this.enrollments = enrollments;
     }
 
     public String getName(){

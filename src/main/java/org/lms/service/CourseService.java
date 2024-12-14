@@ -52,9 +52,7 @@ public class CourseService {
     }
     public boolean delete(Long id) {
         try {
-            if (courseRepository.existsById(id)) {
-                courseRepository.deleteById(id);
-            }
+            courseRepository.deleteById(id);
             return true;
         }
         catch(Exception e){

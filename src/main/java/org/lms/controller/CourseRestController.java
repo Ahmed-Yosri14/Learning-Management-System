@@ -31,6 +31,13 @@ public class CourseRestController {
         }
         return ResponseEntity.badRequest().body("Something went wrong");
     }
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> delete(@PathVariable("id") Long id) {
+        if (courseService.delete(id)){
+            return ResponseEntity.ok("All good!");
+        }
+        return ResponseEntity.badRequest().body("Something went wrong");
+    }
     @GetMapping("/{id}")
     public ResponseEntity<Course> getById(@PathVariable("id") Long id) {
         Course course = courseService.getById(id);
