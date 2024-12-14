@@ -13,9 +13,29 @@ public class UserService {
     @Autowired
     private UserRepository userRepository;
 
-    public boolean createUser(AppUser user) {
+
+    public boolean create(AppUser user) {
         try{
             userRepository.save(user);
+            return true;
+        }
+        catch(Exception e){}
+        return false;
+    }
+    public boolean update(Long id, AppUser user) {
+        try {
+            var oldUser = userRepository.findById(id).get();
+            if (user.getName() != null){
+                oldUser.setName(user.getName());
+            }
+            if (user.getEmail() != null){
+                oldUser.setEmail(user.getEmail());
+            }
+            if (user.getPassword() != null){
+                oldUser.setPassword(user.getPassword());
+            }
+
+            userRepository.save(oldUser);
             return true;
         }
         catch(Exception e){
@@ -23,30 +43,22 @@ public class UserService {
         }
         return false;
     }
-    public boolean updateUser(AppUser user) {
-        try {
-            if (userRepository.existsById(user.getId())) {
-                userRepository.save(user);
-            }
-            return true;
-        }
-        catch(Exception e){}
-        return false;
-    }
-    public boolean deleteUser(Long id) {
+    public boolean delete(Long id) {
         try {
             if (userRepository.existsById(id)) {
                 userRepository.deleteById(id);
             }
             return true;
         }
-        catch(Exception e){}
+        catch(Exception e){
+            System.out.println(e);
+        }
         return false;
     }
-    public AppUser getUserById(Long id){
+    public AppUser getById(Long id) {
         return userRepository.findById(id).get();
     }
-    public List<AppUser> getAllUsers() {
+    public List<AppUser> getAll() {
         return userRepository.findAll();
     }
 }

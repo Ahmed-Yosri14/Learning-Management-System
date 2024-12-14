@@ -1,10 +1,9 @@
 package org.lms.controller;
 
-import jakarta.validation.Valid;
 import org.lms.entity.Course;
 import org.lms.service.CourseService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.validation.BindingResult;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -16,50 +15,32 @@ public class CourseRestController {
     @Autowired
     private CourseService courseService;
 
+
     @PutMapping("/")
-    public String createCourse(@RequestBody @Valid Course course, BindingResult result) {
-        if (result.hasErrors()) {
-            return result.getAllErrors().toString();
+    public ResponseEntity<String> create(@RequestBody Course course, @RequestParam Long instructorId) {
+        if (courseService.create(course, instructorId)){
+            return ResponseEntity.ok("All good!");
         }
-        else {
-            if (courseService.createCourse(course)){
-                return "Course created successfully";
-            }
-            else {
-                return "Course could not be created";
-            }
-        }
+        return ResponseEntity.badRequest().body("Something went wrong");
+
     }
     @PatchMapping("/{id}")
-    public String updateCourse(@PathVariable("id") Long id, @Valid Course course, BindingResult result) {
-        if (result.hasErrors()) {
-            return result.getAllErrors().toString();
+    public ResponseEntity<String> update(@PathVariable("id") Long id, @RequestBody Course course) {
+        if (courseService.update(id, course)){
+            return ResponseEntity.ok("All good!");
         }
-        else {
-            course.setId(id);
-            if (courseService.updateCourse(course)){
-                return "Course updated successfully!";
-            }
-            else {
-                return "Course not found!";
-            }
-        }
-    }
-    @DeleteMapping("/{id}")
-    public String deleteCourse(@PathVariable("id") Long id) {
-        if (courseService.deleteCourse(id)){
-            return "Course deleted successfully!";
-        }
-        else {
-            return "Course not found!";
-        }
+        return ResponseEntity.badRequest().body("Something went wrong");
     }
     @GetMapping("/{id}")
-    public Course getCourse(@PathVariable("id") Long id) {
-        return courseService.getCourseById(id);
+    public ResponseEntity<Course> getById(@PathVariable("id") Long id) {
+        Course course = courseService.getById(id);
+        if (course == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(course);
     }
     @GetMapping("/")
-    public List<Course> getCourses() {
-        return courseService.getAllCourses();
+    public List<Course> getAll() {
+        return courseService.getAll();
     }
 }

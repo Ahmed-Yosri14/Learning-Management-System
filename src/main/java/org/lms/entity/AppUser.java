@@ -1,11 +1,18 @@
 package org.lms.entity;
 
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import jakarta.persistence.*;
 
 
 @Entity
-@Inheritance(strategy = InheritanceType.JOINED)  // Use Joined Inheritance Strategy
-@DiscriminatorColumn(name = "user_type", discriminatorType = DiscriminatorType.STRING)
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(name = "role", discriminatorType = DiscriminatorType.STRING)
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "role")
+@JsonSubTypes({@JsonSubTypes.Type(value = Student.class, name = "STUDENT"),
+        @JsonSubTypes.Type(value = Instructor.class, name = "INSTRUCTOR"),
+        @JsonSubTypes.Type(value = Admin.class, name = "ADMIN")
+})
 public class AppUser {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -16,9 +23,6 @@ public class AppUser {
     private String name;
 
     private String password;
-
-    @Enumerated(EnumType.STRING)
-    private Role role;
 
 
     public Long getId() {
@@ -51,17 +55,5 @@ public class AppUser {
 
     public void setPassword(String password) {
         this.password = password;
-    }
-
-    public Role getRole() {
-        return role;
-    }
-
-    public void setRole(Role role) {
-        this.role = role;
-    }
-
-    public String toString(){
-        return name + "/" + role + ": " + password;
     }
 }

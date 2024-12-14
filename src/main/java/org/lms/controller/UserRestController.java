@@ -1,11 +1,10 @@
 package org.lms.controller;
 
 
-import jakarta.validation.Valid;
-import org.lms.entity.*;
+import org.lms.entity.AppUser;
 import org.lms.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.validation.BindingResult;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -17,64 +16,32 @@ public class UserRestController {
     @Autowired
     private UserService userService;
 
+
     @PutMapping("/")
-    public String createUser(@RequestBody @Valid AppUser user, BindingResult result) {
-        if (result.hasErrors()) {
-            return result.getAllErrors().toString();
+    public ResponseEntity<String> create(@RequestBody AppUser user) {
+        if (userService.create(user)){
+            return ResponseEntity.ok("All good!");
         }
-        else {
-            AppUser newUser;
-            if (user.getRole() == Role.STUDENT){
-                newUser = new Student();
-            }
-            else if (user.getRole() == Role.ADMIN){
-                newUser = new Admin();
-            }
-            else {
-                newUser = new Instructor();
-            }
-            newUser.setEmail(user.getEmail());
-            newUser.setPassword(user.getPassword());
-            newUser.setRole(user.getRole());
-            newUser.setName(user.getName());
-            if (userService.createUser(user)){
-                return "USer created successfully";
-            }
-            else {
-                return "User could not be created";
-            }
-        }
+        return ResponseEntity.badRequest().body("Something went wrong");
+
     }
     @PatchMapping("/{id}")
-    public String updateCourse(@PathVariable("id") Long id, @Valid AppUser user, BindingResult result) {
-        if (result.hasErrors()) {
-            return result.getAllErrors().toString();
+    public ResponseEntity<String> update(@PathVariable("id") Long id, @RequestBody AppUser user) {
+        if (userService.update(id, user)){
+            return ResponseEntity.ok("All good!");
         }
-        else {
-            user.setId(id);
-            if (userService.updateUser(user)){
-                return "Course updated successfully!";
-            }
-            else {
-                return "Course not found!";
-            }
-        }
-    }
-    @DeleteMapping("/{id}")
-    public String deleteCourse(@PathVariable("id") Long id) {
-        if (userService.deleteUser(id)){
-            return "Course deleted successfully!";
-        }
-        else {
-            return "Course not found!";
-        }
+        return ResponseEntity.badRequest().body("Something went wrong");
     }
     @GetMapping("/{id}")
-    public AppUser getCourse(@PathVariable("id") Long id) {
-        return userService.getUserById(id);
+    public ResponseEntity<AppUser> getById(@PathVariable("id") Long id) {
+        AppUser user = userService.getById(id);
+        if (user == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(user);
     }
     @GetMapping("/")
-    public List<AppUser> getCourses() {
-        return userService.getAllUsers();
+    public List<AppUser> getAll() {
+        return userService.getAll();
     }
 }

@@ -16,16 +16,14 @@ public class Course {
 
     private String description;
 
-    private long duration;
+    private Long duration;
 
     @OneToMany(mappedBy = "course")
     List<Enrollment> enrollments;
 
     @ManyToOne
     @JoinColumn
-        private Instructor instructor;
-
-
+    private Instructor instructor;
 
     public void setDuration(long duration) {
         this.duration = duration;
@@ -52,7 +50,7 @@ public class Course {
         this.description = description;
     }
 
-    public long getDuration() {
+    public Long getDuration() {
         return duration;
     }
 
@@ -68,18 +66,6 @@ public class Course {
         this.instructor = instructor;
     }
 
-    //    public List<Assessment> getAssessments() {
-//        return assessments;
-//    }
-//    public void setAssessments(List<Assessment> assessments) {
-//        this.assessments = assessments;
-//    }
-//    public List<Lesson> getLessons() {
-//        return Lessons;
-//    }
-//    public void setLessons(List<Lesson> lessons) {
-//        Lessons = lessons;
-//    }
     public Long getId(){
         return id;
     }
