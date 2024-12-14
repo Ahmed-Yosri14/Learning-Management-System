@@ -1,7 +1,6 @@
 package org.lms.entity;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
 
 import java.util.List;
 
@@ -11,28 +10,24 @@ public class Course {
     public Course() {}
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @NotNull
     private Long id;
 
-    @NotNull
     private String name;
 
-    @NotNull
     private String description;
 
-    @NotNull
     private long duration;
 
     @OneToMany(mappedBy = "course")
     List<Enrollment> enrollments;
 
     @ManyToOne
-    @JoinColumn  // Foreign key column
-    private Instructor instructor;
+    @JoinColumn
+        private Instructor instructor;
 
 
 
-    public void setDuration(@NotNull long duration) {
+    public void setDuration(long duration) {
         this.duration = duration;
     }
 

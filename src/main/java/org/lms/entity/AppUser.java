@@ -1,6 +1,6 @@
 package org.lms.entity;
+
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
 
 
 @Entity
@@ -9,20 +9,17 @@ import jakarta.validation.constraints.NotNull;
 public class AppUser {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @NotNull
     private Long id;
 
     private String email;
 
-    @NotNull
     private String name;
 
-    @NotNull
     private String password;
 
     @Enumerated(EnumType.STRING)
-    @NotNull
     private Role role;
+
 
     public Long getId() {
         return id;
@@ -62,5 +59,9 @@ public class AppUser {
 
     public void setRole(Role role) {
         this.role = role;
+    }
+
+    public String toString(){
+        return name + "/" + role + ": " + password;
     }
 }

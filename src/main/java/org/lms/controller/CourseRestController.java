@@ -17,7 +17,7 @@ public class CourseRestController {
     private CourseService courseService;
 
     @PutMapping("/")
-    public String createCourse(@Valid Course course, BindingResult result) {
+    public String createCourse(@RequestBody @Valid Course course, BindingResult result) {
         if (result.hasErrors()) {
             return result.getAllErrors().toString();
         }

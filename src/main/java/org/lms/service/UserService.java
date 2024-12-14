@@ -13,23 +13,40 @@ public class UserService {
     @Autowired
     private UserRepository userRepository;
 
-    void createUser(AppUser user) {
-        userRepository.save(user);
-    }
-    void updateUser(AppUser user) {
-        if (userRepository.existsById(user.getId())){
+    public boolean createUser(AppUser user) {
+        try{
             userRepository.save(user);
+            return true;
         }
-    }
-    void deleteUser(AppUser user) {
-        if (userRepository.existsById(user.getId())){
-            userRepository.deleteById(user.getId());
+        catch(Exception e){
+            System.out.println(e);
         }
+        return false;
     }
-    AppUser getUserById(Long id){
+    public boolean updateUser(AppUser user) {
+        try {
+            if (userRepository.existsById(user.getId())) {
+                userRepository.save(user);
+            }
+            return true;
+        }
+        catch(Exception e){}
+        return false;
+    }
+    public boolean deleteUser(Long id) {
+        try {
+            if (userRepository.existsById(id)) {
+                userRepository.deleteById(id);
+            }
+            return true;
+        }
+        catch(Exception e){}
+        return false;
+    }
+    public AppUser getUserById(Long id){
         return userRepository.findById(id).get();
     }
-    List<AppUser> getAllUsers() {
+    public List<AppUser> getAllUsers() {
         return userRepository.findAll();
     }
 }
