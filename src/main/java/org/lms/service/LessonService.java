@@ -1,5 +1,4 @@
 package org.lms.service;
-
 import org.lms.entity.Course;
 import org.lms.entity.Lesson;
 import org.lms.repository.LessonRepository;
@@ -109,7 +108,7 @@ public class LessonService {
             while (lessonRepository.existsByOtp(otp)) {
                 otp = generateRandomNumber();
             }
-            lesson.setOpt(otp);
+            lesson.setOtp(otp);
             lessonRepository.save(lesson);
             return otp;
         }
@@ -127,7 +126,7 @@ public class LessonService {
         try {
             assert otp != null;
             Lesson lesson = lessonRepository.findById(id).orElse(null);
-            return lesson.getOpt().equals(otp);
+            return lesson.getOtp().equals(otp);
         }
         catch(Exception e){
             System.out.println(e);

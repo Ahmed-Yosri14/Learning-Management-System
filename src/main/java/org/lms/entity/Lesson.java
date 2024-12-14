@@ -1,5 +1,5 @@
 package org.lms.entity;
-
+import org.lms.entity.*;
 import jakarta.persistence.*;
 
 @Entity
@@ -12,34 +12,18 @@ public class Lesson {
     private String title;
 
     @Column(unique = true)
-    private String opt;
+    private String otp;
 
     @ManyToOne
     @JoinColumn
-    public Course course;
+    private Course course;
 
-    public String getOpt() {
-        return opt;
+    public Long getId() {
+        return id;
     }
 
-    public void setOpt(String opt) {
-        this.opt = opt;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public Course getCourse() {
-        return course;
-    }
-
-    public void setCourse(Course course) {
-        this.course = course;
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getDescription() {
@@ -58,11 +42,27 @@ public class Lesson {
         this.duration = duration;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public String getTitle() {
+        return title;
     }
 
-    public Long getId() {
-        return id;
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getOtp() {
+        return otp;
+    }
+
+    public void setOtp(String otp) {
+        this.otp = otp;
+    }
+
+    public Course getCourse() {
+        return course;
+    }
+
+    public void setCourse(Course course) {
+        this.course = course;
     }
 }
