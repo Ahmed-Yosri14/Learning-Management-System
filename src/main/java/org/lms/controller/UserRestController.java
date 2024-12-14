@@ -38,7 +38,7 @@ public class UserRestController {
             newUser.setRole(user.getRole());
             newUser.setName(user.getName());
             if (userService.createUser(user)){
-                return "USer created successfully";
+                return "User created successfully";
             }
             else {
                 return "User could not be created";
@@ -46,7 +46,7 @@ public class UserRestController {
         }
     }
     @PatchMapping("/{id}")
-    public String updateCourse(@PathVariable("id") Long id, @Valid AppUser user, BindingResult result) {
+    public String updateUser(@PathVariable("id") Long id, @Valid AppUser user, BindingResult result) {
         if (result.hasErrors()) {
             return result.getAllErrors().toString();
         }
@@ -61,7 +61,7 @@ public class UserRestController {
         }
     }
     @DeleteMapping("/{id}")
-    public String deleteCourse(@PathVariable("id") Long id) {
+    public String deleteUser(@PathVariable("id") Long id) {
         if (userService.deleteUser(id)){
             return "Course deleted successfully!";
         }
@@ -70,11 +70,11 @@ public class UserRestController {
         }
     }
     @GetMapping("/{id}")
-    public AppUser getCourse(@PathVariable("id") Long id) {
+    public AppUser getUser(@PathVariable("id") Long id) {
         return userService.getUserById(id);
     }
     @GetMapping("/")
-    public List<AppUser> getCourses() {
+    public List<AppUser> getUsers() {
         return userService.getAllUsers();
     }
 }

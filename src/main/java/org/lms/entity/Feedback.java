@@ -1,10 +1,20 @@
 package org.lms.entity;
 
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 
 import java.util.List;
-
+@JsonTypeInfo(
+        use = JsonTypeInfo.Id.NAME,
+        include = JsonTypeInfo.As.PROPERTY,
+        property = "type" // A special field to indicate the subtype
+)
+@JsonSubTypes({
+        @JsonSubTypes.Type(value = AutomatedFeedback.class, name = "automated"),
+        @JsonSubTypes.Type(value = ManualFeedback.class, name = "manual")
+})
 @Entity
 public abstract class Feedback {
     @Id
@@ -14,7 +24,7 @@ public abstract class Feedback {
 
     @NotNull
     private String feedback;
-    @NotNull
+
     @OneToOne(cascade = CascadeType.ALL)
     private Grade grade;
 
