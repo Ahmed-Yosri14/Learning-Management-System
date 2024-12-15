@@ -16,10 +16,9 @@ public class LessonService {
     private CourseService courseService;
 
 
-    public boolean create(Lesson lesson, Long courseId, Long instructorId) {
+    public boolean create(Lesson lesson, Long courseId) {
         try{
             Course course = courseService.getById(courseId);
-            assert course != null && course.getInstructor().getId() == instructorId;
             lesson.setCourse(course);
             lessonRepository.save(lesson);
             return true;
@@ -27,11 +26,10 @@ public class LessonService {
         catch(Exception e){}
         return false;
     }
-    public boolean update(Long id, Lesson lesson,Long courseId, Long instructorId) {
+    public boolean update(Long id, Lesson lesson,Long courseId) {
         try {
             Lesson oldLesson = lessonRepository.findById(id).get();
             Course oldCourse = courseService.getById(courseId);
-            assert oldCourse != null && oldCourse.getInstructor().getId() == instructorId;
             assert oldLesson != null && oldLesson.getCourse().getId().equals(courseId);
             if (lesson.getTitle() != null){
                 oldLesson.setTitle(lesson.getTitle());
@@ -50,24 +48,15 @@ public class LessonService {
         }
         return false;
     }
-    public boolean delete(Long courseId, Long id, Long instructorId) {
+    public boolean delete(Long courseId, Long id) {
         try {
             Course course = courseService.getById(courseId);
-            assert course != null && course.getInstructor().getId() == instructorId;
             Lesson lesson = lessonRepository.findById(id).orElse(null);
             assert lesson != null && lesson.getCourse().getId().equals(courseId);
             lessonRepository.deleteById(id);
             return true;
         } catch (Exception e) {
             return false;
-        }
-    }
-    public Lesson getById(Long id) {
-        try {
-            return lessonRepository.findById(id).orElse(null);
-        } catch (Exception e) {
-            System.out.println("Error retrieving lesson: " + e.getMessage());
-            return null;
         }
     }
     public Lesson getById(Long courseId, Long id) {
@@ -84,7 +73,6 @@ public class LessonService {
             return null;
         }
     }
-
     public List<Lesson> getAll(Long courseId) {
         try {
             return lessonRepository.findByCourseId(courseId);
@@ -111,11 +99,6 @@ public class LessonService {
         }
         return null;
     }
-    private String generateRandomNumber(){
-        Random random = new Random();
-        int number = random.nextInt(1000000);
-        return String.format("%06d", number);
-    }
     public boolean checkLessonOtp(Long id, Long otp){
         try {
             assert otp != null;
@@ -126,5 +109,11 @@ public class LessonService {
             System.out.println(e);
         }
         return false;
+    }
+
+    private String generateRandomNumber(){
+        Random random = new Random();
+        int number = random.nextInt(1000000);
+        return String.format("%06d", number);
     }
 }
