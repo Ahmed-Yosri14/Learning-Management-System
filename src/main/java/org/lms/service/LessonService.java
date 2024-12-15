@@ -59,6 +59,14 @@ public class LessonService {
             return false;
         }
     }
+    public Lesson getById(Long id) {
+        try {
+            return lessonRepository.findById(id).orElse(null);
+        } catch (Exception e) {
+            System.out.println("Error retrieving lesson: " + e.getMessage());
+            return null;
+        }
+    }
     public Lesson getById(Long courseId, Long id) {
         try {
             Lesson lesson = lessonRepository.findById(id).orElse(null);
