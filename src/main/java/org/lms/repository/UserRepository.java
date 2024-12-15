@@ -12,6 +12,4 @@ import java.util.Optional;
 public interface UserRepository extends JpaRepository<AppUser, Long> {
     @Query(value = "SELECT * FROM app_user WHERE role = :role", nativeQuery = true)
     List<AppUser> findAllByRole(@Param("role") String role);
-
-    Optional<AppUser>findByName(String username);
 }

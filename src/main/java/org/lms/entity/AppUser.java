@@ -16,9 +16,7 @@ import lombok.NoArgsConstructor;
         @JsonSubTypes.Type(value = Instructor.class, name = "INSTRUCTOR"),
         @JsonSubTypes.Type(value = Admin.class, name = "ADMIN")
 })
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
+
 public class AppUser {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -31,6 +29,17 @@ public class AppUser {
     private String password;
 
     private String roles;
+
+    public AppUser(Long id, String email, String name, String password, String roles) {
+        this.id = id;
+        this.email = email;
+        this.name = name;
+        this.password = password;
+        this.roles = roles;
+    }
+
+    public AppUser() {
+    }
 
     public String getRoles() {
         return roles;
