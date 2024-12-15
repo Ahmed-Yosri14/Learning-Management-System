@@ -14,16 +14,16 @@ public class CourseService {
     private CourseRepository courseRepository;
 
     @Autowired
-    private UserService userService;
+    private AppUserService appUserService;
 
 
     public boolean create(Course course, Long instructorId) {
         try{
-            if (!(userService.getById(instructorId) instanceof Instructor)) {
+            if (!(appUserService.getById(instructorId) instanceof Instructor)) {
                 System.out.println("Instructor not found");
                 return false;
             }
-            course.setInstructor((Instructor)userService.getById(instructorId));
+            course.setInstructor((Instructor) appUserService.getById(instructorId));
             courseRepository.save(course);
             return true;
         }

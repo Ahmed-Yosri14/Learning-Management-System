@@ -17,7 +17,7 @@ public class EnrollmentService {
     private EnrollmentRepository enrollmentRepository;
 
     @Autowired
-    private UserService userService;
+    private AppUserService userService;
 
     @Autowired
     private CourseService courseService;

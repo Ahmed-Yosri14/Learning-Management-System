@@ -3,7 +3,7 @@ package org.lms.controller;
 
 import org.lms.entity.AppUser;
 import org.lms.entity.UserRole;
-import org.lms.service.UserService;
+import org.lms.service.AppUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,17 +15,17 @@ import java.util.List;
 public class UserRestController {
 
     @Autowired
-    private UserService userService;
+    private AppUserService appUserService;
 
     // all
     @GetMapping("/me")
     public ResponseEntity<AppUser> getProfile(){
-        return ResponseEntity.ok(userService.getById(1L));
+        return ResponseEntity.ok(appUserService.getById(1L));
     }
     // all
     @PatchMapping("/me")
     public ResponseEntity<String> updateProfile(@RequestBody AppUser user){
-        if (userService.update(1L, user)){
+        if (appUserService.update(1L, user)){
             return ResponseEntity.ok("All good!");
         }
         return ResponseEntity.badRequest().body("Something went wrong");
@@ -33,7 +33,7 @@ public class UserRestController {
     // all
     @DeleteMapping("/me")
     public ResponseEntity<String> deleteProfile(){
-        if (userService.delete(1L)){
+        if (appUserService.delete(1L)){
             return ResponseEntity.ok("All good!");
         }
         return ResponseEntity.badRequest().body("Something went wrong");
@@ -42,7 +42,7 @@ public class UserRestController {
     // admin
     @PutMapping("")
     public ResponseEntity<String> create(@RequestBody AppUser user) {
-        if (userService.create(user)){
+        if (appUserService.create(user)){
             return ResponseEntity.ok("All good!");
         }
         return ResponseEntity.badRequest().body("Something went wrong");
@@ -51,7 +51,7 @@ public class UserRestController {
     // admin
     @PatchMapping("{id}/")
     public ResponseEntity<String> update(@PathVariable("id") Long id, @RequestBody AppUser user) {
-        if (userService.update(id, user)){
+        if (appUserService.update(id, user)){
             return ResponseEntity.ok("All good!");
         }
         return ResponseEntity.badRequest().body("Something went wrong");
@@ -59,7 +59,7 @@ public class UserRestController {
     // admin
     @DeleteMapping("{id}/")
     public ResponseEntity<String> delete(@PathVariable("id") Long id) {
-        if (userService.delete(id)){
+        if (appUserService.delete(id)){
             return ResponseEntity.ok("All good!");
         }
         return ResponseEntity.badRequest().body("Something went wrong");
@@ -67,7 +67,7 @@ public class UserRestController {
     // admin
     @GetMapping("{id}/")
     public ResponseEntity<AppUser> getById(@PathVariable("id") Long id) {
-        AppUser user = userService.getById(id);
+        AppUser user = appUserService.getById(id);
         if (user == null) {
             return ResponseEntity.notFound().build();
         }
@@ -76,6 +76,6 @@ public class UserRestController {
     // admin
     @GetMapping("")
     public List<AppUser> getAll(@RequestParam(required = false) UserRole role) {
-        return userService.getAll(role);
+        return appUserService.getAll(role);
     }
 }

@@ -15,7 +15,7 @@ public class AttendanceService {
     private AttendanceRepository attendanceRepository;
 
     @Autowired
-    private UserService userService;
+    private AppUserService appUserService;
 
     @Autowired
     private LessonService lessonService;
@@ -24,7 +24,7 @@ public class AttendanceService {
         try {
             Attendance attendance = new Attendance();
             attendance.setLesson(lessonService.getById(lessonId));
-            attendance.setStudent((Student)userService.getById(studentId));
+            attendance.setStudent((Student) appUserService.getById(studentId));
             attendanceRepository.save(attendance);
             return true;
         } catch (Exception e) {
@@ -35,7 +35,7 @@ public class AttendanceService {
     public boolean delete(Long studentId, Long courseId) {
         try {
             Lesson lesson = lessonService.getById(courseId);
-            Student student = (Student)userService.getById(studentId);
+            Student student = (Student) appUserService.getById(studentId);
             attendanceRepository.deleteById(attendanceRepository.findByStudentAndLesson(student, lesson).getId());
             return true;
         } catch (Exception e) {
@@ -47,7 +47,7 @@ public class AttendanceService {
     public boolean checkStudentId(Long studentId, Long courseId) {
         try {
             Lesson lesson = lessonService.getById(courseId);
-            Student student = (Student)userService.getById(studentId);
+            Student student = (Student) appUserService.getById(studentId);
             return attendanceRepository.findByStudentAndLesson(student, lesson) != null;
         }
         catch(Exception e){
