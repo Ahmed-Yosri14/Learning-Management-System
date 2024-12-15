@@ -38,16 +38,22 @@ public class NotificationService {
         }
         return false;
     }
-    public Notification getById(Long id){
+    public Notification getById(Long userId, Long id){
         Notification notification = notificationRepository.findById(id).orElse(null);
+        if (notification != null && notification.getUser().getId() != userId) {
+            notification = null;
+        }
         if (notification != null) {
             notification.setRead(true);
             notificationRepository.save(notification);
         }
         return notification;
     }
-    public List<Notification> getAllByUserId(Long userId){
-        return notificationRepository.findAllByUserId(userId);
+    public List<Notification> getAllByUserId(Long userId, Boolean OnlyUnread){
+        if (OnlyUnread) {
+            return notificationRepository.findAllByUserId(userId);
+        }
+        return notificationRepository.findUnreadByUserId(userId);
     }
     public List<Notification> getAll(){
         return notificationRepository.findAll();

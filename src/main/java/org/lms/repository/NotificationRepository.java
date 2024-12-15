@@ -9,5 +9,7 @@ import java.util.List;
 public interface NotificationRepository extends JpaRepository<Notification, Long> {
     @Query("SELECT l FROM Notification l WHERE l.user.id = :userId")
     List<Notification> findAllByUserId(Long userId);
-}
 
+    @Query("SELECT l FROM Notification l WHERE l.user.id = :userId AND l.isRead = false")
+    List<Notification> findUnreadByUserId(Long userId);
+}

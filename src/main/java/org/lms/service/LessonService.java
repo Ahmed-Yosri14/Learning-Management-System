@@ -16,26 +16,23 @@ public class LessonService {
     private CourseService courseService;
 
 
-    public boolean create(Lesson lesson, Long courseId) {
+    public boolean create(Lesson lesson, Long courseId, Long instructorId) {
         try{
-            if (courseService.getById(courseId) == null) {
-                System.out.println("Instructor not found");
-                return false;
-            }
-            lesson.setCourse((Course) courseService.getById(courseId));
+            Course course = courseService.getById(courseId);
+            assert course != null && course.getInstructor().getId() == instructorId;
+            lesson.setCourse(course);
             lessonRepository.save(lesson);
             return true;
         }
         catch(Exception e){}
         return false;
     }
-    public boolean update(Long id, Lesson lesson,Long courseId) {
+    public boolean update(Long id, Lesson lesson,Long courseId, Long instructorId) {
         try {
             Lesson oldLesson = lessonRepository.findById(id).get();
             Course oldCourse = courseService.getById(courseId);
-            if(oldCourse.getId()!=oldLesson.getCourse().getId()){
-                return false;
-            }
+            assert oldCourse != null && oldCourse.getInstructor().getId() == instructorId;
+            assert oldLesson != null && oldLesson.getCourse().getId().equals(courseId);
             if (lesson.getTitle() != null){
                 oldLesson.setTitle(lesson.getTitle());
             }
@@ -53,15 +50,12 @@ public class LessonService {
         }
         return false;
     }
-    public boolean delete(Long courseId, Long id) {
+    public boolean delete(Long courseId, Long id, Long instructorId) {
         try {
-            if (courseService.getById(courseId) == null || !lessonRepository.existsById(id)) {
-                return false;
-            }
+            Course course = courseService.getById(courseId);
+            assert course != null && course.getInstructor().getId() == instructorId;
             Lesson lesson = lessonRepository.findById(id).orElse(null);
-            if (lesson == null || !lesson.getCourse().getId().equals(courseId)) {
-                return false;
-            }
+            assert lesson != null && lesson.getCourse().getId().equals(courseId);
             lessonRepository.deleteById(id);
             return true;
         } catch (Exception e) {

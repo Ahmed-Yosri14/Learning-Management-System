@@ -16,6 +16,7 @@ public class CourseRestController {
     private CourseService courseService;
 
 
+    // instructor
     @PutMapping("")
     public ResponseEntity<String> create(@RequestBody Course course, @RequestParam Long instructorId) {
         if (courseService.create(course, instructorId)){
@@ -24,20 +25,24 @@ public class CourseRestController {
         return ResponseEntity.badRequest().body("Something went wrong");
 
     }
+    // instructor
     @PatchMapping("{id}/")
     public ResponseEntity<String> update(@PathVariable("id") Long id, @RequestBody Course course) {
-        if (courseService.update(id, course)){
+        if (courseService.update(id, course, 1L)){
             return ResponseEntity.ok("All good!");
         }
         return ResponseEntity.badRequest().body("Something went wrong");
     }
+    // instructor
     @DeleteMapping("{id}/")
     public ResponseEntity<String> delete(@PathVariable("id") Long id) {
-        if (courseService.delete(id)){
+        if (courseService.delete(id, 1L)){
             return ResponseEntity.ok("All good!");
         }
         return ResponseEntity.badRequest().body("Something went wrong");
     }
+
+    // all
     @GetMapping("{id}/")
     public ResponseEntity<Course> getById(@PathVariable("id") Long id) {
         Course course = courseService.getById(id);
@@ -46,6 +51,7 @@ public class CourseRestController {
         }
         return ResponseEntity.ok(course);
     }
+    // all
     @GetMapping("")
     public List<Course> getAll() {
         return courseService.getAll();

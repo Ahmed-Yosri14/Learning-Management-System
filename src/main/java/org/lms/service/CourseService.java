@@ -30,9 +30,10 @@ public class CourseService {
         catch(Exception e){}
         return false;
     }
-    public boolean update(Long id, Course course) {
+    public boolean update(Long id, Course course, Long instructorId) {
         try {
             Course oldCourse = courseRepository.findById(id).get();
+            assert oldCourse != null && oldCourse.getInstructor().getId() == instructorId;
             if (course.getName() != null){
                 oldCourse.setName(course.getName());
             }
@@ -50,8 +51,10 @@ public class CourseService {
         }
         return false;
     }
-    public boolean delete(Long id) {
+    public boolean delete(Long id, Long instructorId) {
         try {
+            Course oldCourse = courseRepository.findById(id).get();
+            assert oldCourse != null && oldCourse.getInstructor().getId() == instructorId;
             courseRepository.deleteById(id);
             return true;
         }

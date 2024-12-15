@@ -14,28 +14,32 @@ public class LessonRestController {
     private LessonService lessonService;
 
 
+    // instructor
     @PutMapping("/")
     public ResponseEntity<String> create(@PathVariable("courseId") Long courseId,@RequestBody Lesson lesson) {
-        if (lessonService.create(lesson, courseId)){
+        if (lessonService.create(lesson, courseId, 1L)){
             return ResponseEntity.ok("All good!");
         }
         return ResponseEntity.badRequest().body("Something went wrong");
 
     }
+    // instructor
     @DeleteMapping("/{id}")
     public ResponseEntity<String> delete(@PathVariable("courseId") Long courseId, @PathVariable("id") Long id) {
-        if (lessonService.delete(courseId, id)) {
+        if (lessonService.delete(courseId, id, 1L)) {
             return ResponseEntity.ok("Lesson deleted successfully!");
         }
         return ResponseEntity.badRequest().body("Failed to delete lesson.");
     }
+    // instructor
     @PatchMapping("/{id}")
     public ResponseEntity<String> update(@PathVariable("courseId") Long courseId,@PathVariable("id") Long id, @RequestBody Lesson lesson) {
-        if (lessonService.update(id, lesson,courseId)){
+        if (lessonService.update(id, lesson,courseId, 1L)){
             return ResponseEntity.ok("All good!");
         }
         return ResponseEntity.badRequest().body("Something went wrong");
     }
+    // instructor
     @GetMapping("/{id}")
     public ResponseEntity<Lesson> getById(@PathVariable("courseId") Long courseId, @PathVariable("id") Long id) {
         Lesson lesson = lessonService.getById(courseId,id);
@@ -44,8 +48,12 @@ public class LessonRestController {
         }
         return ResponseEntity.ok(lesson);
     }
+    // instructor
     @GetMapping("/")
     public List<Lesson> getAll(@PathVariable("courseId") Long courseId) {
         return lessonService.getAll(courseId);
     }
+
+
+
 }
