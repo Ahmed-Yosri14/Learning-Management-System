@@ -12,9 +12,10 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.List;
 
 @RestController
-@RequestMapping("/courses")
+@RequestMapping("api/course")
 public class CourseMaterialController {
 
     @Autowired
@@ -45,4 +46,16 @@ public class CourseMaterialController {
             return ResponseEntity.status(500).body("File upload failed: " + e.getMessage());
         }
     }
+
+    @GetMapping("/{courseId}/materials")
+    public ResponseEntity<List<CourseMaterial>> getMaterialsByCourse(@PathVariable Long courseId) {
+        List<CourseMaterial> materials = courseMaterialRepository.findByCourseId(courseId);
+
+        if (materials.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        return ResponseEntity.ok(materials);
+    }
+
 }

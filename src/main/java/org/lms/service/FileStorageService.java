@@ -20,6 +20,7 @@ public class FileStorageService {
     private String uploadDir;
 
     public String storeFile(MultipartFile file) throws IOException {
+        Files.createDirectories(Paths.get(uploadDir));
         String fileName = System.currentTimeMillis() + "_" + file.getOriginalFilename();
         Path filePath = Paths.get(uploadDir, fileName);
         Files.copy(file.getInputStream(), filePath);
