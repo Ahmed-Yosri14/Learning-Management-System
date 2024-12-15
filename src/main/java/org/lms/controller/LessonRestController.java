@@ -30,7 +30,7 @@ public class LessonRestController {
 
     }
     // instructor
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/{id}/")
     public ResponseEntity<String> delete(@PathVariable("courseId") Long courseId, @PathVariable("id") Long id) {
         if (!authorizationManager.checkCourseEdit(courseId, 1L)){
             return ResponseEntity.status(403).build();
@@ -41,7 +41,7 @@ public class LessonRestController {
         return ResponseEntity.badRequest().body("Failed to delete lesson.");
     }
     // instructor
-    @PatchMapping("/{id}")
+    @PatchMapping("/{id}/")
     public ResponseEntity<String> update(@PathVariable("courseId") Long courseId,@PathVariable("id") Long id, @RequestBody Lesson lesson) {
         if (!authorizationManager.checkCourseEdit(courseId, 1L)){
             return ResponseEntity.status(403).build();
@@ -52,7 +52,7 @@ public class LessonRestController {
         return ResponseEntity.badRequest().body("Something went wrong");
     }
     // all
-    @GetMapping("/{id}")
+    @GetMapping("/{id}/")
     public ResponseEntity<Lesson> getById(@PathVariable("courseId") Long courseId, @PathVariable("id") Long id) {
         if (!authorizationManager.checkCourseView(courseId, 1L)){
             return ResponseEntity.status(403).build();
