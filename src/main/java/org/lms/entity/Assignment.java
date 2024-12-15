@@ -6,22 +6,36 @@ import jakarta.persistence.*;
 public class Assignment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private  long id;
+    private  Long id;
     private String title;
     private String description;
-
+    private String content;
+    private Long duration;
     @ManyToOne
-    @JoinColumn(name = "course_id")
-    private Course course;
+    @JoinColumn
+    public Course course;
 
-   // submit file collection logic
+    public Long getDuration() {
+        return duration;
+    }
 
+    public void setDuration(Long duration) {
+        this.duration = duration;
+    }
 
-    public long getId() {
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
+    }
+
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
