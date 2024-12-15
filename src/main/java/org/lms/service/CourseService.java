@@ -16,13 +16,8 @@ public class CourseService {
     @Autowired
     private UserService userService;
 
-
     public boolean create(Course course, Long instructorId) {
         try{
-            if (!(userService.getById(instructorId) instanceof Instructor)) {
-                System.out.println("Instructor not found");
-                return false;
-            }
             course.setInstructor((Instructor)userService.getById(instructorId));
             courseRepository.save(course);
             return true;
@@ -30,10 +25,9 @@ public class CourseService {
         catch(Exception e){}
         return false;
     }
-    public boolean update(Long id, Course course, Long instructorId) {
+    public boolean update(Long id, Course course) {
         try {
             Course oldCourse = courseRepository.findById(id).get();
-            assert oldCourse != null && oldCourse.getInstructor().getId() == instructorId;
             if (course.getName() != null){
                 oldCourse.setName(course.getName());
             }
@@ -51,10 +45,9 @@ public class CourseService {
         }
         return false;
     }
-    public boolean delete(Long id, Long instructorId) {
+    public boolean delete(Long id) {
         try {
             Course oldCourse = courseRepository.findById(id).get();
-            assert oldCourse != null && oldCourse.getInstructor().getId() == instructorId;
             courseRepository.deleteById(id);
             return true;
         }

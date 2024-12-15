@@ -45,7 +45,6 @@ public class EnrollmentService {
         }
         return false;
     }
-
     public boolean checkStudentId(Long studentId, Long courseId) {
         try {
             Course course = courseService.getById(courseId);
@@ -57,14 +56,13 @@ public class EnrollmentService {
         }
         return false;
     }
-
     public List<Student> getByCourseId(Long courseId){
         Course course = courseService.getById(courseId);
         if (course == null) {
             return null;
         }
         List<Student> studentList = new ArrayList<>();
-        for (Enrollment enrollment : enrollmentRepository.findAll()) {
+        for (Enrollment enrollment : enrollmentRepository.findAllByCourse(course)) {
             studentList.add(enrollment.getStudent());
         }
         return studentList;
