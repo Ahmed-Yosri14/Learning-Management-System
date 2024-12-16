@@ -27,9 +27,9 @@ public class CourseMaterialRestController {
     private AuthorizationManager authorizationManager;
 
     @PostMapping("/{courseId}/materials")
-    public ResponseEntity<String> addMaterial(@PathVariable Long courseId, @RequestParam("file") MultipartFile file, @RequestParam("instructorId") long instructorId ){
+    public ResponseEntity<String> addMaterial(@PathVariable Long courseId, @RequestParam("file") MultipartFile file){
         try {
-            if(!authorizationManager.checkCourseEdit(courseId, instructorId)){
+            if(!authorizationManager.checkCourseEdit(courseId)){
                 throw(new RuntimeException("User does not have permission to add material to this course"));
             }
             Course course = courseRepository.findById(courseId)
@@ -52,9 +52,9 @@ public class CourseMaterialRestController {
     }
 
     @DeleteMapping("/{courseId}/{materialsId}")
-    public ResponseEntity<String> deleteMaterial(@PathVariable Long courseId, @PathVariable Long materialsId, @RequestParam("instructorId") long instructorId){
+    public ResponseEntity<String> deleteMaterial(@PathVariable Long courseId, @PathVariable Long materialsId){
         try {
-            if (!authorizationManager.checkCourseEdit(courseId, instructorId)) {
+            if (!authorizationManager.checkCourseEdit(courseId)) {
                 throw new RuntimeException("User does not have permission to delete material from this course");
             }
 
