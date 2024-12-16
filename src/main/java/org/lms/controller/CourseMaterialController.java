@@ -1,4 +1,5 @@
 package org.lms.controller;
+import org.lms.AuthorizationManager;
 import org.lms.entity.CourseMaterial;
 import org.lms.repository.CourseMaterialRepository;
 import org.lms.repository.CourseRepository;
@@ -24,10 +25,15 @@ public class CourseMaterialController {
     private CourseRepository courseRepository;
     @Autowired
     private FileStorageService fileStorageService;
+    @Autowired
+    private AuthorizationManager authorizationManager;
 
     @PostMapping("/{courseId}/materials")
-    public ResponseEntity<String> addMaterial(@PathVariable Long courseId, @RequestParam("file") MultipartFile file) {
+    public ResponseEntity<String> addMaterial(@PathVariable Long courseId, @RequestParam("file") MultipartFile file, @RequestParam("instructorId") long instructorId ){
         try {
+            if(!authorizationManager.checkCourseEdit(courseId, instructorId)){
+                throw(new RuntimeException("User does not have permission to add material to this course"));
+            }
             Course course = courseRepository.findById(courseId)
                     .orElseThrow(() -> new RuntimeException("Course not found"));
 
@@ -47,6 +53,31 @@ public class CourseMaterialController {
         }
     }
 
+    @DeleteMapping("/{courseId}/{materialsId}")
+    public ResponseEntity<String> deleteMaterial(@PathVariable Long courseId, @PathVariable Long materialsId, @RequestParam("instructorId") long instructorId){
+        try {
+            if (!authorizationManager.checkCourseEdit(courseId, instructorId)) {
+                throw new RuntimeException("User does not have permission to delete material from this course");
+            }
+
+            Course course = courseRepository.findById(courseId)
+                    .orElseThrow(() -> new RuntimeException("Course not found"));
+
+            CourseMaterial material = courseMaterialRepository.findById(materialsId)
+                    .orElseThrow(() -> new RuntimeException("Material not found"));
+
+            if (!material.getCourse().getId().equals(courseId)) {
+                throw new RuntimeException("Material does not belong to the specified course");
+            }
+
+            courseMaterialRepository.delete(material);
+
+            return ResponseEntity.ok("Material deleted successfully");
+
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(400).body(e.getMessage());
+        }
+    }
     @GetMapping("/{courseId}/materials")
     public ResponseEntity<List<CourseMaterial>> getMaterialsByCourse(@PathVariable Long courseId) {
         List<CourseMaterial> materials = courseMaterialRepository.findByCourseId(courseId);
