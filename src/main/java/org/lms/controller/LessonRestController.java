@@ -24,6 +24,7 @@ public class LessonRestController {
             return ResponseEntity.status(403).build();
         }
         if (lessonService.create(lesson, courseId)){
+
             return ResponseEntity.ok("All good!");
         }
         return ResponseEntity.badRequest().body("Something went wrong");
