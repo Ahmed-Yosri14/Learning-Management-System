@@ -1,5 +1,6 @@
 package org.lms.controller;
 
+import org.lms.AuthorizationManager;
 import org.lms.entity.Notification;
 import org.lms.service.NotificationService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,14 +18,17 @@ public class NotificationRestController {
     @Autowired
     private NotificationService notificationService;
 
+    @Autowired
+    private AuthorizationManager authorizationManager;
+
     // all
     @GetMapping("")
     List<Notification> getAll(@RequestParam(required = false, defaultValue = "false") Boolean onlyUnread){
-        return notificationService.getAllByUserId(1L, onlyUnread);
+        return notificationService.getAllByUserId(authorizationManager.getCurrentUserId(), onlyUnread);
     }
     // all
     @GetMapping("{id}/")
     Notification getById(@RequestParam Long id){
-        return notificationService.getById(1L, id);
+        return notificationService.getById(authorizationManager.getCurrentUserId(), id);
     }
 }

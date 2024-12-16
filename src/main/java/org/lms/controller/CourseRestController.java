@@ -5,6 +5,7 @@ import org.lms.entity.Course;
 import org.lms.service.CourseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -20,18 +21,20 @@ public class CourseRestController {
     private AuthorizationManager authorizationManager;
 
     // instructor
+    @PreAuthorize("hasRole('INSTRUCTOR')")
     @PutMapping("")
     public ResponseEntity<String> create(@RequestBody Course course) {
-        if (courseService.create(course, 1L)){
+        if (courseService.create(course, authorizationManager.getCurrentUserId())){
             return ResponseEntity.ok("All good!");
         }
         return ResponseEntity.badRequest().body("Something went wrong");
 
     }
     // instructor
+    @PreAuthorize("hasRole('INSTRUCTOR')")
     @PatchMapping("{id}/")
     public ResponseEntity<String> update(@PathVariable("id") Long id, @RequestBody Course course) {
-        if (authorizationManager.checkCourseEdit(id, 1L)){
+        if (authorizationManager.checkCourseEdit(id)){
             return ResponseEntity.status(403).build();
         }
         if (courseService.update(id, course)){
@@ -40,9 +43,10 @@ public class CourseRestController {
         return ResponseEntity.badRequest().body("Something went wrong");
     }
     // instructor
+    @PreAuthorize("hasRole('INSTRUCTOR')")
     @DeleteMapping("{id}/")
     public ResponseEntity<String> delete(@PathVariable("id") Long id) {
-        if (authorizationManager.checkCourseEdit(id, 1L)){
+        if (authorizationManager.checkCourseEdit(id)){
             return ResponseEntity.status(403).build();
         }
         if (courseService.delete(id)){
