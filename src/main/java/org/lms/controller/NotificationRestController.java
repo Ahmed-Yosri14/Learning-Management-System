@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequestMapping("api/notification/")
+@RequestMapping("api/notification")
 public class NotificationRestController {
 
     @Autowired
@@ -27,7 +27,7 @@ public class NotificationRestController {
         return notificationService.getAllByUserId(authorizationManager.getCurrentUserId(), onlyUnread);
     }
     // all
-    @GetMapping("{id}/")
+    @GetMapping("/{id}")
     Notification getById(@RequestParam Long id){
         return notificationService.getById(authorizationManager.getCurrentUserId(), id);
     }

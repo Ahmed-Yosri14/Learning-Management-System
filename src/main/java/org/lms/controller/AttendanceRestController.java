@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/course/{courseId}/lesson/{lessonId}/attendance/")
+@RequestMapping("/api/course/{courseId}/lesson/{lessonId}/attendance")
 public class AttendanceRestController {
 
     @Autowired
@@ -36,7 +36,7 @@ public class AttendanceRestController {
 
     // instructor & admin
     @PreAuthorize("hasRole('INSTRUCTOR') or hasRole('ADMIN')")
-    @GetMapping("{studentId}/")
+    @GetMapping("/{studentId}")
     public ResponseEntity<String> getByStudentId(@PathVariable("courseId") Long courseId, @PathVariable("lessonId") Long lessonId, @PathVariable("studentId") Long studentId) {
         if (!authorizationManager.checkCourseViewConfidential(courseId)){
             return ResponseEntity.status(403).build();

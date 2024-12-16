@@ -14,7 +14,7 @@ public class AssignmentRestController {
     @Autowired
     private AssignmentService assignmentService;
 
-    @PutMapping("/")
+    @PutMapping("")
     public ResponseEntity<String> createAssignment(@PathVariable("courseid") Long courseId,@RequestBody Assignment assignment) {
         if (assignmentService.create(courseId,assignment)){
             return ResponseEntity.ok("All good!");
@@ -22,14 +22,14 @@ public class AssignmentRestController {
         return ResponseEntity.badRequest().body("Something went wrong");
     }
 
-    @PatchMapping("/{id}/")
+    @PatchMapping("/{id}")
     public ResponseEntity<String> updateAssignment(@PathVariable("courseid") Long courseId,@PathVariable("id") Long id, @RequestBody Assignment assignment) {
         if (assignmentService.update(courseId, id,assignment)){
             return ResponseEntity.ok("All good!");
         }
         return ResponseEntity.badRequest().body("Something went wrong");
     }
-    @GetMapping("/{id}/")
+    @GetMapping("/{id}")
     public ResponseEntity<Assignment> getById(@PathVariable("courseid") Long courseId, @PathVariable("id") Long id) {
         Assignment assignment = assignmentService.getById(courseId,id);
         if (assignment == null) {
@@ -37,11 +37,11 @@ public class AssignmentRestController {
         }
         return ResponseEntity.ok(assignment);
     }
-    @GetMapping("/")
+    @GetMapping("")
     public List<Assignment> getAll(@PathVariable("courseid") Long courseId) {
         return assignmentService.getAll(courseId);
     }
-    @DeleteMapping("/{id}/")
+    @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteAssignment(@PathVariable("courseid") Long courseId,@PathVariable("id") Long id) {
         if(assignmentService.delete(courseId,id)){
             return ResponseEntity.ok("All good!");

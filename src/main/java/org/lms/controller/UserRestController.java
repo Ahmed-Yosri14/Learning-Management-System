@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("api/user/")
+@RequestMapping("api/user")
 public class UserRestController {
 
     @Autowired
@@ -57,7 +57,7 @@ public class UserRestController {
     }
     // admin
     @PreAuthorize("hasRole('ADMIN')")
-    @PatchMapping("{id}/")
+    @PatchMapping("/{id}")
     public ResponseEntity<String> update(@PathVariable("id") Long id, @RequestBody AppUser user) {
         if (appUserService.update(id, user)){
             return ResponseEntity.ok("All good!");
@@ -66,7 +66,7 @@ public class UserRestController {
     }
     // admin
     @PreAuthorize("hasRole('ADMIN')")
-    @DeleteMapping("{id}/")
+    @DeleteMapping("/{id}")
     public ResponseEntity<String> delete(@PathVariable("id") Long id) {
         if (appUserService.delete(id)){
             return ResponseEntity.ok("All good!");
@@ -75,7 +75,7 @@ public class UserRestController {
     }
     // admin
     @PreAuthorize("hasRole('ADMIN')")
-    @GetMapping("{id}/")
+    @GetMapping("/{id}")
     public ResponseEntity<AppUser> getById(@PathVariable("id") Long id) {
         AppUser user = appUserService.getById(id);
         if (user == null) {

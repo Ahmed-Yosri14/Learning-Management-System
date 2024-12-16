@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("api/course/{courseId}/enrollment/")
+@RequestMapping("api/course/{courseId}/enrollment")
 public class EnrollmentRestController {
 
     @Autowired
@@ -41,7 +41,7 @@ public class EnrollmentRestController {
     }
     // instructor
     @PreAuthorize("hasRole('INSTRUCTOR')")
-    @DeleteMapping("{studentId}/")
+    @DeleteMapping("/{studentId}")
     public ResponseEntity<String> delete(@PathVariable("courseId") Long courseId, @PathVariable("studentId") Long studentId) {
         if (!authorizationManager.checkCourseEdit(courseId)){
             return ResponseEntity.status(403).build();
@@ -53,7 +53,7 @@ public class EnrollmentRestController {
     }
     // instructor & admin
     @PreAuthorize("hasRole('INSTRUCTOR') or hasRole('ADMIN')")
-    @GetMapping("{studentId}/")
+    @GetMapping("/{studentId}")
     public ResponseEntity<String> getByStudentId(@PathVariable("courseId") Long courseId, @PathVariable("studentId") Long studentId) {
         if (!authorizationManager.checkCourseViewConfidential(courseId)){
             return ResponseEntity.status(403).build();

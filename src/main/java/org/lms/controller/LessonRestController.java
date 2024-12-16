@@ -20,7 +20,7 @@ public class LessonRestController {
 
     // instructor
     @PreAuthorize("hasRole('INSTRUCTOR')")
-    @PutMapping("/")
+    @PutMapping("")
     public ResponseEntity<String> create(@PathVariable("courseId") Long courseId,@RequestBody Lesson lesson) {
         if (!authorizationManager.checkCourseEdit(courseId)){
             return ResponseEntity.status(403).build();
@@ -34,7 +34,7 @@ public class LessonRestController {
     }
     // instructor
     @PreAuthorize("hasRole('INSTRUCTOR')")
-    @DeleteMapping("/{id}/")
+    @DeleteMapping("/{id}")
     public ResponseEntity<String> delete(@PathVariable("courseId") Long courseId, @PathVariable("id") Long id) {
         if (!authorizationManager.checkCourseEdit(courseId)){
             return ResponseEntity.status(403).build();
@@ -46,7 +46,7 @@ public class LessonRestController {
     }
     // instructor
     @PreAuthorize("hasRole('INSTRUCTOR')")
-    @PatchMapping("/{id}/")
+    @PatchMapping("/{id}")
     public ResponseEntity<String> update(@PathVariable("courseId") Long courseId,@PathVariable("id") Long id, @RequestBody Lesson lesson) {
         if (!authorizationManager.checkCourseEdit(courseId)){
             return ResponseEntity.status(403).build();
@@ -57,7 +57,7 @@ public class LessonRestController {
         return ResponseEntity.badRequest().body("Something went wrong");
     }
     // all
-    @GetMapping("/{id}/")
+    @GetMapping("/{id}")
     public ResponseEntity<Lesson> getById(@PathVariable("courseId") Long courseId, @PathVariable("id") Long id) {
         if (!authorizationManager.checkCourseView(courseId)){
             return ResponseEntity.status(403).build();
@@ -69,7 +69,7 @@ public class LessonRestController {
         return ResponseEntity.ok(lesson);
     }
     // all
-    @GetMapping("/")
+    @GetMapping("")
     public ResponseEntity<List<Lesson>> getAll(@PathVariable("courseId") Long courseId) {
         if (!authorizationManager.checkCourseView(courseId)){
             return ResponseEntity.status(403).build();

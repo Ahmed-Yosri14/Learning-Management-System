@@ -12,7 +12,7 @@ import java.util.List;
 
 
 @RestController
-@RequestMapping("api/course/")
+@RequestMapping("api/course")
 public class CourseRestController {
     @Autowired
     private CourseService courseService;
@@ -32,7 +32,7 @@ public class CourseRestController {
     }
     // instructor
     @PreAuthorize("hasRole('INSTRUCTOR')")
-    @PatchMapping("{id}/")
+    @PatchMapping("/{id}")
     public ResponseEntity<String> update(@PathVariable("id") Long id, @RequestBody Course course) {
         if (authorizationManager.checkCourseEdit(id)){
             return ResponseEntity.status(403).build();
@@ -44,7 +44,7 @@ public class CourseRestController {
     }
     // instructor
     @PreAuthorize("hasRole('INSTRUCTOR')")
-    @DeleteMapping("{id}/")
+    @DeleteMapping("/{id}")
     public ResponseEntity<String> delete(@PathVariable("id") Long id) {
         if (authorizationManager.checkCourseEdit(id)){
             return ResponseEntity.status(403).build();
@@ -56,7 +56,7 @@ public class CourseRestController {
     }
 
     // all
-    @GetMapping("{id}/")
+    @GetMapping("/{id}")
     public ResponseEntity<Course> getById(@PathVariable("id") Long id) {
         Course course = courseService.getById(id);
         if (course == null) {
