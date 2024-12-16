@@ -34,6 +34,7 @@ public class AuthorizationManager {
     public boolean checkCourseView(Long courseId){
         Course course = courseService.getById(courseId);
         AppUser user = getCurrentUser();
+        Long userId = user.getId();
         if (!(user instanceof Student)){
             return checkCourseViewConfidential(courseId);
         }

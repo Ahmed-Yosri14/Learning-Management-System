@@ -31,7 +31,7 @@ public class SubmissionService {
 
     public boolean submit(Long courseId, Long assignmentId, Long studentId, MultipartFile file) {
         try {
-            boolean isAuthorized = authorizationManager.checkCourseView(courseId, studentId);
+            boolean isAuthorized = authorizationManager.checkCourseView(courseId);
             if (!isAuthorized)
             {
                 throw new IllegalAccessException("Student is not enrolled in the course.");
