@@ -13,16 +13,25 @@ public class NotificationService {
 
     @Autowired
     NotificationRepository notificationRepository;
+
+    @Autowired
+    UserService userService;
+
+    @Autowired
+    EmailService emailService;
+
     boolean existsById(Long id){
         return notificationRepository.existsById(id);
     }
-    public boolean create(AppUser user, String title, String content){
+    public boolean create(Long userId, String title, String content){
         try {
+            AppUser user = userService.getById(userId);
             Notification notification = new Notification();
             notification.setUser(user);
             notification.setTitle(title);
             notification.setContent(content);
             notificationRepository.save(notification);
+            emailService.sendEmail(user.getEmail(), title, content);
             return true;
         }
         catch(Exception e){
