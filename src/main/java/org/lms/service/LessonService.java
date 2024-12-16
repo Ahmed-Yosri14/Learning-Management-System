@@ -15,9 +15,14 @@ public class LessonService {
     @Autowired
     private CourseService courseService;
 
-
+    boolean existsById(Long id, Long courseId) {
+        Course course = courseService.getById(courseId);
+        Lesson lesson = lessonRepository.findById(id).orElse(null);
+        return course != null && lesson != null && lesson.getCourse().getId().equals(courseId);
+    }
     public boolean create(Lesson lesson, Long courseId) {
         try{
+            assert courseService.existsById(courseId);
             Course course = courseService.getById(courseId);
             lesson.setCourse(course);
             lesson = lessonRepository.save(lesson);
@@ -27,11 +32,10 @@ public class LessonService {
         catch(Exception e){}
         return false;
     }
-    public boolean update(Long id, Lesson lesson,Long courseId) {
+    public boolean update(Long id, Lesson lesson, Long courseId) {
         try {
+            assert existsById(id, courseId);
             Lesson oldLesson = lessonRepository.findById(id).get();
-            Course oldCourse = courseService.getById(courseId);
-            assert oldLesson != null && oldLesson.getCourse().getId().equals(courseId);
             if (lesson.getTitle() != null){
                 oldLesson.setTitle(lesson.getTitle());
             }
@@ -51,9 +55,7 @@ public class LessonService {
     }
     public boolean delete(Long courseId, Long id) {
         try {
-            Course course = courseService.getById(courseId);
-            Lesson lesson = lessonRepository.findById(id).orElse(null);
-            assert lesson != null && lesson.getCourse().getId().equals(courseId);
+            assert existsById(id, courseId);
             lessonRepository.deleteById(id);
             return true;
         } catch (Exception e) {
@@ -71,12 +73,8 @@ public class LessonService {
     public Lesson getById(Long courseId, Long id) {
         try {
             Lesson lesson = lessonRepository.findById(id).orElse(null);
-            if (lesson != null && lesson.getCourse() != null && lesson.getCourse().getId().equals(courseId)) {
-                return lesson;
-            } else {
-                System.out.println("Lesson not found or does not belong to the specified course.");
-                return null;
-            }
+            assert existsById(id, courseId);
+            return lesson;
         } catch (Exception e) {
             System.out.println("Error retrieving lesson: " + e.getMessage());
             return null;
@@ -92,9 +90,8 @@ public class LessonService {
     }
     public String generateOtp(Long courseId, Long id){
         try {
+            assert existsById(id, courseId);
             Lesson lesson = lessonRepository.findById(id).orElse(null);
-            assert lesson != null && lesson.getCourse().getId().equals(courseId);
-            Random random = new Random();
             String otp = generateRandomNumber();
             while (lessonRepository.existsByOtp(otp)) {
                 otp = generateRandomNumber();

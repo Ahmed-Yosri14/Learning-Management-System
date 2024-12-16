@@ -13,7 +13,9 @@ public class NotificationService {
 
     @Autowired
     NotificationRepository notificationRepository;
-
+    boolean existsById(Long id){
+        return notificationRepository.existsById(id);
+    }
     public boolean create(AppUser user, String title, String content){
         try {
             Notification notification = new Notification();
@@ -30,6 +32,7 @@ public class NotificationService {
     }
     public boolean delete(Long id){
         try {
+            assert existsById(id);
             notificationRepository.deleteById(id);
             return true;
         }

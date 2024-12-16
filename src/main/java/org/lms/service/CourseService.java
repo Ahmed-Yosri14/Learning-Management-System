@@ -15,7 +15,9 @@ public class CourseService {
 
     @Autowired
     private UserService userService;
-
+    public boolean existsById(Long courseId){
+        return courseRepository.existsById(courseId);
+    }
     public boolean create(Course course, Long instructorId) {
         try{
             course.setInstructor((Instructor)userService.getById(instructorId));
@@ -27,6 +29,7 @@ public class CourseService {
     }
     public boolean update(Long id, Course course) {
         try {
+            assert existsById(id);
             Course oldCourse = courseRepository.findById(id).get();
             if (course.getName() != null){
                 oldCourse.setName(course.getName());
@@ -47,6 +50,7 @@ public class CourseService {
     }
     public boolean delete(Long id) {
         try {
+            assert existsById(id);
             Course oldCourse = courseRepository.findById(id).get();
             courseRepository.deleteById(id);
             return true;
