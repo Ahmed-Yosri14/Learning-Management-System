@@ -6,41 +6,33 @@ import jakarta.persistence.*;
 public class Submission {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
 
+    @ManyToOne
+    @JoinColumn(name = "assignment_id", nullable = false)
+    private Assignment assignment;
+
+    @Column(nullable = false)
+    private Long studentId;
+
+    @Column(nullable = false)
     private String filePath;
 
-    @ManyToOne
-    @JoinColumn(name = "student_id")
-    private AppUser student; // Link to  student
-
-    @ManyToOne
-    @JoinColumn(name = "assignment_id")
-    private Assignment assignment; // Link to assignment
-
-    // Getters and Setters
-    public long getId() {
-        return id;
+    public Submission() {
     }
 
-    public void setId(long id) {
-        this.id = id;
-    }
-
-    public String getFilePath() {
-        return filePath;
-    }
-
-    public void setFilePath(String filePath) {
+    public Submission(Assignment assignment, Long studentId, String filePath) {
+        this.assignment = assignment;
+        this.studentId = studentId;
         this.filePath = filePath;
     }
 
-    public AppUser getStudent() {
-        return student;
+    public Long getId() {
+        return id;
     }
 
-    public void setStudent(AppUser student) {
-        this.student = student;
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public Assignment getAssignment() {
@@ -49,5 +41,21 @@ public class Submission {
 
     public void setAssignment(Assignment assignment) {
         this.assignment = assignment;
+    }
+
+    public Long getStudentId() {
+        return studentId;
+    }
+
+    public void setStudentId(Long studentId) {
+        this.studentId = studentId;
+    }
+
+    public String getFilePath() {
+        return filePath;
+    }
+
+    public void setFilePath(String filePath) {
+        this.filePath = filePath;
     }
 }

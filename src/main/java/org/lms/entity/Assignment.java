@@ -2,8 +2,6 @@ package org.lms.entity;
 
 import jakarta.persistence.*;
 
-import java.util.List;
-
 @Entity
 public class Assignment {
     @Id
@@ -17,8 +15,6 @@ public class Assignment {
     @JoinColumn
     public Course course;
 
-    @OneToMany(mappedBy = "assignment", cascade = CascadeType.ALL)
-    private List<Submission> submissions;
     public Long getDuration() {
         return duration;
     }
@@ -65,13 +61,5 @@ public class Assignment {
 
     public void setCourse(Course course) {
         this.course = course;
-    }
-
-    public List<Submission> getSubmissions() {
-        return submissions;
-    }
-
-    public void setSubmissions(List<Submission> submissions) {
-        this.submissions = submissions;
     }
 }

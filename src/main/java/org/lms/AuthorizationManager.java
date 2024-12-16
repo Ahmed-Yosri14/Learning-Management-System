@@ -39,7 +39,10 @@ public class AuthorizationManager {
 
     public boolean checkCourseEdit(Long courseId, Long userId){
         Course course = courseService.getById(courseId);
-        AppUser user = userService.getById(userId);
         return course.getInstructor().getId() == userId;
+    }
+    public boolean checkCourseStudent(Long courseId, Long userId){
+        AppUser user = userService.getById(userId);
+        return user instanceof Student && enrollmentService.checkStudentId(userId, courseId);
     }
 }

@@ -19,11 +19,21 @@ public class AttendanceService {
 
     @Autowired
     private LessonService lessonService;
+    @Autowired
+    private CourseService courseService;
 
-    public boolean create(Long studentId, Long lessonId) {
+    public boolean tryRecord(Long studentId, Long lessonId, Long courseId, String otp) {
+        Lesson lesson = lessonService.getById(lessonId);
+        return lesson.getOtp().equals(otp) && create(studentId, lessonId, courseId);
+    }
+
+    public boolean create(Long studentId, Long lessonId, Long courseId) {
         try {
+            Course course = courseService.getById(courseId);
+            Lesson lesson = lessonService.getById(lessonId);
+            assert course != null && course.getId() == lesson.getCourse().getId();
             Attendance attendance = new Attendance();
-            attendance.setLesson(lessonService.getById(lessonId));
+            attendance.setLesson(lesson);
             attendance.setStudent((Student) appUserService.getById(studentId));
             attendanceRepository.save(attendance);
             return true;
@@ -44,9 +54,10 @@ public class AttendanceService {
         return false;
     }
 
-    public boolean checkStudentId(Long studentId, Long courseId) {
+    public boolean checkStudentId(Long studentId, Long lessonId, Long courseId) {
         try {
-            Lesson lesson = lessonService.getById(courseId);
+            Lesson lesson = lessonService.getById(lessonId);
+            assert lesson != null && lesson.getCourse().getId() == courseId;
             Student student = (Student) appUserService.getById(studentId);
             return attendanceRepository.findByStudentAndLesson(student, lesson) != null;
         }
@@ -56,11 +67,9 @@ public class AttendanceService {
         return false;
     }
 
-    public List<Student> getByLessonId(Long lessonId){
+    public List<Student> getByLessonId(Long lessonId, Long courseId){
         Lesson lesson = lessonService.getById(lessonId);
-        if (lesson == null) {
-            return null;
-        }
+        assert lesson != null && lesson.getCourse().getId() == courseId;
         List<Student> studentList = new ArrayList<>();
         for (Attendance attendance : attendanceRepository.findAll()) {
             studentList.add(attendance.getStudent());

@@ -20,7 +20,8 @@ public class LessonService {
         try{
             Course course = courseService.getById(courseId);
             lesson.setCourse(course);
-            lessonRepository.save(lesson);
+            lesson = lessonRepository.save(lesson);
+            generateOtp(courseId, lesson.getId());
             return true;
         }
         catch(Exception e){}
@@ -107,18 +108,6 @@ public class LessonService {
         }
         return null;
     }
-    public boolean checkLessonOtp(Long id, Long otp){
-        try {
-            assert otp != null;
-            Lesson lesson = lessonRepository.findById(id).orElse(null);
-            return lesson.getOtp().equals(otp);
-        }
-        catch(Exception e){
-            System.out.println(e);
-        }
-        return false;
-    }
-
     private String generateRandomNumber(){
         Random random = new Random();
         int number = random.nextInt(1000000);

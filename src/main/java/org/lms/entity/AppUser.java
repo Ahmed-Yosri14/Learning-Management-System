@@ -43,9 +43,6 @@ public class AppUser implements UserDetails {
     private UserRole roles;
 
 
-
-
-
     public UserRole getRoles() {
         return roles;
     }
