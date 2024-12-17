@@ -11,15 +11,4 @@ import lombok.Setter;
 @DiscriminatorValue("TRUE_FALSE")
 public class TrueFalseAnswer extends AnswerFormat {
 
-    private String correctAnswer; // Override to be Boolean
-
-    @Override
-    public String getCorrectAnswer() {
-        return correctAnswer;
-    }
-
-    @Override
-    public void setCorrectAnswer(String correctAnswer) {
-        this.correctAnswer = correctAnswer;
-    }
 }

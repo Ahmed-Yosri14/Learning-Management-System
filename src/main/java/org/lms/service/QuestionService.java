@@ -6,7 +6,6 @@ import org.lms.entity.Question;
 import org.lms.entity.Quiz;
 import org.lms.repository.AnswerFormatRepository;
 import org.lms.repository.QuestionRepository;
-import org.lms.repository.QuizRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -23,6 +22,7 @@ public class QuestionService {
     private QuizService quizService;
     @Autowired
     private AnswerFormatRepository answerFormatRepository;
+
     public boolean create(Long courseId, Long quizId, Question question) {
         try {
             if (courseService.getById(courseId) == null) {

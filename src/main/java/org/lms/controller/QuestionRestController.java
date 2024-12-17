@@ -19,16 +19,13 @@ public class QuestionRestController {
     private QuestionService questionService;
     @Autowired
     private AuthorizationManager authorizationManager;
-    @PostMapping("/")
-    public ResponseEntity<String> create(@PathVariable("courseid") Long courseId, @PathVariable("quizid") Long quizId, @Valid @RequestBody Question question, BindingResult result) {
-        if(result.hasErrors()) {
-            StringBuilder errorMessages = new StringBuilder();
-            result.getAllErrors().forEach(error -> errorMessages.append(error.getDefaultMessage()).append("\n"));
-            return ResponseEntity.badRequest().body("Validation failed: \n" + errorMessages.toString());
-        }
+
+    @PutMapping("")
+    public ResponseEntity<String> create(@PathVariable("courseid") Long courseId, @PathVariable("quizid") Long quizId, @RequestBody Question question) {
+        System.out.println("a7a");
         if(!(authorizationManager.checkCourseEdit(courseId)))
         {
-            return ResponseEntity.status(403).body("You are not allowed to edit this question");
+            return ResponseEntity.status(403).body("You are not allowed to edit this quiz");
         }
         if (questionService.create(courseId, quizId, question)) {
             return ResponseEntity.ok("Question created successfully!");
@@ -36,7 +33,7 @@ public class QuestionRestController {
         return ResponseEntity.badRequest().body("Something went wrong while creating the question.");
     }
 
-    @GetMapping("/{id}/")
+    @GetMapping("/{id}")
     public ResponseEntity<Question> getById(@PathVariable("courseid") Long courseId, @PathVariable("quizid") Long quizId,@PathVariable("id") Long id) {
         if (!authorizationManager.checkCourseView(courseId)) {
             return ResponseEntity.status(403).body(null);
@@ -48,7 +45,7 @@ public class QuestionRestController {
         return ResponseEntity.ok(question);
     }
 
-    @GetMapping("/")
+    @GetMapping("")
     public ResponseEntity<List<Question>> getAll(@PathVariable("courseid") Long courseId,@PathVariable("quizid") Long quizId) {
         if (!authorizationManager.checkCourseView(courseId)) {
             return ResponseEntity.status(403).body(null);
@@ -60,7 +57,7 @@ public class QuestionRestController {
         return ResponseEntity.ok().body(questions);
     }
 
-    @PutMapping("/{id}/")
+    @PutMapping("/{id}")
     public ResponseEntity<String> update(@PathVariable("courseid") Long courseId, @PathVariable("quizid") Long quizId, @PathVariable("id") Long id, @Valid @RequestBody Question question, BindingResult result) {
         if(result.hasErrors()) {
             StringBuilder errorMessages = new StringBuilder();
@@ -77,7 +74,7 @@ public class QuestionRestController {
         return ResponseEntity.badRequest().body("Something went wrong while updating the question.");
     }
 
-    @DeleteMapping("/{id}/")
+    @DeleteMapping("/{id}")
     public ResponseEntity<String> delete(@PathVariable("courseid") Long courseId, @PathVariable("quizid") Long quizId, @PathVariable("id") Long id) {
         if(!(authorizationManager.checkCourseEdit(courseId)))
         {

@@ -16,7 +16,7 @@ public class QuizRestController {
     private QuizService quizService;
     @Autowired
     private AuthorizationManager authorizationManager;
-    @PutMapping("/")
+    @PutMapping("")
     public ResponseEntity<String> createQuiz(@PathVariable("courseid") Long courseId, @RequestBody Quiz quiz) {
         if (!authorizationManager.checkCourseEdit(courseId)) {
             return ResponseEntity.status(403).body("You do not have permission to edit this course.");
@@ -27,7 +27,7 @@ public class QuizRestController {
         return ResponseEntity.badRequest().body("Something went wrong");
     }
 
-    @PatchMapping("/{id}/")
+    @PatchMapping("/{id}")
     public ResponseEntity<String> updateQuiz(@PathVariable("courseid") Long courseId, @PathVariable("id") Long id, @RequestBody Quiz quiz, @PathVariable String courseid) {
         if (!authorizationManager.checkCourseEdit(courseId)) {
             return ResponseEntity.status(403).body("You do not have permission to edit this course.");
@@ -37,7 +37,7 @@ public class QuizRestController {
         }
         return ResponseEntity.badRequest().body("Something went wrong");
     }
-    @GetMapping("/{id}/")
+    @GetMapping("/{id}")
     public ResponseEntity<Quiz> getById(@PathVariable("courseid") Long courseId, @PathVariable("id") Long id) {
         if (!authorizationManager.checkCourseView(courseId)) {
             return ResponseEntity.status(403).body(null);
@@ -48,7 +48,7 @@ public class QuizRestController {
         }
         return ResponseEntity.ok(quiz);
     }
-    @GetMapping("/")
+    @GetMapping("")
     public ResponseEntity<List<Quiz>> getAll(@PathVariable("courseid") Long courseId) {
         if (!authorizationManager.checkCourseView(courseId)) {
             return ResponseEntity.status(403).body(null);
@@ -59,7 +59,7 @@ public class QuizRestController {
         }
         return ResponseEntity.ok().body(quizzes);
     }
-    @DeleteMapping("/{id}/")
+    @DeleteMapping("/{id}")
     public ResponseEntity<String> delete(@PathVariable("courseid") Long courseId,@PathVariable("id") Long id) {
         if (!authorizationManager.checkCourseEdit(courseId)) {
             return ResponseEntity.status(403).body("You do not have permission to edit this course.");

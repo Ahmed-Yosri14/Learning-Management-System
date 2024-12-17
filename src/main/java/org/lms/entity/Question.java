@@ -16,10 +16,10 @@ public class Question {
     private String questionStatement;
 
     @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "answer_format_id")
+    @JoinColumn
     private AnswerFormat answerFormat;
 
     @ManyToOne
-    @JoinColumn(name = "quiz_id", nullable = false)
+    @JoinColumn(nullable = false)
     private Quiz quiz;
 }
