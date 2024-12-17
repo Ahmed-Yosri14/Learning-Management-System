@@ -17,7 +17,9 @@ public class AppUserService implements UserService {
     @Autowired
     private UserRepository userRepository;
 
-
+    public boolean existsById(Long userId){
+        return userRepository.existsById(userId);
+    }
     public boolean create(AppUser user) {
         try{
             userRepository.save(user);
@@ -28,6 +30,7 @@ public class AppUserService implements UserService {
     }
     public boolean update(Long id, AppUser user) {
         try {
+            assert existsById(id);
             var oldUser = userRepository.findById(id).get();
             if (user.getFirstName() != null){
                 oldUser.setFirstName(user.getFirstName());
@@ -52,6 +55,7 @@ public class AppUserService implements UserService {
     }
     public boolean delete(Long id) {
         try {
+            assert existsById(id);
             userRepository.deleteById(id);
             return true;
         }

@@ -1,5 +1,6 @@
 package org.lms.service;
 
+import org.lms.entity.AppUser;
 import org.lms.entity.Course;
 import org.lms.entity.Enrollment;
 import org.lms.entity.Student;
@@ -22,12 +23,27 @@ public class EnrollmentService {
     @Autowired
     private CourseService courseService;
 
+    @Autowired
+    NotificationService notificationService;
+
     public boolean create(Long studentId, Long courseId) {
         try {
+            Course course = courseService.getById(courseId);
+            AppUser user = userService.getById(studentId);
             Enrollment enrollment = new Enrollment();
-            enrollment.setCourse(courseService.getById(courseId));
-            enrollment.setStudent((Student)userService.getById(studentId));
+            enrollment.setCourse(course);
+            enrollment.setStudent((Student)user);
             enrollmentRepository.save(enrollment);
+            notificationService.create(
+                    studentId,
+                    "Enrolled Successfully!",
+                    "You have been enrolled successfully to \'" + course.getName() + "\'!"
+            );
+            notificationService.create(
+                    course.getInstructor().getId(),
+                    "New Enrollment!",
+                    user.getFirstName() + " just enrolled in your course \'" + course.getName() + "\'!"
+            );
             return true;
         } catch (Exception e) {
             System.out.println(e);
