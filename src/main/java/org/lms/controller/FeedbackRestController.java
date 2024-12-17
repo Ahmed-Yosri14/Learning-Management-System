@@ -17,7 +17,7 @@ public class FeedbackRestController {
     @Autowired
     private FeedbackService feedbackService;
 
-    @GetMapping("/")
+    @GetMapping("")
     public List<Feedback> getAllFeedback() {
         return feedbackService.getAllFeedback();
     }
@@ -27,7 +27,7 @@ public class FeedbackRestController {
         return feedbackService.getFeedbackById(id);
     }
 
-    @PostMapping("/")
+    @PostMapping("")
     public Feedback saveFeedback(@RequestBody @Valid Feedback feedback) {
         return feedbackService.saveFeedback(feedback);
     }
