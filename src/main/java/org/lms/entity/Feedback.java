@@ -9,11 +9,11 @@ import lombok.Setter;
 @JsonTypeInfo(
         use = JsonTypeInfo.Id.NAME,
         include = JsonTypeInfo.As.PROPERTY,
-        property = "type" // A special field to indicate the subtype
+        property = "type"
 )
 @JsonSubTypes({
-        @JsonSubTypes.Type(value = AutomatedFeedback.class, name = "automated"),
-        @JsonSubTypes.Type(value = ManualFeedback.class, name = "manual")
+        @JsonSubTypes.Type(value = QuizFeedback.class, name = "QUIZ"),
+        @JsonSubTypes.Type(value = AssignmentFeedback.class, name = "ASSIGNMENT")
 })
 
 @Getter
@@ -22,8 +22,14 @@ import lombok.Setter;
 public abstract class Feedback {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
 
     @Column(nullable = false)
-    private String feedback;
+    private Double grade;
+
+    @Column(nullable = false)
+    private Double maxGrade;
+
+    @Column(nullable = false)
+    private String comment;
 }

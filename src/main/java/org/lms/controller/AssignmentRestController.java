@@ -12,12 +12,14 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/course/{courseid}/assignment")
 public class AssignmentRestController {
+
     @Autowired
     private AssignmentService assignmentService;
+
     @Autowired
     private AuthorizationManager authorizationManager;
 
-    @PutMapping("/")
+    @PutMapping("")
     public ResponseEntity<String> createAssignment(@PathVariable("courseid") Long courseId, @RequestBody Assignment assignment) {
         if (!(authorizationManager.checkCourseEdit(courseId))) {
             return ResponseEntity.badRequest().body("You do not have permission to edit this course.");
@@ -28,7 +30,7 @@ public class AssignmentRestController {
         return ResponseEntity.badRequest().body("Something went wrong");
     }
 
-    @PatchMapping("/{id}/")
+    @PatchMapping("/{id}")
     public ResponseEntity<String> updateAssignment(@PathVariable("courseid") Long courseId, @PathVariable("id") Long id, @RequestBody Assignment assignment) {
         if (!(authorizationManager.checkCourseEdit(courseId))) {
             return ResponseEntity.badRequest().body("You do not have permission to edit this course.");
@@ -39,7 +41,7 @@ public class AssignmentRestController {
         return ResponseEntity.badRequest().body("Something went wrong");
     }
 
-    @GetMapping("/{id}/")
+    @GetMapping("/{id}")
     public ResponseEntity<Assignment> getById(@PathVariable("courseid") Long courseId, @PathVariable("id") Long id) {
         if (!(authorizationManager.checkCourseView(courseId))) {
             return ResponseEntity.status(403).body(null);
@@ -51,7 +53,7 @@ public class AssignmentRestController {
         return ResponseEntity.ok(assignment);
     }
 
-    @GetMapping("/")
+    @GetMapping("")
     public ResponseEntity<List<Assignment>>  getAll(@PathVariable("courseid") Long courseId) {
         if (!(authorizationManager.checkCourseView(courseId))) {
             return ResponseEntity.status(403).body(null);
@@ -63,7 +65,7 @@ public class AssignmentRestController {
         return ResponseEntity.ok().body(assignments);
     }
 
-    @DeleteMapping("/{id}/")
+    @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteAssignment(@PathVariable("courseid") Long courseId, @PathVariable("id") Long id) {
         if (!(authorizationManager.checkCourseEdit(courseId))) {
             return ResponseEntity.badRequest().body("You do not have permission to edit this course.");

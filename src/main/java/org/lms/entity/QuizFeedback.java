@@ -9,9 +9,8 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-public class AutomatedFeedback extends Feedback {
+public class QuizFeedback extends Feedback {
     @ManyToOne
     @JoinColumn(nullable = false)
     private Quiz quiz;
-
 }
