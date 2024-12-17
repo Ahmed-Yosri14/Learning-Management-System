@@ -22,7 +22,7 @@ public class LessonRestController {
     @PreAuthorize("hasRole('INSTRUCTOR')")
     @PutMapping("")
     public ResponseEntity<String> create(@PathVariable("courseId") Long courseId,@RequestBody Lesson lesson) {
-        if (!authorizationManager.checkCourseEdit(courseId)){
+        if (!authorizationManager.isInstructor(courseId)){
             return ResponseEntity.status(403).build();
         }
         if (lessonService.create(lesson, courseId)){
@@ -36,7 +36,7 @@ public class LessonRestController {
     @PreAuthorize("hasRole('INSTRUCTOR')")
     @DeleteMapping("/{id}")
     public ResponseEntity<String> delete(@PathVariable("courseId") Long courseId, @PathVariable("id") Long id) {
-        if (!authorizationManager.checkCourseEdit(courseId)){
+        if (!authorizationManager.isInstructor(courseId)){
             return ResponseEntity.status(403).build();
         }
         if (lessonService.delete(courseId, id)) {
@@ -48,7 +48,7 @@ public class LessonRestController {
     @PreAuthorize("hasRole('INSTRUCTOR')")
     @PatchMapping("/{id}")
     public ResponseEntity<String> update(@PathVariable("courseId") Long courseId,@PathVariable("id") Long id, @RequestBody Lesson lesson) {
-        if (!authorizationManager.checkCourseEdit(courseId)){
+        if (!authorizationManager.isInstructor(courseId)){
             return ResponseEntity.status(403).build();
         }
         if (lessonService.update(id, lesson,courseId)){
@@ -59,7 +59,7 @@ public class LessonRestController {
     // all
     @GetMapping("/{id}")
     public ResponseEntity<Lesson> getById(@PathVariable("courseId") Long courseId, @PathVariable("id") Long id) {
-        if (!authorizationManager.checkCourseView(courseId)){
+        if (!authorizationManager.canViewCourse(courseId)){
             return ResponseEntity.status(403).build();
         }
         Lesson lesson = lessonService.getById(courseId,id);
@@ -71,7 +71,7 @@ public class LessonRestController {
     // all
     @GetMapping("")
     public ResponseEntity<List<Lesson>> getAll(@PathVariable("courseId") Long courseId) {
-        if (!authorizationManager.checkCourseView(courseId)){
+        if (!authorizationManager.canViewCourse(courseId)){
             return ResponseEntity.status(403).build();
         }
         return ResponseEntity.ok(lessonService.getAll(courseId));

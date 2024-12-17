@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Objects;
 
 @Service
 public class AssignmentService {
@@ -15,6 +14,15 @@ public class AssignmentService {
     private AssignmentRepository assignmentRepository;
     @Autowired
     private CourseService courseService;
+
+    public boolean existsById(Long courseId, Long id) {
+        Course course = courseService.getById(courseId);
+        Assignment assignment = assignmentRepository.findById(id).orElse(null);
+        return assignmentRepository.existsById(id)
+                && courseService.existsById(id)
+                && course.getId().equals(assignment.getCourse().getId());
+    }
+
     public boolean create(Long courseId,Assignment assignment)
     {
         try{
@@ -31,14 +39,12 @@ public class AssignmentService {
         return false;
     }
 
-    public boolean update(Long courseid,Long id,Assignment assignment)
+    public boolean update(Long courseId, Long id, Assignment assignment)
     {
         try{
+            assert existsById(courseId, id);
+
             Assignment oldAssignment = assignmentRepository.findById(id).get();
-            Course oldCourse = courseService.getById(courseid);
-            if(oldCourse == null || !Objects.equals(oldCourse.getId(), oldAssignment.getCourse().getId())){
-                return false;
-            }
             if (assignment.getTitle() != null){
                 oldAssignment.setTitle(assignment.getTitle());
             }
@@ -56,6 +62,11 @@ public class AssignmentService {
         }
         catch (Exception e){}
         return false;
+    }
+
+    public Assignment getById(Long id)
+    {
+        return assignmentRepository.findById(id).orElse(null);
     }
 
     public Assignment getById(Long courseId,Long id)

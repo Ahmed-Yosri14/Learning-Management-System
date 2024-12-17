@@ -18,7 +18,7 @@ public class QuizRestController {
     private AuthorizationManager authorizationManager;
     @PutMapping("")
     public ResponseEntity<String> createQuiz(@PathVariable("courseid") Long courseId, @RequestBody Quiz quiz) {
-        if (!authorizationManager.checkCourseEdit(courseId)) {
+        if (!authorizationManager.isInstructor(courseId)) {
             return ResponseEntity.status(403).body("You do not have permission to edit this course.");
         }
         if (quizService.create(courseId,quiz)){
@@ -29,7 +29,7 @@ public class QuizRestController {
 
     @PatchMapping("/{id}")
     public ResponseEntity<String> updateQuiz(@PathVariable("courseid") Long courseId, @PathVariable("id") Long id, @RequestBody Quiz quiz, @PathVariable String courseid) {
-        if (!authorizationManager.checkCourseEdit(courseId)) {
+        if (!authorizationManager.isInstructor(courseId)) {
             return ResponseEntity.status(403).body("You do not have permission to edit this course.");
         }
         if (quizService.update(courseId, id,quiz)){
@@ -39,7 +39,7 @@ public class QuizRestController {
     }
     @GetMapping("/{id}")
     public ResponseEntity<Quiz> getById(@PathVariable("courseid") Long courseId, @PathVariable("id") Long id) {
-        if (!authorizationManager.checkCourseView(courseId)) {
+        if (!authorizationManager.canViewCourse(courseId)) {
             return ResponseEntity.status(403).body(null);
         }
         Quiz quiz = quizService.getById(courseId,id);
@@ -50,7 +50,7 @@ public class QuizRestController {
     }
     @GetMapping("")
     public ResponseEntity<List<Quiz>> getAll(@PathVariable("courseid") Long courseId) {
-        if (!authorizationManager.checkCourseView(courseId)) {
+        if (!authorizationManager.canViewCourse(courseId)) {
             return ResponseEntity.status(403).body(null);
         }
         List<Quiz> quizzes = quizService.getAll(courseId);
@@ -61,7 +61,7 @@ public class QuizRestController {
     }
     @DeleteMapping("/{id}")
     public ResponseEntity<String> delete(@PathVariable("courseid") Long courseId,@PathVariable("id") Long id) {
-        if (!authorizationManager.checkCourseEdit(courseId)) {
+        if (!authorizationManager.isInstructor(courseId)) {
             return ResponseEntity.status(403).body("You do not have permission to edit this course.");
         }
         if(quizService.delete(courseId,id)){

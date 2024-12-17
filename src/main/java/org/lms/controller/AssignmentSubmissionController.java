@@ -23,7 +23,7 @@ public class AssignmentSubmissionController {
             @RequestParam("file") MultipartFile file) {
         try
         {
-            boolean success = assignmentSubmissionService.submit(courseId, assignmentId, studentId, file);
+            boolean success = assignmentSubmissionService.create(courseId, assignmentId, studentId, file);
             if (success)
             {
                 return ResponseEntity.ok("Assignment submitted successfully.");
@@ -44,10 +44,12 @@ public class AssignmentSubmissionController {
 
     @DeleteMapping("/{submissionId}")
     public ResponseEntity<String> deleteSubmission(
-            @PathVariable Long submissionId,
-            @RequestParam("studentId") Long studentId) {
+            @PathVariable Long courseId,
+            @PathVariable Long assignmentId,
+            @PathVariable Long assignmentSubmissionId
+    ) {
         try {
-            boolean success = assignmentSubmissionService.deleteSubmission(submissionId, studentId);
+            boolean success = assignmentSubmissionService.delete(courseId, assignmentId, assignmentSubmissionId);
             if (success) {
                 return ResponseEntity.ok("Submission deleted successfully.");
             } else {
@@ -64,7 +66,7 @@ public class AssignmentSubmissionController {
             @PathVariable Long courseId,
             @PathVariable Long assignmentId) {
         try {
-            List<AssignmentSubmission> assignmentSubmissions = assignmentSubmissionService.getSubmissions(courseId, assignmentId);
+            List<AssignmentSubmission> assignmentSubmissions = assignmentSubmissionService.getAllByAssignmentId(courseId, assignmentId);
             if (assignmentSubmissions == null || assignmentSubmissions.isEmpty()) {
                 return ResponseEntity.noContent().build();
             }

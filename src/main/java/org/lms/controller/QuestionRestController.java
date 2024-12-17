@@ -23,7 +23,7 @@ public class QuestionRestController {
     @PutMapping("")
     public ResponseEntity<String> create(@PathVariable("courseid") Long courseId, @PathVariable("quizid") Long quizId, @RequestBody Question question) {
         System.out.println("a7a");
-        if(!(authorizationManager.checkCourseEdit(courseId)))
+        if(!(authorizationManager.isInstructor(courseId)))
         {
             return ResponseEntity.status(403).body("You are not allowed to edit this quiz");
         }
@@ -35,7 +35,7 @@ public class QuestionRestController {
 
     @GetMapping("/{id}")
     public ResponseEntity<Question> getById(@PathVariable("courseid") Long courseId, @PathVariable("quizid") Long quizId,@PathVariable("id") Long id) {
-        if (!authorizationManager.checkCourseView(courseId)) {
+        if (!authorizationManager.canViewCourse(courseId)) {
             return ResponseEntity.status(403).body(null);
         }
         Question question = questionService.getById(courseId,quizId,id);
@@ -47,7 +47,7 @@ public class QuestionRestController {
 
     @GetMapping("")
     public ResponseEntity<List<Question>> getAll(@PathVariable("courseid") Long courseId,@PathVariable("quizid") Long quizId) {
-        if (!authorizationManager.checkCourseView(courseId)) {
+        if (!authorizationManager.canViewCourse(courseId)) {
             return ResponseEntity.status(403).body(null);
         }
         List<Question> questions = questionService.getAll(courseId,quizId);
@@ -64,7 +64,7 @@ public class QuestionRestController {
             result.getAllErrors().forEach(error -> errorMessages.append(error.getDefaultMessage()).append("\n"));
             return ResponseEntity.badRequest().body("Validation failed: \n" + errorMessages.toString());
         }
-        if(!(authorizationManager.checkCourseEdit(courseId)))
+        if(!(authorizationManager.isInstructor(courseId)))
         {
             return ResponseEntity.status(403).body("You are not allowed to edit this question");
         }
@@ -76,7 +76,7 @@ public class QuestionRestController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<String> delete(@PathVariable("courseid") Long courseId, @PathVariable("quizid") Long quizId, @PathVariable("id") Long id) {
-        if(!(authorizationManager.checkCourseEdit(courseId)))
+        if(!(authorizationManager.isInstructor(courseId)))
         {
             return ResponseEntity.status(403).body("You are not allowed to edit this question");
         }

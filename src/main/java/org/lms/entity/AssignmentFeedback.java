@@ -14,5 +14,5 @@ import lombok.Setter;
 public class AssignmentFeedback extends Feedback {
     @ManyToOne
     @JoinColumn(nullable = false)
-    private Assignment assignment;
+    private AssignmentSubmission assignmentSubmission;
 }

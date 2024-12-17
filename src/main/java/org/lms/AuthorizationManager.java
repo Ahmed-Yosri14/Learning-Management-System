@@ -6,7 +6,6 @@ import org.lms.entity.Course;
 import org.lms.entity.Student;
 import org.lms.service.CourseService;
 import org.lms.service.EnrollmentService;
-import org.lms.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -19,9 +18,6 @@ public class AuthorizationManager {
     private CourseService courseService;
 
     @Autowired
-    private UserService userService;
-
-    @Autowired
     private EnrollmentService enrollmentService;
 
     public AppUser getCurrentUser(){
@@ -31,24 +27,21 @@ public class AuthorizationManager {
     public Long getCurrentUserId(){
         return getCurrentUser().getId();
     }
-    public boolean checkCourseView(Long courseId){
-        Course course = courseService.getById(courseId);
+    public boolean canViewCourse(Long courseId){
         AppUser user = getCurrentUser();
         Long userId = user.getId();
         if (!(user instanceof Student)){
-            return checkCourseViewConfidential(courseId);
+            return isAdminOrInstructor(courseId);
         }
-        return  enrollmentService.checkStudentId(userId, courseId);
+        return enrollmentService.checkStudentId(userId, courseId);
     }
-
-    public boolean checkCourseViewConfidential(Long courseId){
+    public boolean isAdminOrInstructor(Long courseId){
         Course course = courseService.getById(courseId);
         AppUser user = getCurrentUser();
         Long userId = user.getId();
         return user instanceof Admin || course.getInstructor().getId() == userId;
     }
-
-    public boolean checkCourseEdit(Long courseId){
+    public boolean isInstructor(Long courseId){
         Course course = courseService.getById(courseId);
         Long userId = getCurrentUserId();
         return course.getInstructor().getId() == userId;

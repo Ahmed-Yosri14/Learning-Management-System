@@ -43,7 +43,7 @@ public class EnrollmentRestController {
     @PreAuthorize("hasRole('INSTRUCTOR')")
     @DeleteMapping("/{studentId}")
     public ResponseEntity<String> delete(@PathVariable("courseId") Long courseId, @PathVariable("studentId") Long studentId) {
-        if (!authorizationManager.checkCourseEdit(courseId)){
+        if (!authorizationManager.isInstructor(courseId)){
             return ResponseEntity.status(403).build();
         }
         if (enrollmentService.delete(studentId, courseId)){
@@ -55,7 +55,7 @@ public class EnrollmentRestController {
     @PreAuthorize("hasRole('INSTRUCTOR') or hasRole('ADMIN')")
     @GetMapping("/{studentId}")
     public ResponseEntity<String> getByStudentId(@PathVariable("courseId") Long courseId, @PathVariable("studentId") Long studentId) {
-        if (!authorizationManager.checkCourseViewConfidential(courseId)){
+        if (!authorizationManager.isAdminOrInstructor(courseId)){
             return ResponseEntity.status(403).build();
         }
         if (enrollmentService.checkStudentId(studentId, courseId)){
@@ -67,7 +67,7 @@ public class EnrollmentRestController {
     @PreAuthorize("hasRole('INSTRUCTOR') or hasRole('ADMIN')")
     @GetMapping("")
     public ResponseEntity<List<Student>> getAll(@PathVariable("courseId") Long courseId) {
-        if (!authorizationManager.checkCourseViewConfidential(courseId)){
+        if (!authorizationManager.isAdminOrInstructor(courseId)){
             return ResponseEntity.status(403).build();
         }
         return ResponseEntity.ok(enrollmentService.getByCourseId(courseId));

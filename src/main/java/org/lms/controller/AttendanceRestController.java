@@ -38,7 +38,7 @@ public class AttendanceRestController {
     @PreAuthorize("hasRole('INSTRUCTOR') or hasRole('ADMIN')")
     @GetMapping("/{studentId}")
     public ResponseEntity<String> getByStudentId(@PathVariable("courseId") Long courseId, @PathVariable("lessonId") Long lessonId, @PathVariable("studentId") Long studentId) {
-        if (!authorizationManager.checkCourseViewConfidential(courseId)){
+        if (!authorizationManager.isAdminOrInstructor(courseId)){
             return ResponseEntity.status(403).build();
         }
         if (attendanceService.checkStudentId(studentId, lessonId, courseId)){
@@ -50,7 +50,7 @@ public class AttendanceRestController {
     @PreAuthorize("hasRole('INSTRUCTOR') or hasRole('ADMIN')")
     @GetMapping("")
     public ResponseEntity<List<Student>> getAll(@PathVariable("courseId") Long courseId, @PathVariable("lessonId") Long lessonId) {
-        if (!authorizationManager.checkCourseViewConfidential(courseId)){
+        if (!authorizationManager.isAdminOrInstructor(courseId)){
             return ResponseEntity.status(403).build();
         }
         return ResponseEntity.ok(attendanceService.getByLessonId(lessonId, courseId));

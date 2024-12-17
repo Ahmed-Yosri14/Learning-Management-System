@@ -34,7 +34,7 @@ public class CourseRestController {
     @PreAuthorize("hasRole('INSTRUCTOR')")
     @PatchMapping("/{id}")
     public ResponseEntity<String> update(@PathVariable("id") Long id, @RequestBody Course course) {
-        if (authorizationManager.checkCourseEdit(id)){
+        if (authorizationManager.isInstructor(id)){
             return ResponseEntity.status(403).build();
         }
         if (courseService.update(id, course)){
@@ -46,7 +46,7 @@ public class CourseRestController {
     @PreAuthorize("hasRole('INSTRUCTOR')")
     @DeleteMapping("/{id}")
     public ResponseEntity<String> delete(@PathVariable("id") Long id) {
-        if (authorizationManager.checkCourseEdit(id)){
+        if (authorizationManager.isInstructor(id)){
             return ResponseEntity.status(403).build();
         }
         if (courseService.delete(id)){

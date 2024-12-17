@@ -1,6 +1,5 @@
 package org.lms.service;
 
-import org.lms.AuthorizationManager;
 import org.lms.entity.Assignment;
 import org.lms.entity.AssignmentSubmission;
 import org.lms.entity.Student;
@@ -10,7 +9,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class AssignmentSubmissionService {
@@ -22,30 +20,71 @@ public class AssignmentSubmissionService {
     private AssignmentService assignmentService;
 
     @Autowired
-    private CourseService courseService;
-
-    @Autowired
     private FileStorageService fileStorageService;
-
-    @Autowired
-    private AuthorizationManager authorizationManager;
 
     @Autowired
     private AppUserService appUserService;
 
-    public boolean submit(Long courseId, Long assignmentId, Long studentId, MultipartFile file) {
+    public boolean existsById(
+            Long courseId,
+            Long assignmentId,
+            Long id
+    ){
+
+        AssignmentSubmission assignmentSubmission = getById(id);
+        return assignmentSubmissionRepository.existsById(id)
+                && assignmentService.existsById(courseId, assignmentId)
+                && assignmentSubmission.getAssignment().getId().equals(assignmentId);
+    }
+
+    public AssignmentSubmission getById(
+            Long id
+    ){
+        return assignmentSubmissionRepository.findById(id).get();
+    }
+
+    public AssignmentSubmission getById(
+            Long courseId,
+            Long assignmentId,
+            Long id
+    ){
+
         try {
-            boolean isAuthorized = authorizationManager.checkCourseView(courseId);
-            if (!isAuthorized)
-            {
-                throw new IllegalAccessException("Student is not enrolled in the course.");
-            }
+            assert existsById(courseId, assignmentId, id);
+            return getById(id);
+        }
+        catch(Exception e){
+            System.out.println(e);
+        }
+        return null;
+    }
+
+    public List<AssignmentSubmission> getAllByAssignmentId(
+            Long courseId,
+            Long assignmentId
+    ){
+
+        try {
+            assert assignmentService.existsById(courseId, assignmentId);
+
+            return assignmentSubmissionRepository.findAllByAssignmentId(assignmentId);
+        }
+        catch(Exception e){
+            System.out.println(e);
+        }
+        return null;
+    }
+
+    public boolean create (
+            Long courseId,
+            Long assignmentId,
+            Long studentId,
+            MultipartFile file
+    ){
+        try {
+            assert assignmentService.existsById(courseId, assignmentId);
 
             Assignment assignment = assignmentService.getById(courseId, assignmentId);
-            if (assignment == null)
-            {
-                throw new IllegalArgumentException("Assignment not found for the given course.");
-            }
 
             String filePath = fileStorageService.storeFile(file);
             AssignmentSubmission assignmentSubmission = new AssignmentSubmission();
@@ -54,44 +93,27 @@ public class AssignmentSubmissionService {
             assignmentSubmission.setFilePath(filePath);
 
             assignmentSubmissionRepository.save(assignmentSubmission);
+        }
+        catch(Exception e){
+            System.out.println(e);
+        }
+        return false;
+    }
+
+    public boolean delete(
+            Long courseId,
+            Long assignmentId,
+            Long id
+    ){
+
+        try {
+            assert existsById(courseId, assignmentId, id);
+            assignmentSubmissionRepository.deleteById(id);
             return true;
         }
-        catch (Exception e) {
-            System.out.println("Error during submission: " + e.getMessage());
-            return false;
+        catch(Exception e){
+            System.out.println(e);
         }
+        return false;
     }
-
-    public boolean deleteSubmission(Long submissionId, Long studentId) {
-        try {
-            Optional<AssignmentSubmission> submissionOpt = assignmentSubmissionRepository.findById(submissionId);
-            if (submissionOpt.isPresent()) {
-                AssignmentSubmission assignmentSubmission = submissionOpt.get();
-                if (!assignmentSubmission.getStudent().getId().equals(studentId)) {
-                    throw new IllegalAccessException("You are not authorized to delete this submission.");
-                }
-                assignmentSubmissionRepository.deleteById(submissionId);
-                return true;
-            }
-            return false;
-        } catch (Exception e) {
-            System.out.println("Error deleting submission: " + e.getMessage());
-            return false;
-        }
-    }
-
-    //we have to restrict this method
-    public List<AssignmentSubmission> getSubmissions(Long courseId, Long assignmentId) {
-        try {
-            Assignment assignment = assignmentService.getById(courseId, assignmentId);
-            if (assignment == null) {
-                throw new IllegalArgumentException("Assignment not found for the given course.");
-            }
-            return assignmentSubmissionRepository.findAllByAssignment(assignment);
-        } catch (Exception e) {
-            System.err.println("Error fetching submissions: " + e.getMessage());
-            return null;
-        }
-    }
-
 }

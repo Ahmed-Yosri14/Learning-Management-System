@@ -21,7 +21,7 @@ public class AssignmentRestController {
 
     @PutMapping("")
     public ResponseEntity<String> createAssignment(@PathVariable("courseid") Long courseId, @RequestBody Assignment assignment) {
-        if (!(authorizationManager.checkCourseEdit(courseId))) {
+        if (!(authorizationManager.isInstructor(courseId))) {
             return ResponseEntity.badRequest().body("You do not have permission to edit this course.");
         }
         if (assignmentService.create(courseId, assignment)) {
@@ -32,7 +32,7 @@ public class AssignmentRestController {
 
     @PatchMapping("/{id}")
     public ResponseEntity<String> updateAssignment(@PathVariable("courseid") Long courseId, @PathVariable("id") Long id, @RequestBody Assignment assignment) {
-        if (!(authorizationManager.checkCourseEdit(courseId))) {
+        if (!(authorizationManager.isInstructor(courseId))) {
             return ResponseEntity.badRequest().body("You do not have permission to edit this course.");
         }
         if (assignmentService.update(courseId, id, assignment)) {
@@ -43,7 +43,7 @@ public class AssignmentRestController {
 
     @GetMapping("/{id}")
     public ResponseEntity<Assignment> getById(@PathVariable("courseid") Long courseId, @PathVariable("id") Long id) {
-        if (!(authorizationManager.checkCourseView(courseId))) {
+        if (!(authorizationManager.canViewCourse(courseId))) {
             return ResponseEntity.status(403).body(null);
         }
         Assignment assignment = assignmentService.getById(courseId, id);
@@ -55,7 +55,7 @@ public class AssignmentRestController {
 
     @GetMapping("")
     public ResponseEntity<List<Assignment>>  getAll(@PathVariable("courseid") Long courseId) {
-        if (!(authorizationManager.checkCourseView(courseId))) {
+        if (!(authorizationManager.canViewCourse(courseId))) {
             return ResponseEntity.status(403).body(null);
         }
         List<Assignment> assignments = assignmentService.getAll(courseId);
@@ -67,7 +67,7 @@ public class AssignmentRestController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteAssignment(@PathVariable("courseid") Long courseId, @PathVariable("id") Long id) {
-        if (!(authorizationManager.checkCourseEdit(courseId))) {
+        if (!(authorizationManager.isInstructor(courseId))) {
             return ResponseEntity.badRequest().body("You do not have permission to edit this course.");
         }
         if (assignmentService.delete(courseId, id)) {
