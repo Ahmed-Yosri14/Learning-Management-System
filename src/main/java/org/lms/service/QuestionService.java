@@ -16,10 +16,13 @@ import java.util.Objects;
 public class QuestionService {
     @Autowired
     private QuestionRepository questionRepository;
+
     @Autowired
     private CourseService courseService;
+
     @Autowired
     private QuizService quizService;
+
     @Autowired
     private AnswerFormatRepository answerFormatRepository;
 

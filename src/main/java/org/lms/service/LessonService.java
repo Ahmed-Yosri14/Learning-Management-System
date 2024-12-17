@@ -18,11 +18,14 @@ public class LessonService {
     boolean existsById(Long id, Long courseId) {
         Course course = courseService.getById(courseId);
         Lesson lesson = lessonRepository.findById(id).orElse(null);
-        return course != null && lesson != null && lesson.getCourse().getId().equals(courseId);
+        return lessonRepository.existsById(id)
+                && courseService.existsById(id)
+                && course.getId().equals(lesson.getCourse().getId());
     }
     public boolean create(Lesson lesson, Long courseId) {
         try{
             assert courseService.existsById(courseId);
+
             Course course = courseService.getById(courseId);
             lesson.setCourse(course);
             lesson = lessonRepository.save(lesson);
@@ -35,6 +38,7 @@ public class LessonService {
     public boolean update(Long id, Lesson lesson, Long courseId) {
         try {
             assert existsById(id, courseId);
+
             Lesson oldLesson = lessonRepository.findById(id).get();
             if (lesson.getTitle() != null){
                 oldLesson.setTitle(lesson.getTitle());
@@ -56,6 +60,7 @@ public class LessonService {
     public boolean delete(Long courseId, Long id) {
         try {
             assert existsById(id, courseId);
+
             lessonRepository.deleteById(id);
             return true;
         } catch (Exception e) {
@@ -91,6 +96,7 @@ public class LessonService {
     public String generateOtp(Long courseId, Long id){
         try {
             assert existsById(id, courseId);
+
             Lesson lesson = lessonRepository.findById(id).orElse(null);
             String otp = generateRandomNumber();
             while (lessonRepository.existsByOtp(otp)) {

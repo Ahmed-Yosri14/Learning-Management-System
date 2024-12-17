@@ -1,9 +1,10 @@
 package org.lms.controller;
+
 import org.lms.AuthorizationManager;
+import org.lms.entity.Course;
 import org.lms.entity.CourseMaterial;
 import org.lms.repository.CourseMaterialRepository;
-import org.lms.repository.CourseRepository;
-import org.lms.entity.Course;
+import org.lms.service.CourseService;
 import org.lms.service.FileStorageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -19,10 +20,13 @@ public class CourseMaterialRestController {
 
     @Autowired
     private CourseMaterialRepository courseMaterialRepository;
+
     @Autowired
-    private CourseRepository courseRepository;
+    private CourseService courseService;
+
     @Autowired
     private FileStorageService fileStorageService;
+
     @Autowired
     private AuthorizationManager authorizationManager;
 
@@ -32,8 +36,7 @@ public class CourseMaterialRestController {
             if(!authorizationManager.checkCourseEdit(courseId)){
                 throw(new RuntimeException("User does not have permission to add material to this course"));
             }
-            Course course = courseRepository.findById(courseId)
-                    .orElseThrow(() -> new RuntimeException("Course not found"));
+            Course course = courseService.getById(courseId);
 
             String filePath = fileStorageService.storeFile(file);
 
@@ -58,8 +61,7 @@ public class CourseMaterialRestController {
                 throw new RuntimeException("User does not have permission to delete material from this course");
             }
 
-            Course course = courseRepository.findById(courseId)
-                    .orElseThrow(() -> new RuntimeException("Course not found"));
+            Course course = courseService.getById(courseId);
 
             CourseMaterial material = courseMaterialRepository.findById(materialsId)
                     .orElseThrow(() -> new RuntimeException("Material not found"));

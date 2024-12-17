@@ -13,8 +13,10 @@ public class QuizService {
 
     @Autowired
     private QuizRepository quizRepository;
+
     @Autowired
     private CourseService courseService;
+
     public boolean create(Long courseId, Quiz quiz)
     {
         try{

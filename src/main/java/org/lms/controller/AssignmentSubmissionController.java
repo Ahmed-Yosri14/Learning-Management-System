@@ -11,7 +11,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/course/{courseId}/assignment/{assignmentId}/submission")
-public class SubmissionController {
+public class AssignmentSubmissionController {
 
     @Autowired
     private AssignmentSubmissionService assignmentSubmissionService;

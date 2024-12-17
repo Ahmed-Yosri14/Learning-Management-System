@@ -51,7 +51,6 @@ public class CourseService {
     public boolean delete(Long id) {
         try {
             assert existsById(id);
-            Course oldCourse = courseRepository.findById(id).get();
             courseRepository.deleteById(id);
             return true;
         }
