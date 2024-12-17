@@ -1,8 +1,9 @@
 package org.lms.service;
 
 import org.lms.entity.AppUser;
+import org.lms.entity.Enrollment;
 import org.lms.entity.Notification;
-import org.lms.entity.Student;
+import org.lms.repository.EnrollmentRepository;
 import org.lms.repository.NotificationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,7 +20,7 @@ public class NotificationService {
     UserService userService;
 
     @Autowired
-    EnrollmentService enrollmentService;
+    EnrollmentRepository enrollmentRepository;
 
     @Autowired
     EmailService emailService;
@@ -29,8 +30,8 @@ public class NotificationService {
     }
 
     public void createToAllEnrolled(Long courseId, String title, String content){
-        for (Student student: enrollmentService.getByCourseId(courseId)) {
-            create(student.getId(), title, content);
+        for (Enrollment enrollment: enrollmentRepository.findAllByCourseId(courseId)) {
+            create(enrollment.getStudent().getId(), title, content);
         }
     }
 

@@ -1,92 +1,57 @@
 package org.lms.controller;
 
 import org.lms.AuthorizationManager;
-import org.lms.entity.Course;
 import org.lms.entity.CourseMaterial;
-import org.lms.repository.CourseMaterialRepository;
-import org.lms.service.CourseService;
-import org.lms.service.FileStorageService;
+import org.lms.service.CourseMaterialService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
 import java.util.List;
 
 @RestController
-@RequestMapping("api/course")
+@RequestMapping("api/course/{courseId}/material")
 public class CourseMaterialRestController {
-
     @Autowired
-    private CourseMaterialRepository courseMaterialRepository;
-
-    @Autowired
-    private CourseService courseService;
-
-    @Autowired
-    private FileStorageService fileStorageService;
+    private CourseMaterialService courseMaterialService;
 
     @Autowired
     private AuthorizationManager authorizationManager;
 
-    @PostMapping("/{courseId}/materials")
+    @PreAuthorize("hasRole('INSTRUCTOR')")
+    @PutMapping("")
     public ResponseEntity<String> addMaterial(@PathVariable Long courseId, @RequestParam("file") MultipartFile file){
-        try {
-            if(!authorizationManager.isInstructor(courseId)){
-                throw(new RuntimeException("User does not have permission to add material to this course"));
-            }
-            Course course = courseService.getById(courseId);
-
-            String filePath = fileStorageService.storeFile(file);
-
-            CourseMaterial material = new CourseMaterial();
-            material.setFileName(file.getOriginalFilename());
-            material.setFilePath(filePath);
-            material.setCourse(course);
-
-            courseMaterialRepository.save(material);
-
+        if (!authorizationManager.isInstructor(courseId)){
+            return ResponseEntity.status(403).build();
+        }
+        if (courseMaterialService.create(courseId, file)){
             return ResponseEntity.ok("Material uploaded successfully!");
-
-        } catch (IOException e) {
-            return ResponseEntity.status(500).body("File upload failed: " + e.getMessage());
         }
+        return ResponseEntity.badRequest().body("Something went wrong");
     }
 
-    @DeleteMapping("/{courseId}/{materialsId}")
-    public ResponseEntity<String> deleteMaterial(@PathVariable Long courseId, @PathVariable Long materialsId){
-        try {
-            if (!authorizationManager.isInstructor(courseId)) {
-                throw new RuntimeException("User does not have permission to delete material from this course");
-            }
-
-            Course course = courseService.getById(courseId);
-
-            CourseMaterial material = courseMaterialRepository.findById(materialsId)
-                    .orElseThrow(() -> new RuntimeException("Material not found"));
-
-            if (!material.getCourse().getId().equals(courseId)) {
-                throw new RuntimeException("Material does not belong to the specified course");
-            }
-
-            courseMaterialRepository.delete(material);
-
-            return ResponseEntity.ok("Material deleted successfully");
-
-        } catch (RuntimeException e) {
-            return ResponseEntity.status(400).body(e.getMessage());
+    @PreAuthorize("hasRole('INSTRUCTOR')")
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> deleteMaterial(@PathVariable Long courseId, @PathVariable Long id){
+        if (!authorizationManager.isInstructor(courseId)){
+            return ResponseEntity.status(403).build();
         }
+        if (courseMaterialService.delete(courseId, id)) {
+            return ResponseEntity.ok("Material deleted successfully!");
+        }
+        return ResponseEntity.badRequest().body("Failed to delete material.");
     }
-    @GetMapping("/{courseId}/materials")
+    @GetMapping("")
     public ResponseEntity<List<CourseMaterial>> getMaterialsByCourse(@PathVariable Long courseId) {
-        List<CourseMaterial> materials = courseMaterialRepository.findAllByCourseId(courseId);
-
-        if (materials.isEmpty()) {
-            return ResponseEntity.notFound().build();
+        if (!authorizationManager.hasAccess(courseId)){
+            return ResponseEntity.status(403).build();
         }
-
-        return ResponseEntity.ok(materials);
+        List<CourseMaterial> courseMaterialList = courseMaterialService.getAllByCourseId(courseId);
+        if (courseMaterialList != null) {
+            return ResponseEntity.ok(courseMaterialList);
+        }
+        return ResponseEntity.notFound().build();
     }
-
 }

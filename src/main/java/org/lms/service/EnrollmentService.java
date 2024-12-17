@@ -78,7 +78,7 @@ public class EnrollmentService {
             return null;
         }
         List<Student> studentList = new ArrayList<>();
-        for (Enrollment enrollment : enrollmentRepository.findAllByCourse(course)) {
+        for (Enrollment enrollment: enrollmentRepository.findAllByCourseId(courseId)) {
             studentList.add(enrollment.getStudent());
         }
         return studentList;
