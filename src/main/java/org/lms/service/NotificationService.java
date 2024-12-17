@@ -2,6 +2,7 @@ package org.lms.service;
 
 import org.lms.entity.AppUser;
 import org.lms.entity.Notification;
+import org.lms.entity.Student;
 import org.lms.repository.NotificationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,11 +19,21 @@ public class NotificationService {
     UserService userService;
 
     @Autowired
+    EnrollmentService enrollmentService;
+
+    @Autowired
     EmailService emailService;
 
     boolean existsById(Long id){
         return notificationRepository.existsById(id);
     }
+
+    public void createToAllEnrolled(Long courseId, String title, String content){
+        for (Student student: enrollmentService.getByCourseId(courseId)) {
+            create(student.getId(), title, content);
+        }
+    }
+
     public boolean create(Long userId, String title, String content){
         try {
             AppUser user = userService.getById(userId);

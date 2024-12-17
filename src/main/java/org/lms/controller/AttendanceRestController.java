@@ -25,7 +25,7 @@ public class AttendanceRestController {
     @PreAuthorize("hasRole('STUDENT')")
     @PutMapping("")
     public ResponseEntity<String> attend(@PathVariable("courseId") Long courseId, @PathVariable("lessonId") Long lessonId, @RequestBody String otp) {
-        if (!authorizationManager.checkCourseStudent(courseId)){
+        if (!authorizationManager.isEnrolled(courseId)){
             return ResponseEntity.status(403).build();
         }
         if (attendanceService.tryRecord(1L, lessonId, courseId, otp)){

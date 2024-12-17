@@ -43,7 +43,7 @@ public class AssignmentRestController {
 
     @GetMapping("/{id}")
     public ResponseEntity<Assignment> getById(@PathVariable("courseid") Long courseId, @PathVariable("id") Long id) {
-        if (!(authorizationManager.canViewCourse(courseId))) {
+        if (!(authorizationManager.hasAccess(courseId))) {
             return ResponseEntity.status(403).body(null);
         }
         Assignment assignment = assignmentService.getById(courseId, id);
@@ -55,7 +55,7 @@ public class AssignmentRestController {
 
     @GetMapping("")
     public ResponseEntity<List<Assignment>>  getAll(@PathVariable("courseid") Long courseId) {
-        if (!(authorizationManager.canViewCourse(courseId))) {
+        if (!(authorizationManager.hasAccess(courseId))) {
             return ResponseEntity.status(403).body(null);
         }
         List<Assignment> assignments = assignmentService.getAll(courseId);

@@ -59,7 +59,7 @@ public class LessonRestController {
     // all
     @GetMapping("/{id}")
     public ResponseEntity<Lesson> getById(@PathVariable("courseId") Long courseId, @PathVariable("id") Long id) {
-        if (!authorizationManager.canViewCourse(courseId)){
+        if (!authorizationManager.hasAccess(courseId)){
             return ResponseEntity.status(403).build();
         }
         Lesson lesson = lessonService.getById(courseId,id);
@@ -71,7 +71,7 @@ public class LessonRestController {
     // all
     @GetMapping("")
     public ResponseEntity<List<Lesson>> getAll(@PathVariable("courseId") Long courseId) {
-        if (!authorizationManager.canViewCourse(courseId)){
+        if (!authorizationManager.hasAccess(courseId)){
             return ResponseEntity.status(403).build();
         }
         return ResponseEntity.ok(lessonService.getAll(courseId));

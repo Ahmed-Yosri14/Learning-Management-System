@@ -15,6 +15,9 @@ public class LessonService {
     @Autowired
     private CourseService courseService;
 
+    @Autowired
+    private NotificationService notificationService;
+
     boolean existsById(Long id, Long courseId) {
         Course course = courseService.getById(courseId);
         Lesson lesson = lessonRepository.findById(id).orElse(null);
@@ -30,6 +33,11 @@ public class LessonService {
             lesson.setCourse(course);
             lesson = lessonRepository.save(lesson);
             generateOtp(courseId, lesson.getId());
+            notificationService.createToAllEnrolled(
+                    courseId,
+                    "New Lesson",
+                    "New lesson just started in \'" + course.getName() + "\'!"
+            );
             return true;
         }
         catch(Exception e){}

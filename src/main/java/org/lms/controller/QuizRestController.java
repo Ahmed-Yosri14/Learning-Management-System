@@ -39,7 +39,7 @@ public class QuizRestController {
     }
     @GetMapping("/{id}")
     public ResponseEntity<Quiz> getById(@PathVariable("courseid") Long courseId, @PathVariable("id") Long id) {
-        if (!authorizationManager.canViewCourse(courseId)) {
+        if (!authorizationManager.hasAccess(courseId)) {
             return ResponseEntity.status(403).body(null);
         }
         Quiz quiz = quizService.getById(courseId,id);
@@ -50,7 +50,7 @@ public class QuizRestController {
     }
     @GetMapping("")
     public ResponseEntity<List<Quiz>> getAll(@PathVariable("courseid") Long courseId) {
-        if (!authorizationManager.canViewCourse(courseId)) {
+        if (!authorizationManager.hasAccess(courseId)) {
             return ResponseEntity.status(403).body(null);
         }
         List<Quiz> quizzes = quizService.getAll(courseId);

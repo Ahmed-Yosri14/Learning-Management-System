@@ -15,7 +15,7 @@ import java.util.List;
 public class AssignmentFeedbackRestController {
 
     @Autowired
-    AssignmentFeedbackService assignmentFeedbackService;
+    private AssignmentFeedbackService assignmentFeedbackService;
 
     @Autowired
     private AuthorizationManager authorizationManager;
@@ -77,8 +77,7 @@ public class AssignmentFeedbackRestController {
         return ResponseEntity.badRequest().body("Something went wrong");
     }
 
-    // instructor or admin
-    @PreAuthorize("hasRole('INSTRUCTOR') or hasRole('ADMIN')")
+    // all
     @GetMapping("{id}")
     public ResponseEntity<AssignmentFeedback> getById(
             @PathVariable Long courseId,
@@ -87,7 +86,7 @@ public class AssignmentFeedbackRestController {
             @PathVariable Long id
     ){
 
-        if (!authorizationManager.canViewCourse(courseId)){
+        if (!canAccessDetails(courseId, assignmentSubmissionId)){
             return ResponseEntity.status(403).build();
         }
         AssignmentFeedback assignmentFeedback = assignmentFeedbackService.getById(courseId, assignmentId, assignmentSubmissionId, id);
@@ -97,13 +96,14 @@ public class AssignmentFeedbackRestController {
         return ResponseEntity.ok(assignmentFeedback);
     }
 
+    // all
     @GetMapping("")
     public ResponseEntity<List<AssignmentFeedback>> getAll(
             @PathVariable Long courseId,
             @PathVariable Long assignmentId,
             @PathVariable Long assignmentSubmissionId
     ){
-        if (!(authorizationManager.isAdminOrInstructor(courseId))){
+        if (!canAccessDetails(courseId, assignmentSubmissionId)){
             return ResponseEntity.status(403).build();
         }
         List<AssignmentFeedback> feedbackList = assignmentFeedbackService.getAllByAssignmentSubmissionId(courseId, assignmentId, assignmentSubmissionId);
@@ -111,5 +111,9 @@ public class AssignmentFeedbackRestController {
             return ResponseEntity.notFound().build();
         }
         return ResponseEntity.ok(feedbackList);
+    }
+
+    private boolean canAccessDetails(Long courseId, Long submissionId){
+        return authorizationManager.isAdminOrInstructor(courseId) || authorizationManager.ownsSubmission(submissionId);
     }
 }

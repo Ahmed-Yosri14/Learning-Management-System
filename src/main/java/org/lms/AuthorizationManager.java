@@ -1,11 +1,9 @@
 package org.lms;
 
-import org.lms.entity.Admin;
-import org.lms.entity.AppUser;
-import org.lms.entity.Course;
-import org.lms.entity.Student;
+import org.lms.entity.*;
 import org.lms.service.CourseService;
 import org.lms.service.EnrollmentService;
+import org.lms.service.SubmissionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -20,6 +18,9 @@ public class AuthorizationManager {
     @Autowired
     private EnrollmentService enrollmentService;
 
+    @Autowired
+    private SubmissionService submissionService;
+
     public AppUser getCurrentUser(){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         return (AppUser)authentication.getPrincipal();
@@ -27,7 +28,7 @@ public class AuthorizationManager {
     public Long getCurrentUserId(){
         return getCurrentUser().getId();
     }
-    public boolean canViewCourse(Long courseId){
+    public boolean hasAccess(Long courseId){
         AppUser user = getCurrentUser();
         Long userId = user.getId();
         if (!(user instanceof Student)){
@@ -46,9 +47,17 @@ public class AuthorizationManager {
         Long userId = getCurrentUserId();
         return course.getInstructor().getId() == userId;
     }
-    public boolean checkCourseStudent(Long courseId){
+    public boolean isEnrolled(Long courseId){
         AppUser user = getCurrentUser();
         Long userId = user.getId();
         return user instanceof Student && enrollmentService.checkStudentId(userId, courseId);
+    }
+    public boolean ownsSubmission(Long submissionId){
+        Submission submission = submissionService.getById(submissionId);
+        AppUser user = getCurrentUser();
+        Long userId = user.getId();
+        return user instanceof Student
+                && submissionService.existsById(submissionId)
+                && submission.getStudent().getId().equals(userId);
     }
 }

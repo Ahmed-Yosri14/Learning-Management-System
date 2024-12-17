@@ -7,18 +7,12 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-public class AssignmentSubmission {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+@DiscriminatorValue("ASSIGNMENT")
+public class AssignmentSubmission extends Submission {
 
     @ManyToOne
     @JoinColumn(nullable = false)
     private Assignment assignment;
-
-    @ManyToOne
-    @JoinColumn(nullable = false)
-    private Student student;
 
     @Column(nullable = false)
     private String filePath;

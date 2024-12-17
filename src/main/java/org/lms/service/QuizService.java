@@ -17,15 +17,21 @@ public class QuizService {
     @Autowired
     private CourseService courseService;
 
+    @Autowired
+    private NotificationService notificationService;
+
     public boolean create(Long courseId, Quiz quiz)
     {
         try{
-            if(courseService.getById(courseId) == null){
-                System.out.println("course not found");
-                return false;
-            }
-            quiz.setCourse(courseService.getById(courseId));
+            assert courseService.existsById(courseId);
+            Course course = courseService.getById(courseId);
+            quiz.setCourse(course);
             quizRepository.save(quiz);
+            notificationService.createToAllEnrolled(
+                    courseId,
+                    "New Quiz",
+                    "New quiz just started in \'" + course.getName() + "\'!"
+            );
             return true;
         }catch (Exception e){
         }

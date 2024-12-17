@@ -14,6 +14,8 @@ public class AssignmentService {
     private AssignmentRepository assignmentRepository;
     @Autowired
     private CourseService courseService;
+    @Autowired
+    private NotificationService notificationService;
 
     public boolean existsById(Long courseId, Long id) {
         Course course = courseService.getById(courseId);
@@ -26,15 +28,19 @@ public class AssignmentService {
     public boolean create(Long courseId,Assignment assignment)
     {
         try{
-            if(courseService.getById(courseId) == null){
-                System.out.println("course not found");
-                return false;
-            }
-            System.out.println(assignment);
-            assignment.setCourse(courseService.getById(courseId));
+            assert courseService.existsById(courseId);
+            Course course = courseService.getById(courseId);
+
+            assignment.setCourse(course);
             assignmentRepository.save(assignment);
+            notificationService.createToAllEnrolled(
+                    courseId,
+                    "New Assignment",
+                    "New quiz was just added in \'" + course.getName() + "\'!"
+            );
             return true;
         }catch (Exception e){
+            System.out.println(e);
         }
         return false;
     }
