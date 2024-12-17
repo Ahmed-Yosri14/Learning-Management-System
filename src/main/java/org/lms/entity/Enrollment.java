@@ -1,7 +1,11 @@
 package org.lms.entity;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
+@Getter
+@Setter
 @Entity
 public class Enrollment {
 
@@ -10,34 +14,10 @@ public class Enrollment {
     private Long id;
 
     @ManyToOne
-    @JoinColumn
+    @JoinColumn(nullable = false)
     private Course course;
 
     @ManyToOne
-    @JoinColumn
+    @JoinColumn(nullable = false)
     private Student student;
-
-    public Student getStudent() {
-        return student;
-    }
-
-    public void setStudent(Student student) {
-        this.student = student;
-    }
-
-    public Course getCourse() {
-        return course;
-    }
-
-    public void setCourse(Course course) {
-        this.course = course;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public Long getId() {
-        return id;
-    }
 }

@@ -82,7 +82,7 @@ public class LessonService {
     }
     public List<Lesson> getAll(Long courseId) {
         try {
-            return lessonRepository.findByCourseId(courseId);
+            return lessonRepository.findAllByCourseId(courseId);
         } catch (Exception e) {
             System.out.println("Error fetching lessons for course ID " + courseId + ": " + e.getMessage());
             return null;

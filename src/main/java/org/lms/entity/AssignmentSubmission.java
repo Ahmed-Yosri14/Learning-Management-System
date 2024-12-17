@@ -7,17 +7,18 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-public class CourseMaterial {
+public class AssignmentSubmission {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
 
     @ManyToOne
     @JoinColumn(nullable = false)
-    private Course course;
+    private Assignment assignment;
 
-    @Column(nullable = false)
-    private String fileName;
+    @ManyToOne
+    @JoinColumn(nullable = false)
+    private Student student;
 
     @Column(nullable = false)
     private String filePath;

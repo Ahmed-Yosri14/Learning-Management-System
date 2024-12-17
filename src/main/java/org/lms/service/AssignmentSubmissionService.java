@@ -2,8 +2,9 @@ package org.lms.service;
 
 import org.lms.AuthorizationManager;
 import org.lms.entity.Assignment;
-import org.lms.entity.Submission;
-import org.lms.repository.SubmissionRepository;
+import org.lms.entity.AssignmentSubmission;
+import org.lms.entity.Student;
+import org.lms.repository.AssignmentSubmissionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -12,10 +13,10 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class SubmissionService {
+public class AssignmentSubmissionService {
 
     @Autowired
-    private SubmissionRepository submissionRepository;
+    private AssignmentSubmissionRepository assignmentSubmissionRepository;
 
     @Autowired
     private AssignmentService assignmentService;
@@ -28,6 +29,9 @@ public class SubmissionService {
 
     @Autowired
     private AuthorizationManager authorizationManager;
+
+    @Autowired
+    private AppUserService appUserService;
 
     public boolean submit(Long courseId, Long assignmentId, Long studentId, MultipartFile file) {
         try {
@@ -44,12 +48,12 @@ public class SubmissionService {
             }
 
             String filePath = fileStorageService.storeFile(file);
-            Submission submission = new Submission();
-            submission.setAssignment(assignment);
-            submission.setStudentId(studentId);
-            submission.setFilePath(filePath);
+            AssignmentSubmission assignmentSubmission = new AssignmentSubmission();
+            assignmentSubmission.setAssignment(assignment);
+            assignmentSubmission.setStudent((Student)appUserService.getById(studentId));
+            assignmentSubmission.setFilePath(filePath);
 
-            submissionRepository.save(submission);
+            assignmentSubmissionRepository.save(assignmentSubmission);
             return true;
         }
         catch (Exception e) {
@@ -60,13 +64,13 @@ public class SubmissionService {
 
     public boolean deleteSubmission(Long submissionId, Long studentId) {
         try {
-            Optional<Submission> submissionOpt = submissionRepository.findById(submissionId);
+            Optional<AssignmentSubmission> submissionOpt = assignmentSubmissionRepository.findById(submissionId);
             if (submissionOpt.isPresent()) {
-                Submission submission = submissionOpt.get();
-                if (!submission.getStudentId().equals(studentId)) {
+                AssignmentSubmission assignmentSubmission = submissionOpt.get();
+                if (!assignmentSubmission.getStudent().getId().equals(studentId)) {
                     throw new IllegalAccessException("You are not authorized to delete this submission.");
                 }
-                submissionRepository.deleteById(submissionId);
+                assignmentSubmissionRepository.deleteById(submissionId);
                 return true;
             }
             return false;
@@ -77,13 +81,13 @@ public class SubmissionService {
     }
 
     //we have to restrict this method
-    public List<Submission> getSubmissions(Long courseId, Long assignmentId) {
+    public List<AssignmentSubmission> getSubmissions(Long courseId, Long assignmentId) {
         try {
             Assignment assignment = assignmentService.getById(courseId, assignmentId);
             if (assignment == null) {
                 throw new IllegalArgumentException("Assignment not found for the given course.");
             }
-            return submissionRepository.findByAssignment(assignment);
+            return assignmentSubmissionRepository.findAllByAssignment(assignment);
         } catch (Exception e) {
             System.err.println("Error fetching submissions: " + e.getMessage());
             return null;

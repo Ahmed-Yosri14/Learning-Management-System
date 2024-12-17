@@ -1,7 +1,7 @@
 package org.lms.controller;
 
-import org.lms.entity.Submission;
-import org.lms.service.SubmissionService;
+import org.lms.entity.AssignmentSubmission;
+import org.lms.service.AssignmentSubmissionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,7 +14,7 @@ import java.util.List;
 public class SubmissionController {
 
     @Autowired
-    private SubmissionService submissionService;
+    private AssignmentSubmissionService assignmentSubmissionService;
     @PostMapping
     public ResponseEntity<String> submitAssignment(
             @PathVariable Long courseId,
@@ -23,7 +23,7 @@ public class SubmissionController {
             @RequestParam("file") MultipartFile file) {
         try
         {
-            boolean success = submissionService.submit(courseId, assignmentId, studentId, file);
+            boolean success = assignmentSubmissionService.submit(courseId, assignmentId, studentId, file);
             if (success)
             {
                 return ResponseEntity.ok("Assignment submitted successfully.");
@@ -47,7 +47,7 @@ public class SubmissionController {
             @PathVariable Long submissionId,
             @RequestParam("studentId") Long studentId) {
         try {
-            boolean success = submissionService.deleteSubmission(submissionId, studentId);
+            boolean success = assignmentSubmissionService.deleteSubmission(submissionId, studentId);
             if (success) {
                 return ResponseEntity.ok("Submission deleted successfully.");
             } else {
@@ -60,15 +60,15 @@ public class SubmissionController {
 
     // we have to restrict the access to this method
     @GetMapping
-    public ResponseEntity<List<Submission>> getAllSubmissions(
+    public ResponseEntity<List<AssignmentSubmission>> getAllSubmissions(
             @PathVariable Long courseId,
             @PathVariable Long assignmentId) {
         try {
-            List<Submission> submissions = submissionService.getSubmissions(courseId, assignmentId);
-            if (submissions == null || submissions.isEmpty()) {
+            List<AssignmentSubmission> assignmentSubmissions = assignmentSubmissionService.getSubmissions(courseId, assignmentId);
+            if (assignmentSubmissions == null || assignmentSubmissions.isEmpty()) {
                 return ResponseEntity.noContent().build();
             }
-            return ResponseEntity.ok(submissions);
+            return ResponseEntity.ok(assignmentSubmissions);
         } catch (Exception e) {
             return ResponseEntity.status(500).body(null);
         }

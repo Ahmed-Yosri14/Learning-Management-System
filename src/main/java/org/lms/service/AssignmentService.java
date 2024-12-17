@@ -2,7 +2,6 @@ package org.lms.service;
 
 import org.lms.entity.Assignment;
 import org.lms.entity.Course;
-import org.lms.entity.Lesson;
 import org.lms.repository.AssignmentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -80,7 +79,7 @@ public class AssignmentService {
             if(course == null){
                 return null;
             }
-            return assignmentRepository.findByCourse(course);
+            return assignmentRepository.findAllByCourse(course);
         } catch (Exception e) {
             System.out.println("Error fetching assignments for course ID " + courseId + ": " + e.getMessage());
             return null;

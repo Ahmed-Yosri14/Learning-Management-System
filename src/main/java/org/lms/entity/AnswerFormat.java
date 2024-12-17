@@ -9,12 +9,12 @@ import lombok.Setter;
 @Getter
 @Setter
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-@DiscriminatorColumn(name = "answer_format_type", discriminatorType = DiscriminatorType.STRING)
+@DiscriminatorColumn(name = "answerFormatType", discriminatorType = DiscriminatorType.STRING)
 @Entity
 @JsonTypeInfo(
         use = JsonTypeInfo.Id.NAME,
         include = JsonTypeInfo.As.PROPERTY,
-        property = "answer_format_type",
+        property = "answerFormatType",
         visible = true
 )
 @JsonSubTypes({

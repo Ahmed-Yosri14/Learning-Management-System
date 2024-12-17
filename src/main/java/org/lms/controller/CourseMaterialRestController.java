@@ -78,7 +78,7 @@ public class CourseMaterialRestController {
     }
     @GetMapping("/{courseId}/materials")
     public ResponseEntity<List<CourseMaterial>> getMaterialsByCourse(@PathVariable Long courseId) {
-        List<CourseMaterial> materials = courseMaterialRepository.findByCourseId(courseId);
+        List<CourseMaterial> materials = courseMaterialRepository.findAllByCourseId(courseId);
 
         if (materials.isEmpty()) {
             return ResponseEntity.notFound().build();

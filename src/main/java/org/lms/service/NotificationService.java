@@ -56,7 +56,7 @@ public class NotificationService {
             notification = null;
         }
         if (notification != null) {
-            notification.setRead(true);
+            notification.setIsRead(true);
             notificationRepository.save(notification);
         }
         return notification;
@@ -65,7 +65,7 @@ public class NotificationService {
         if (OnlyUnread) {
             return notificationRepository.findAllByUserId(userId);
         }
-        return notificationRepository.findUnreadByUserId(userId);
+        return notificationRepository.findAllUnreadByUserId(userId);
     }
     public List<Notification> getAll(){
         return notificationRepository.findAll();

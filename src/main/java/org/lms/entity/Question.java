@@ -13,10 +13,11 @@ public class Question {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false)
     private String questionStatement;
 
     @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn
+    @JoinColumn(nullable = false)
     private AnswerFormat answerFormat;
 
     @ManyToOne

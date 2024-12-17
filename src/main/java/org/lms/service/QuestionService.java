@@ -118,7 +118,7 @@ public class QuestionService {
             if(course == null){
                 return null;
             }
-            return questionRepository.findByQuizId(quizId);
+            return questionRepository.findAllByQuizId(quizId);
         } catch (Exception e) {
             System.out.println("Error fetching question for course ID " + courseId + ": " + e.getMessage());
             return null;

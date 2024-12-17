@@ -1,6 +1,5 @@
 package org.lms.service;
 
-import org.lms.entity.Assignment;
 import org.lms.entity.Course;
 import org.lms.entity.Quiz;
 import org.lms.repository.QuizRepository;
@@ -76,7 +75,7 @@ public class QuizService {
             if(course == null){
                 return null;
             }
-            return quizRepository.findByCourse(course);
+            return quizRepository.findAllByCourse(course);
         } catch (Exception e) {
             System.out.println("Error fetching quiz for course ID " + courseId + ": " + e.getMessage());
             return null;
