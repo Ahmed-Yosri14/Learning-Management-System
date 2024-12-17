@@ -62,11 +62,11 @@ public class QuizService {
             if (quiz.getCourse() != null && quiz.getCourse().getId().equals(courseId)) {
                 return quiz;
             } else {
-                System.out.println("assignment not found or does not belong to the specified course.");
+                System.out.println("quiz not found or does not belong to the specified course.");
                 return null;
             }
         } catch (Exception e) {
-            System.out.println("Error retrieving assignment: " + e.getMessage());
+            System.out.println("Error retrieving quiz: " + e.getMessage());
             return null;
         }
     }
@@ -78,7 +78,7 @@ public class QuizService {
             }
             return quizRepository.findByCourse(course);
         } catch (Exception e) {
-            System.out.println("Error fetching assignments for course ID " + courseId + ": " + e.getMessage());
+            System.out.println("Error fetching quiz for course ID " + courseId + ": " + e.getMessage());
             return null;
         }
     }
