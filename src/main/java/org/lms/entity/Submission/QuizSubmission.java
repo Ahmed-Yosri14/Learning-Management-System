@@ -1,8 +1,10 @@
-package org.lms.entity;
+package org.lms.entity.Submission;
 
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.lms.entity.Assessment.Quiz;
+import org.lms.entity.QuestionAnswer;
 
 import java.util.List;
 

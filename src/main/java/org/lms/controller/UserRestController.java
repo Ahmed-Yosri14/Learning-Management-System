@@ -2,7 +2,7 @@ package org.lms.controller;
 
 
 import org.lms.AuthorizationManager;
-import org.lms.entity.AppUser;
+import org.lms.entity.User.AppUser;
 import org.lms.entity.UserRole;
 import org.lms.service.AppUserService;
 import org.springframework.beans.factory.annotation.Autowired;

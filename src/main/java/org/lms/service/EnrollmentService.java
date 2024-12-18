@@ -1,9 +1,9 @@
 package org.lms.service;
 
-import org.lms.entity.AppUser;
+import org.lms.entity.User.AppUser;
 import org.lms.entity.Course;
 import org.lms.entity.Enrollment;
-import org.lms.entity.Student;
+import org.lms.entity.User.Student;
 import org.lms.repository.EnrollmentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

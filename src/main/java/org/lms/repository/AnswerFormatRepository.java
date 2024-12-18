@@ -1,6 +1,6 @@
 package org.lms.repository;
 
-import org.lms.entity.AnswerFormat;
+import org.lms.entity.Answer.AnswerFormat;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

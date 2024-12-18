@@ -1,6 +1,6 @@
 package org.lms.service;
 
-import org.lms.entity.AppUser;
+import org.lms.entity.User.AppUser;
 import org.lms.entity.UserRole;
 import org.lms.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,6 +1,6 @@
 package org.lms.service;
 
-import org.lms.entity.Assignment;
+import org.lms.entity.Assessment.Assignment;
 import org.lms.entity.Course;
 import org.lms.repository.AssignmentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -60,8 +60,8 @@ public class AssignmentService {
             if (assignment.getDuration() != null){
                 oldAssignment.setDuration(assignment.getDuration());
             }
-            if(assignment.getContent() != null){
-                oldAssignment.setContent(assignment.getContent());
+            if(assignment.getDescription() != null){
+                oldAssignment.setDescription(assignment.getDescription());
             }
             assignmentRepository.save(oldAssignment);
             return true;

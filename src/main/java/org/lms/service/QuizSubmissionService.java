@@ -1,6 +1,10 @@
 package org.lms.service;
 
 import org.lms.entity.*;
+import org.lms.entity.Assessment.Quiz;
+import org.lms.entity.Feedback.QuizFeedback;
+import org.lms.entity.Submission.QuizSubmission;
+import org.lms.entity.User.Student;
 import org.lms.repository.QuizSubmissionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

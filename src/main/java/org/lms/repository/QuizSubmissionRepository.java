@@ -1,9 +1,9 @@
 package org.lms.repository;
 
 
-import org.lms.entity.Quiz;
-import org.lms.entity.Student;
-import org.lms.entity.QuizSubmission;
+import org.lms.entity.Assessment.Quiz;
+import org.lms.entity.User.Student;
+import org.lms.entity.Submission.QuizSubmission;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

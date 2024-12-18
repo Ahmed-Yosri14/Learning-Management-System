@@ -1,7 +1,7 @@
 package org.lms.service;
 
-import org.lms.entity.AssignmentFeedback;
-import org.lms.entity.QuizFeedback;
+import org.lms.entity.Feedback.AssignmentFeedback;
+import org.lms.entity.Feedback.QuizFeedback;
 import org.lms.repository.QuizFeedbackRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

@@ -1,7 +1,7 @@
 package org.lms.repository;
 
 import org.lms.entity.Course;
-import org.lms.entity.Quiz;
+import org.lms.entity.Assessment.Quiz;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 

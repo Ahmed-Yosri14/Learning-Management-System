@@ -1,7 +1,7 @@
 package org.lms.service;
 
 import org.lms.entity.Course;
-import org.lms.entity.Instructor;
+import org.lms.entity.User.Instructor;
 import org.lms.repository.CourseRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

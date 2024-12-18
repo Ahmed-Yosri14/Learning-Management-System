@@ -1,6 +1,6 @@
 package org.lms.service;
 
-import org.lms.entity.AppUser;
+import org.lms.entity.User.AppUser;
 import org.lms.entity.Enrollment;
 import org.lms.entity.Notification;
 import org.lms.repository.EnrollmentRepository;

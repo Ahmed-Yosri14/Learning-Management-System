@@ -1,4 +1,4 @@
-package org.lms.entity;
+package org.lms.entity.Answer;
 
 import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;

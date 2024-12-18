@@ -1,6 +1,6 @@
 package org.lms.service;
 
-import org.lms.entity.Submission;
+import org.lms.entity.Submission.Submission;
 import org.lms.repository.SubmissionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

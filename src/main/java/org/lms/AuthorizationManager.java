@@ -1,6 +1,10 @@
 package org.lms;
 
 import org.lms.entity.*;
+import org.lms.entity.Submission.Submission;
+import org.lms.entity.User.Admin;
+import org.lms.entity.User.AppUser;
+import org.lms.entity.User.Student;
 import org.lms.service.CourseService;
 import org.lms.service.EnrollmentService;
 import org.lms.service.SubmissionService;

@@ -1,8 +1,8 @@
 package org.lms.controller;
 
 import org.lms.AuthorizationManager;
-import org.lms.entity.AssignmentFeedback;
-import org.lms.entity.QuizFeedback;
+import org.lms.entity.Feedback.AssignmentFeedback;
+import org.lms.entity.Feedback.QuizFeedback;
 import org.lms.service.QuizFeedbackService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

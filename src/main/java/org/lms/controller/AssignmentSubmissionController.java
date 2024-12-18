@@ -1,6 +1,6 @@
 package org.lms.controller;
 
-import org.lms.entity.AssignmentSubmission;
+import org.lms.entity.Submission.AssignmentSubmission;
 import org.lms.service.AssignmentSubmissionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

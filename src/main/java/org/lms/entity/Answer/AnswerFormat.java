@@ -1,4 +1,4 @@
-package org.lms.entity;
+package org.lms.entity.Answer;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
@@ -28,5 +28,6 @@ public abstract class AnswerFormat {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String correctAnswer; // Common field
+    @Column(nullable = false)
+    private String correctAnswer;
 }

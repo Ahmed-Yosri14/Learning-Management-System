@@ -1,9 +1,9 @@
 package org.lms.service;
 
-import org.lms.entity.AnswerFormat;
+import org.lms.entity.Answer.AnswerFormat;
 import org.lms.entity.Course;
 import org.lms.entity.Question;
-import org.lms.entity.Quiz;
+import org.lms.entity.Assessment.Quiz;
 import org.lms.repository.AnswerFormatRepository;
 import org.lms.repository.QuestionRepository;
 import org.springframework.beans.factory.annotation.Autowired;

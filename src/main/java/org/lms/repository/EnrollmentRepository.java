@@ -2,7 +2,7 @@ package org.lms.repository;
 
 import org.lms.entity.Course;
 import org.lms.entity.Enrollment;
-import org.lms.entity.Student;
+import org.lms.entity.User.Student;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 

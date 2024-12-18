@@ -1,6 +1,6 @@
 package org.lms.repository;
 
-import org.lms.entity.AssignmentFeedback;
+import org.lms.entity.Feedback.AssignmentFeedback;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;

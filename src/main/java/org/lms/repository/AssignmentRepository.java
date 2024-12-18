@@ -1,6 +1,6 @@
 package org.lms.repository;
 
-import org.lms.entity.Assignment;
+import org.lms.entity.Assessment.Assignment;
 import org.lms.entity.Course;
 import org.springframework.data.jpa.repository.JpaRepository;
 

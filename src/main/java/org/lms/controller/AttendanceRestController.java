@@ -2,7 +2,7 @@ package org.lms.controller;
 
 
 import org.lms.AuthorizationManager;
-import org.lms.entity.Student;
+import org.lms.entity.User.Student;
 import org.lms.service.AttendanceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

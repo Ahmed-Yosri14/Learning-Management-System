@@ -1,4 +1,4 @@
-package org.lms.entity;
+package org.lms.entity.Answer;
 
 import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
@@ -8,7 +8,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-@DiscriminatorValue("TRUE_FALSE")
-public class TrueFalseAnswer extends AnswerFormat {
+@DiscriminatorValue("WRITTEN")
+public class WrittenAnswer extends AnswerFormat {
 
 }

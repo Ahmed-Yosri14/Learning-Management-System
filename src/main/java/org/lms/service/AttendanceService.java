@@ -1,6 +1,7 @@
 package org.lms.service;
 
 import org.lms.entity.*;
+import org.lms.entity.User.Student;
 import org.lms.repository.AttendanceRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

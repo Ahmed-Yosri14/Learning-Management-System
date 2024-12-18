@@ -1,6 +1,6 @@
 package org.lms.service;
 
-import org.lms.entity.AppUser;
+import org.lms.entity.User.AppUser;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
 public interface UserService {

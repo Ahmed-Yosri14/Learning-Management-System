@@ -1,7 +1,7 @@
 package org.lms.controller;
 
 import org.lms.AuthorizationManager;
-import org.lms.entity.QuizSubmission;
+import org.lms.entity.Submission.QuizSubmission;
 import org.lms.service.QuizSubmissionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

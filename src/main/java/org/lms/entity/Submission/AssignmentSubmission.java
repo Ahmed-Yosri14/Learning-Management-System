@@ -1,17 +1,17 @@
-package org.lms.entity;
+package org.lms.entity.Submission;
 
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.lms.entity.Assessment.Assignment;
 
 @Getter
 @Setter
 @Entity
-@DiscriminatorValue("ASSIGNMENT")
 public class AssignmentSubmission extends Submission {
 
     @ManyToOne
-    @JoinColumn
+    @JoinColumn(nullable = false)
     private Assignment assignment;
 
     @Column(nullable = false)
