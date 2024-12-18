@@ -43,6 +43,7 @@ public class CourseMaterialRestController {
         }
         return ResponseEntity.badRequest().body("Failed to delete material.");
     }
+    @PreAuthorize("hasRole('INSTRUCTOR')||hasRole('STUDENT')||hasRole('ADMIN')")
     @GetMapping("")
     public ResponseEntity<List<CourseMaterial>> getMaterialsByCourse(@PathVariable Long courseId) {
         if (!authorizationManager.hasAccess(courseId)){
