@@ -21,7 +21,9 @@ public class Question {
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(nullable = false)
     private AnswerFormat answerFormat;
+
     private Double mark;
+
     @ManyToOne
     @JoinColumn(nullable = false)
     private Quiz quiz;

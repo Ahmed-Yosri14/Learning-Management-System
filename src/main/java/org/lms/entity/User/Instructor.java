@@ -7,5 +7,4 @@ import jakarta.persistence.Entity;
 @Entity
 @DiscriminatorValue("INSTRUCTOR")
 public class Instructor extends AppUser {
-
 }

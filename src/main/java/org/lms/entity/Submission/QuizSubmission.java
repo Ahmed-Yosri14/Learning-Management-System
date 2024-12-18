@@ -13,7 +13,6 @@ import java.util.List;
 @Entity
 @DiscriminatorValue("QUIZ")
 public class QuizSubmission extends Submission {
-
     @ManyToOne
     @JoinColumn(nullable = false)
     public Quiz quiz;

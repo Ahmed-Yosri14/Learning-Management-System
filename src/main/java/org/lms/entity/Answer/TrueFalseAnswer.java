@@ -10,5 +10,4 @@ import lombok.Setter;
 @Entity
 @DiscriminatorValue("TRUE_FALSE")
 public class TrueFalseAnswer extends AnswerFormat {
-
 }

@@ -14,7 +14,6 @@ import org.lms.entity.User.Student;
         }
 )
 public class Attendance {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

@@ -10,5 +10,4 @@ import lombok.Setter;
 @Entity
 @DiscriminatorValue("WRITTEN")
 public class WrittenAnswer extends AnswerFormat {
-
 }

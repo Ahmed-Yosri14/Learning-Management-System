@@ -6,6 +6,7 @@ import org.lms.entity.Feedback.QuizFeedback;
 import org.lms.entity.Submission.QuizSubmission;
 import org.lms.entity.User.Student;
 import org.lms.repository.QuizSubmissionRepository;
+import org.lms.service.Assessment.QuizService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

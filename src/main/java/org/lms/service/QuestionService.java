@@ -6,6 +6,7 @@ import org.lms.entity.Question;
 import org.lms.entity.Assessment.Quiz;
 import org.lms.repository.AnswerFormatRepository;
 import org.lms.repository.QuestionRepository;
+import org.lms.service.Assessment.QuizService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

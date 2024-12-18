@@ -2,7 +2,7 @@ package org.lms.controller;
 
 import org.lms.AuthorizationManager;
 import org.lms.entity.Assessment.Assignment;
-import org.lms.service.AssignmentService;
+import org.lms.service.Assessment.AssignmentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -70,7 +70,7 @@ public class AssignmentRestController {
         if (!(authorizationManager.isInstructor(courseId))) {
             return ResponseEntity.badRequest().body("You do not have permission to edit this course.");
         }
-        if (assignmentService.delete(courseId, id)) {
+        if (assignmentService.deleteAssessment(courseId, id)) {
             return ResponseEntity.ok("All good!");
         }
         return ResponseEntity.badRequest().body("Something went wrong");

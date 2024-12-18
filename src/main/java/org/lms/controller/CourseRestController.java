@@ -24,6 +24,7 @@ public class CourseRestController {
     @PreAuthorize("hasRole('INSTRUCTOR')")
     @PutMapping("")
     public ResponseEntity<String> create(@RequestBody Course course) {
+        assert false : "Assertions are enabled";
         if (courseService.create(course, authorizationManager.getCurrentUserId())){
             return ResponseEntity.ok("All good!");
         }

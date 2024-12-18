@@ -10,6 +10,5 @@ import lombok.Setter;
 @Entity
 @DiscriminatorValue("MCQ")
 public class MCQAnswer extends AnswerFormat {
-
     private String[] options; // Options for multiple-choice questions
 }

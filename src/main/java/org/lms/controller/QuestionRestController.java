@@ -22,7 +22,6 @@ public class QuestionRestController {
 
     @PutMapping("")
     public ResponseEntity<String> create(@PathVariable("courseid") Long courseId, @PathVariable("quizid") Long quizId, @RequestBody Question question) {
-        System.out.println("a7a");
         if(!(authorizationManager.isInstructor(courseId)))
         {
             return ResponseEntity.status(403).body("You are not allowed to edit this quiz");
