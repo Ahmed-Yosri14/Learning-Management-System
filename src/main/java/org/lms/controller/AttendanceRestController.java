@@ -2,6 +2,7 @@ package org.lms.controller;
 
 
 import org.lms.AuthorizationManager;
+import org.lms.dao.request.AttendanceRequest;
 import org.lms.entity.User.Student;
 import org.lms.service.AttendanceService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,14 +25,15 @@ public class AttendanceRestController {
     // student
     @PreAuthorize("hasRole('STUDENT')")
     @PutMapping("")
-    public ResponseEntity<String> attend(@PathVariable("courseId") Long courseId, @PathVariable("lessonId") Long lessonId, @RequestBody String otp) {
+    public ResponseEntity<String> attend(@PathVariable("courseId") Long courseId, @PathVariable("lessonId") Long lessonId, @RequestBody AttendanceRequest request) {
+        System.out.println(request.getOtp());
         if (!authorizationManager.isEnrolled(courseId)){
             return ResponseEntity.status(403).build();
         }
-        if (attendanceService.tryRecord(1L, lessonId, courseId, otp)){
-            return ResponseEntity.ok("Student has attended the lesson!");
+        if (attendanceService.tryRecord(authorizationManager.getCurrentUserId(), lessonId, courseId, request.getOtp())){
+            return ResponseEntity.ok("Lesson Attended");
         }
-        return ResponseEntity.ok("Student hasn't attended the lesson");
+        return ResponseEntity.ok("Error");
     }
 
     // instructor & admin
