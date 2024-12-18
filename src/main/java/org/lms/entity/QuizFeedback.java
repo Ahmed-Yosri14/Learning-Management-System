@@ -12,5 +12,5 @@ import lombok.Setter;
 public class QuizFeedback extends Feedback {
     @ManyToOne
     @JoinColumn(nullable = false)
-    private Quiz quiz;
+    private QuizSubmission quizSubmission;
 }

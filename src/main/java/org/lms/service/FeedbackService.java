@@ -1,13 +1,9 @@
 package org.lms.service;
 
-import org.apache.coyote.Request;
-import org.lms.entity.AppUser;
 import org.lms.entity.Feedback;
 import org.lms.repository.FeedbackRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 public class FeedbackService {
@@ -15,35 +11,42 @@ public class FeedbackService {
     @Autowired
     private FeedbackRepository feedbackRepository;
 
-    public List<Feedback> getAllFeedback() {
-        return feedbackRepository.findAll();
+    public boolean existsById(Long id){
+        return feedbackRepository.existsById(id);
     }
-
-    public Feedback getFeedbackById(Long id) {
-        return feedbackRepository.findById(id).orElse(null);
+    public Feedback getById(Long id){
+        return feedbackRepository.findById(id).get();
     }
-
-    public Feedback saveFeedback(Feedback feedback) {
-        return feedbackRepository.save(feedback);
-    }
-    public boolean updateFeedback(Feedback feedback) {
+    public boolean update(Long id, Feedback feedback){
         try {
-            if (feedbackRepository.existsById(feedback.getId())) {
-                feedbackRepository.save(feedback);
+            assert existsById(id);
+
+            Feedback oldFeedBack = getById(id);
+
+            if (feedback.getGrade() != null) {
+                oldFeedBack.setGrade(feedback.getGrade());
             }
-            return true;
+            if (feedback.getMaxGrade() != null) {
+                oldFeedBack.setMaxGrade(feedback.getMaxGrade());
+            }
+            if (feedback.getComment() != null) {
+                oldFeedBack.setComment(feedback.getComment());
+            }
+            feedbackRepository.save(oldFeedBack);
         }
-        catch(Exception e){}
+        catch(Exception e){
+            System.out.println(e);
+        }
         return false;
     }
-    public boolean deleteFeedback(Long id) {
+    public boolean delete(Long id){
         try {
-            if (feedbackRepository.existsById(id)) {
-                feedbackRepository.deleteById(id);
-            }
+            feedbackRepository.deleteById(id);
             return true;
         }
-        catch(Exception e){}
+        catch(Exception e){
+            System.out.println(e);
+        }
         return false;
     }
 }

@@ -104,4 +104,7 @@ public class QuizService {
             return false;
         }
     }
+    public Double getFullMark(Long id){
+        return quizRepository.findFullMark(id);
+    }
 }
