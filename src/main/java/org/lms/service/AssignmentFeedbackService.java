@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public class AssignmentFeedbackService {
+public class AssignmentFeedbackService extends FeedbackService {
 
     @Autowired
     private AssignmentFeedbackRepository assignmentFeedbackRepository;
@@ -24,17 +24,12 @@ public class AssignmentFeedbackService {
             Long id
     ){
 
-        AssignmentFeedback assignmentFeedback = getById(id);
-        return assignmentFeedbackRepository.existsById(id)
+        AssignmentFeedback assignmentFeedback = (AssignmentFeedback)getById(id);
+        return existsById(id)
                 && assignmentSubmissionService.existsById(courseId, assignmentId, assignmentSubmissionId)
                 && assignmentFeedback.getAssignmentSubmission().getId().equals(assignmentSubmissionId);
     }
 
-    public AssignmentFeedback getById(
-            Long id
-    ){
-        return assignmentFeedbackRepository.findById(id).get();
-    }
 
     public AssignmentFeedback getById(
             Long courseId,
@@ -45,7 +40,7 @@ public class AssignmentFeedbackService {
         try {
             assert existsById(courseId, assignmentId, assignmentSubmissionId, id);
 
-            return getById(id);
+            return (AssignmentFeedback)getById(id);
         }
         catch(Exception e){
             System.out.println(e);
@@ -102,20 +97,7 @@ public class AssignmentFeedbackService {
         try {
             assert existsById(courseId, assignmentId, assignmentSubmissionId, id);
 
-            AssignmentFeedback oldAssignmentFeedback = getById(id);
-
-            if (assignmentFeedback.getGrade() != null) {
-                oldAssignmentFeedback.setGrade(assignmentFeedback.getGrade());
-            }
-            if (assignmentFeedback.getMaxGrade() != null) {
-                oldAssignmentFeedback.setMaxGrade(assignmentFeedback.getMaxGrade());
-            }
-            if (assignmentFeedback.getComment() != null) {
-                oldAssignmentFeedback.setComment(assignmentFeedback.getComment());
-            }
-
-            assignmentFeedbackRepository.save(oldAssignmentFeedback);
-            return true;
+            return update(id, assignmentFeedback);
         }
         catch(Exception e){
             System.out.println(e);
@@ -132,8 +114,8 @@ public class AssignmentFeedbackService {
 
         try {
             assert existsById(courseId, assignmentId, assignmentSubmissionId, id);
-            assignmentFeedbackRepository.deleteById(id);
-            return true;
+
+            return delete(id);
         }
         catch(Exception e){
             System.out.println(e);
