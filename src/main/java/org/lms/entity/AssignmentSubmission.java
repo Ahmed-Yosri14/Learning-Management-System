@@ -11,7 +11,7 @@ import lombok.Setter;
 public class AssignmentSubmission extends Submission {
 
     @ManyToOne
-    @JoinColumn(nullable = false)
+    @JoinColumn
     private Assignment assignment;
 
     @Column(nullable = false)

@@ -97,5 +97,4 @@ public class QuizSubmissionService {
     public boolean existsByStudentIdAndQuizId(Long studentId, Long quizId){
         return quizSubmissionRepository.existsByStudentIdAndQuizId(studentId,quizId);
     }
-
 }

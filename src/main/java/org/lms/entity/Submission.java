@@ -7,7 +7,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@Inheritance(strategy = InheritanceType.JOINED)
 @DiscriminatorColumn(name = "type", discriminatorType = DiscriminatorType.STRING)
 public class Submission {
 

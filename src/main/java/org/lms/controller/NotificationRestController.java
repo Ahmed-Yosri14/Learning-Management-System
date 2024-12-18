@@ -4,10 +4,7 @@ import org.lms.AuthorizationManager;
 import org.lms.entity.Notification;
 import org.lms.service.NotificationService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -28,7 +25,7 @@ public class NotificationRestController {
     }
     // all
     @GetMapping("/{id}")
-    Notification getById(@RequestParam Long id){
+    Notification getById(@PathVariable Long id){
         return notificationService.getById(authorizationManager.getCurrentUserId(), id);
     }
 }

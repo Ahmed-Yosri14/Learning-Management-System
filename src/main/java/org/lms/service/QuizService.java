@@ -34,6 +34,7 @@ public class QuizService {
             );
             return true;
         }catch (Exception e){
+            System.out.println(e);
         }
         return false;
     }

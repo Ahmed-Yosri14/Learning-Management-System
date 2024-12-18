@@ -13,14 +13,10 @@ import java.util.List;
 public class QuizSubmission extends Submission {
 
     @ManyToOne
-    @JoinColumn
+    @JoinColumn(nullable = false)
     public Quiz quiz;
 
     @ElementCollection
-    @CollectionTable(joinColumns = @JoinColumn())
+    @CollectionTable(name = "submitted_answers", joinColumns = @JoinColumn(name = "quiz_submission_id"))
     private List<QuestionAnswer> questionsAnswer;
-
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn
-    private Student student;
 }
