@@ -51,7 +51,6 @@ public class QuizSubmissionService {
         if(student == null) return false;
         if(!Objects.equals(quiz.getCourse().getId(), courseId)) return false;
 
-
         quizSubmission.setQuiz(quiz);
 //        System.out.println("lol3");
         quizSubmission.setStudent(student);
@@ -69,7 +68,9 @@ public class QuizSubmissionService {
         }
         List<QuestionAnswer> StudentAnswer = quizSubmission.getQuestionsAnswer();
         Double studentMark = 0.0;
+        double max = 0.0;
         for(QuestionAnswer pair : StudentAnswer) {
+            max+=1;
             Long questionId = pair.getQuestionId();
             String answer = pair.getAnswer();
             Question question = questionService.getById(courseId,questionId);
@@ -83,7 +84,7 @@ public class QuizSubmissionService {
         QuizFeedback quizFeedback = new QuizFeedback();
         quizFeedback.setQuizSubmission(quizSubmission);
         quizFeedback.setGrade(studentMark);
-        quizFeedback.setMaxGrade(quizService.getById(courseId,quizId).getQuestionNum());
+        quizFeedback.setMaxGrade(max);
         quizFeedback.setComment("Automated quiz grading");
         quizFeedbackService.create(quizFeedback);
         return studentMark;
