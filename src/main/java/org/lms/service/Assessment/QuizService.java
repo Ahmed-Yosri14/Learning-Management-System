@@ -46,30 +46,19 @@ public class QuizService extends AssessmentService {
     }
     public boolean update(Long courseId, Long id, Quiz quiz)
     {
-        try{
-            Assert.isTrue(super.updateAssessment(courseId, id, quiz));
-            return true;
-        }
-        catch (Exception e){}
-        return false;
+        return super.updateAssessment(courseId, id, quiz);
     }
-    public boolean deleteAssessment(Long courseId, Long id) {
-        try {
-            Assert.isTrue(super.deleteAssessment(courseId, id));
-            return true;
-        } catch (Exception e) {
-            return false;
-        }
+    public boolean delete(Long courseId, Long id) {
+        return super.deleteAssessment(courseId, id);
     }
     public Quiz getById(Long courseId, Long id)
     {
         try {
-            Assert.isTrue(super.existsById(courseId, id));
             return (Quiz) super.getById(id);
         } catch (Exception e) {
             System.out.println("Error retrieving quiz: " + e.getMessage());
-            return null;
         }
+        return null;
     }
     public List<Quiz> getAll(Long courseId){
         try {
@@ -158,6 +147,5 @@ public class QuizService extends AssessmentService {
 
         return randomizedQuestions;
     }
-
 }
 

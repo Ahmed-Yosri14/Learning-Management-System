@@ -13,7 +13,7 @@ public class AssessmentService {
     @Autowired
     private AssessmentRepository assessmentRepository;
     @Autowired
-    protected CourseService courseService;
+    public CourseService courseService;
     @Autowired
     protected NotificationService notificationService;
 

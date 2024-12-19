@@ -6,6 +6,7 @@ import org.lms.entity.Question;
 import org.lms.service.Assessment.QuizService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -17,8 +18,13 @@ public class QuizRestController {
     private QuizService quizService;
     @Autowired
     private AuthorizationManager authorizationManager;
+
+    @PreAuthorize("hasRole('INSTRUCTOR')")
     @PutMapping("")
     public ResponseEntity<String> createQuiz(@PathVariable("courseid") Long courseId, @RequestBody Quiz quiz) {
+        if (!quizService.courseService.existsById(courseId)) {
+            return ResponseEntity.status(404).body("Course not found.");
+        }
         if (!authorizationManager.isInstructor(courseId)) {
             return ResponseEntity.status(403).body("You do not have permission to edit this course.");
         }
@@ -27,32 +33,40 @@ public class QuizRestController {
         }
         return ResponseEntity.badRequest().body("Something went wrong");
     }
+    @PreAuthorize("hasRole('INSTRUCTOR')")
     @DeleteMapping("/{quizId}/deletequestions")
     public ResponseEntity<String> removeQuestionFromQuiz(@PathVariable("courseid") Long courseId, @PathVariable("quizId") Long quizId,@RequestBody List<Long>questions) {
-        if (!authorizationManager.isInstructor(courseId)) {
-            return ResponseEntity.status(403).body("You are not allowed to edit this quiz.");
+        if (!quizService.existsById(courseId, quizId)) {
+            return ResponseEntity.status(404).body("Quiz not found.");
         }
-
+        if (!authorizationManager.isInstructor(courseId)) {
+            return ResponseEntity.status(403).body("You do not have permission to edit this course.");
+        }
         if (quizService.removeQuestionsFromQuiz(courseId, quizId,questions)) {
             return ResponseEntity.ok("Questions removed from quiz successfully!");
         }
         return ResponseEntity.badRequest().body("Something went wrong while removing the questions from the quiz.");
     }
+    @PreAuthorize("hasRole('INSTRUCTOR')")
     @PutMapping("/{quizId}/addquestions")
     public ResponseEntity<String> addQuestionstoQuiz(@PathVariable("courseid") Long courseId, @PathVariable("quizId") Long quizId,@RequestBody List<Long>questions) {
-        if (!authorizationManager.isInstructor(courseId)) {
-            return ResponseEntity.status(403).body("You are not allowed to edit this quiz.");
+        if (!quizService.existsById(courseId, quizId)) {
+            return ResponseEntity.status(404).body("Quiz not found.");
         }
-
+        if (!authorizationManager.isInstructor(courseId)) {
+            return ResponseEntity.status(403).body("You do not have permission to edit this course.");
+        }
         if (quizService.addQuestionstoQuiz(courseId, quizId,questions)) {
             return ResponseEntity.ok("Question added to quiz successfully!");
         }
         return ResponseEntity.badRequest().body("Something went wrong while question the questions from the quiz.");
     }
-
-
+    @PreAuthorize("hasRole('INSTRUCTOR')")
     @PatchMapping("/{id}")
     public ResponseEntity<String> updateQuiz(@PathVariable("courseid") Long courseId, @PathVariable("id") Long id, @RequestBody Quiz quiz, @PathVariable String courseid) {
+        if (!quizService.existsById(courseId, id)) {
+            return ResponseEntity.status(404).body("Quiz not found.");
+        }
         if (!authorizationManager.isInstructor(courseId)) {
             return ResponseEntity.status(403).body("You do not have permission to edit this course.");
         }
@@ -61,8 +75,12 @@ public class QuizRestController {
         }
         return ResponseEntity.badRequest().body("Something went wrong");
     }
+    @PreAuthorize("hasRole('INSTRUCTOR') or hasRole('ADMIN')")
     @GetMapping("/{id}")
     public ResponseEntity<Quiz> getById(@PathVariable("courseid") Long courseId, @PathVariable("id") Long id) {
+        if (!quizService.existsById(courseId, id)) {
+            return ResponseEntity.status(404).body(null);
+        }
         if (!authorizationManager.isAdminOrInstructor(courseId)) {
             return ResponseEntity.status(403).body(null);
         }
@@ -72,8 +90,12 @@ public class QuizRestController {
         }
         return ResponseEntity.ok(quiz);
     }
+    @PreAuthorize("hasRole('STUDENT')")
     @GetMapping("/student/{id}")
     public ResponseEntity<List<Question>> getByIdForStudent(@PathVariable("courseid") Long courseId, @PathVariable("id") Long id) {
+        if (!quizService.existsById(courseId, id)) {
+            return ResponseEntity.status(404).body(null);
+        }
         if (!authorizationManager.isEnrolled(courseId)) {
             return ResponseEntity.status(403).body(null);
         }
@@ -85,6 +107,9 @@ public class QuizRestController {
     }
     @GetMapping("")
     public ResponseEntity<List<Quiz>> getAll(@PathVariable("courseid") Long courseId) {
+        if (!quizService.courseService.existsById(courseId)) {
+            return ResponseEntity.status(404).body(null);
+        }
         if (!authorizationManager.hasAccess(courseId)) {
             return ResponseEntity.status(403).body(null);
         }
@@ -94,12 +119,16 @@ public class QuizRestController {
         }
         return ResponseEntity.ok().body(quizzes);
     }
+    @PreAuthorize("hasRole('INSTRUCTOR')")
     @DeleteMapping("/{id}")
     public ResponseEntity<String> delete(@PathVariable("courseid") Long courseId,@PathVariable("id") Long id) {
+        if (!quizService.existsById(courseId, id)) {
+            return ResponseEntity.status(404).body("Quiz not found.");
+        }
         if (!authorizationManager.isInstructor(courseId)) {
             return ResponseEntity.status(403).body("You do not have permission to edit this course.");
         }
-        if(quizService.deleteAssessment(courseId,id)){
+        if(quizService.delete(courseId,id)){
             return ResponseEntity.ok("All good!");
         }
         return ResponseEntity.badRequest().body("Something went wrong");
