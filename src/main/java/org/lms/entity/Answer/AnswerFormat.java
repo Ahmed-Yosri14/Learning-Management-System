@@ -23,7 +23,6 @@ import lombok.Setter;
         @JsonSubTypes.Type(value = WrittenAnswer.class, name = "WRITTEN")
 })
 public abstract class AnswerFormat {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

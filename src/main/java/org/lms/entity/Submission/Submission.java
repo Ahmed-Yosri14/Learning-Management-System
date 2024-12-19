@@ -10,7 +10,6 @@ import org.lms.entity.User.Student;
 @Entity
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 public class Submission {
-
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;

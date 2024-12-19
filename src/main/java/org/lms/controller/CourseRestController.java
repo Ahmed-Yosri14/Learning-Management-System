@@ -25,7 +25,7 @@ public class CourseRestController {
     @PutMapping("")
     public ResponseEntity<String> create(@RequestBody Course course) {
         if (courseService.create(course, authorizationManager.getCurrentUserId())){
-            return ResponseEntity.ok("All good!");
+            return ResponseEntity.ok("Course created successfully");
         }
         return ResponseEntity.badRequest().body("Something went wrong");
 
@@ -34,11 +34,14 @@ public class CourseRestController {
     @PreAuthorize("hasRole('INSTRUCTOR')")
     @PatchMapping("/{id}")
     public ResponseEntity<String> update(@PathVariable("id") Long id, @RequestBody Course course) {
+        if (!courseService.existsById(id)){
+            return ResponseEntity.status(404).body("Course not found");
+        }
         if (authorizationManager.isInstructor(id)){
-            return ResponseEntity.status(403).build();
+            return ResponseEntity.status(403).body("You're not this course's instructor");
         }
         if (courseService.update(id, course)){
-            return ResponseEntity.ok("All good!");
+            return ResponseEntity.ok("Course updated successfully!");
         }
         return ResponseEntity.badRequest().body("Something went wrong");
     }
@@ -46,11 +49,14 @@ public class CourseRestController {
     @PreAuthorize("hasRole('INSTRUCTOR')")
     @DeleteMapping("/{id}")
     public ResponseEntity<String> delete(@PathVariable("id") Long id) {
+        if (!courseService.existsById(id)){
+            return ResponseEntity.status(404).body("Course not found");
+        }
         if (authorizationManager.isInstructor(id)){
-            return ResponseEntity.status(403).build();
+            return ResponseEntity.status(403).body("You're not this course's instructor");
         }
         if (courseService.delete(id)){
-            return ResponseEntity.ok("All good!");
+            return ResponseEntity.ok("Course deleted successfully!");
         }
         return ResponseEntity.badRequest().body("Something went wrong");
     }

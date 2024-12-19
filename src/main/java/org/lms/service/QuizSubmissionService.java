@@ -6,6 +6,7 @@ import org.lms.entity.Feedback.QuizFeedback;
 import org.lms.entity.Submission.QuizSubmission;
 import org.lms.entity.User.Student;
 import org.lms.repository.QuizSubmissionRepository;
+import org.lms.service.Assessment.QuizService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -29,23 +30,12 @@ public class QuizSubmissionService {
         return quizSubmissionRepository.findById(id).get();
     }
 
-//    public boolean existsById(
-//            Long courseId,
-//            Long quizId,
-//            Long id
-//    ){
-//        QuizSubmission quizSubmission = getById(id);
-//        return quizSubmissionRepository.existsById(id)
-//                && quizService.existsById(courseId, quizId)
-//                && assignmentSubmission.getAssignment().getId().equals(quizId);
-//    }
-
     public QuizSubmission getSubmition(Long courseId, Long quizId, Long studentId) {
-           Quiz quiz = quizService.getById(courseId, quizId) ;
-           if(quiz == null) return null;
-           if(!Objects.equals(quiz.getCourse().getId(), courseId)) return null;
-           QuizSubmission quizSubmission = quizSubmissionRepository.findByQuizAndStudent(quiz,(Student) appUserService.getById(studentId));
-           return quizSubmission;
+        Quiz quiz = quizService.getById(courseId, quizId) ;
+        if(quiz == null) return null;
+        if(!Objects.equals(quiz.getCourse().getId(), courseId)) return null;
+        QuizSubmission quizSubmission = quizSubmissionRepository.findByQuizAndStudent(quiz,(Student) appUserService.getById(studentId));
+        return quizSubmission;
     }
     public List<QuizSubmission> getAllSubmitions(Long courseId, Long quizId){
         Quiz quiz = quizService.getById(courseId, quizId) ;
@@ -61,7 +51,7 @@ public class QuizSubmissionService {
         if(student == null) return false;
         if(!Objects.equals(quiz.getCourse().getId(), courseId)) return false;
 
-//        System.out.println("lol2");
+
         quizSubmission.setQuiz(quiz);
 //        System.out.println("lol3");
         quizSubmission.setStudent(student);
@@ -100,5 +90,5 @@ public class QuizSubmissionService {
     }
     public boolean existsByStudentIdAndQuizId(Long studentId, Long quizId){
         return quizSubmissionRepository.existsByStudentIdAndQuizId(studentId,quizId);
-    }
+}
 }

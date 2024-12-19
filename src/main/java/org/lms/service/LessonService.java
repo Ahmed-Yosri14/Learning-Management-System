@@ -26,9 +26,7 @@ public class LessonService {
                 && course.getId().equals(lesson.getCourse().getId());
     }
     public boolean create(Lesson lesson, Long courseId) {
-        try{
-            assert courseService.existsById(courseId);
-
+        try {
             Course course = courseService.getById(courseId);
             lesson.setCourse(course);
             lesson = lessonRepository.save(lesson);

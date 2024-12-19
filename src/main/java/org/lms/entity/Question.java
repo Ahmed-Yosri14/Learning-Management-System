@@ -24,9 +24,6 @@ public class Question {
     @JoinColumn(nullable = false)
     private AnswerFormat answerFormat;
 
-    @ManyToMany(mappedBy = "questions", cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
-    private List<Quiz> quizzes;
-
     @ManyToOne
     @JoinColumn(nullable = false)
     private Course course;

@@ -9,7 +9,6 @@ import org.lms.entity.Assessment.Assignment;
 @Setter
 @Entity
 public class AssignmentSubmission extends Submission {
-
     @ManyToOne
     @JoinColumn(nullable = false)
     private Assignment assignment;

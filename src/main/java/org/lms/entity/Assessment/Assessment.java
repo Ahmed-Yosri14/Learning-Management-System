@@ -13,7 +13,8 @@ import java.time.LocalDateTime;
 @Entity
 public class Assessment {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "assessment_seq")
+    @SequenceGenerator(name = "assessment_seq", sequenceName = "global_assessment_sequence", allocationSize = 1)
     private Long id;
 
     @Column(nullable = false)

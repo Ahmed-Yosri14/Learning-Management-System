@@ -1,40 +1,42 @@
-package org.lms.service;
+package org.lms.service.Assessment;
 
+import io.jsonwebtoken.lang.Assert;
 import jakarta.transaction.Transactional;
-import org.lms.entity.Course;
+import org.lms.AuthorizationManager;
 import org.lms.entity.Assessment.Quiz;
+import org.lms.entity.Course;
 import org.lms.entity.Question;
+import org.lms.entity.StudentQuiz;
+import org.lms.entity.User.Student;
 import org.lms.repository.QuizRepository;
+import org.lms.repository.StudentQuizRepository;
+import org.lms.service.QuestionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 
 @Service
-public class QuizService {
-
+public class QuizService extends AssessmentService {
     @Autowired
     private QuizRepository quizRepository;
-
-    @Autowired
-    private CourseService courseService;
-
-    @Autowired
-    private NotificationService notificationService;
     @Autowired
     private QuestionService questionService;
+    @Autowired
+    private StudentQuizRepository studentQuizRepository;
+    @Autowired
+    private AuthorizationManager authorizationManager;
 
     public boolean create(Long courseId, Quiz quiz)
     {
         try{
-            assert courseService.existsById(courseId);
+            Assert.isTrue(super.createAssessment(courseId, quiz));
             Course course = courseService.getById(courseId);
-            quiz.setCourse(course);
-            quizRepository.save(quiz);
             notificationService.createToAllEnrolled(
                     courseId,
                     "New Quiz",
-                    "New quiz just started in \'" + course.getName() + "\'!"
+                    "New quiz was just added in \'" + course.getName() + "\'!"
             );
             return true;
         }catch (Exception e){
@@ -42,41 +44,28 @@ public class QuizService {
         }
         return false;
     }
-
-    public boolean update(Long courseid,Long id,Quiz quiz)
+    public boolean update(Long courseId, Long id, Quiz quiz)
     {
         try{
-            Quiz oldQuiz = quizRepository.findById(id).get();
-            Course oldCourse = courseService.getById(courseid);
-            if(oldCourse == null || !Objects.equals(oldCourse.getId(), oldQuiz.getCourse().getId())){
-                return false;
-            }
-            if (quiz.getTitle() != null){
-                oldQuiz.setTitle(quiz.getTitle());
-            }
-            if (quiz.getDescription() != null){
-                oldQuiz.setDescription(quiz.getDescription());
-            }
-            if (quiz.getDuration() != null){
-                oldQuiz.setDuration(quiz.getDuration());
-            }
-            quizRepository.save(oldQuiz);
+            Assert.isTrue(super.updateAssessment(courseId, id, quiz));
             return true;
         }
         catch (Exception e){}
         return false;
     }
-
-    public Quiz getById(Long courseId,Long id)
+    public boolean deleteAssessment(Long courseId, Long id) {
+        try {
+            Assert.isTrue(super.deleteAssessment(courseId, id));
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+    public Quiz getById(Long courseId, Long id)
     {
         try {
-            Quiz quiz = quizRepository.findById(id).get();
-            if (quiz.getCourse() != null && quiz.getCourse().getId().equals(courseId)) {
-                return quiz;
-            } else {
-                System.out.println("quiz not found or does not belong to the specified course.");
-                return null;
-            }
+            Assert.isTrue(super.existsById(courseId, id));
+            return (Quiz) super.getById(id);
         } catch (Exception e) {
             System.out.println("Error retrieving quiz: " + e.getMessage());
             return null;
@@ -84,29 +73,13 @@ public class QuizService {
     }
     public List<Quiz> getAll(Long courseId){
         try {
+            Assert.isTrue(courseService.existsById(courseId));
             Course course = courseService.getById(courseId);
-            if(course == null){
-                return null;
-            }
+
             return quizRepository.findAllByCourse(course);
         } catch (Exception e) {
-            System.out.println("Error fetching quiz for course ID " + courseId + ": " + e.getMessage());
+            System.out.println("Error fetching quiz's for course ID " + courseId + ": " + e.getMessage());
             return null;
-        }
-    }
-    public boolean delete(Long courseId, Long id) {
-        try {
-            if (courseService.getById(courseId)==null || !quizRepository.existsById(id)) {
-                return false;
-            }
-            Quiz quiz = quizRepository.findById(id).orElse(null);
-            if (quiz == null || !quiz.getCourse().getId().equals(courseId)) {
-                return false;
-            }
-            quizRepository.deleteById(id);
-            return true;
-        } catch (Exception e) {
-            return false;
         }
     }
     @Transactional
@@ -157,12 +130,34 @@ public class QuizService {
             return false;
         }
     }
-    public List<Question> getByIdForStudent(Long courseId,Long id){
-        Quiz quiz = quizRepository.findById(id).orElse(null);
-        if(quiz == null || !quiz.getCourse().getId().equals(courseId)){
+    public List<Question> getQuestionsForStudent(Long courseId, Long quizId) {
+        Quiz quiz = quizRepository.findById(quizId).orElse(null);
+
+        if (quiz == null || !quiz.getCourse().getId().equals(courseId)) {
             return null;
         }
-        return quiz.getQuestions();
+        Student student = (Student)authorizationManager.getCurrentUser();
+        StudentQuiz existingInstance = studentQuizRepository.findByStudentIdAndQuizId(student.getId(), quizId).orElse(null);
+
+        if (existingInstance != null) {
+            return existingInstance.getQuestions();
+        }
+        List<Question> allQuestions = quiz.getQuestions();
+        if (allQuestions.size() < quiz.getQuestionNum()) {
+            throw new IllegalArgumentException("Not enough questions in the quiz to fulfill questionNum.");
+        }
+
+        Collections.shuffle(allQuestions);
+        List<Question> randomizedQuestions = allQuestions.subList(0, quiz.getQuestionNum().intValue());
+
+        StudentQuiz newInstance = new StudentQuiz();
+        newInstance.setStudent(student);
+        newInstance.setQuiz(quiz);
+        newInstance.setQuestions(randomizedQuestions);
+        studentQuizRepository.save(newInstance);
+
+        return randomizedQuestions;
     }
 
 }
+

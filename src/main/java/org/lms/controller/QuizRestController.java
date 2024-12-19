@@ -3,9 +3,7 @@ package org.lms.controller;
 import org.lms.AuthorizationManager;
 import org.lms.entity.Assessment.Quiz;
 import org.lms.entity.Question;
-import org.lms.entity.User.AppUser;
-import org.lms.entity.User.Student;
-import org.lms.service.QuizService;
+import org.lms.service.Assessment.QuizService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -76,10 +74,10 @@ public class QuizRestController {
     }
     @GetMapping("/student/{id}")
     public ResponseEntity<List<Question>> getByIdForStudent(@PathVariable("courseid") Long courseId, @PathVariable("id") Long id) {
-        if (!authorizationManager.isAdminOrInstructor(courseId)) {
+        if (!authorizationManager.isEnrolled(courseId)) {
             return ResponseEntity.status(403).body(null);
         }
-        List<Question> questions = quizService.getByIdForStudent(courseId,id);
+        List<Question> questions = quizService.getQuestionsForStudent(courseId,id);
         if (questions== null) {
             return ResponseEntity.notFound().build();
         }
@@ -101,7 +99,7 @@ public class QuizRestController {
         if (!authorizationManager.isInstructor(courseId)) {
             return ResponseEntity.status(403).body("You do not have permission to edit this course.");
         }
-        if(quizService.delete(courseId,id)){
+        if(quizService.deleteAssessment(courseId,id)){
             return ResponseEntity.ok("All good!");
         }
         return ResponseEntity.badRequest().body("Something went wrong");
