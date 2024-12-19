@@ -82,18 +82,18 @@ public class QuizSubmissionService {
         for(QuestionAnswer pair : StudentAnswer) {
             Long questionId = pair.getQuestionId();
             String answer = pair.getAnswer();
-            Question question = questionService.getById(courseId,quizId,questionId);
+            Question question = questionService.getById(courseId,questionId);
             if(question==null) {
                 return null;
             }
             if(question.getAnswerFormat().getCorrectAnswer().equals(answer)) {
-                studentMark += question.getMark();
+                studentMark += 1.0;
             }
         }
         QuizFeedback quizFeedback = new QuizFeedback();
         quizFeedback.setQuizSubmission(quizSubmission);
         quizFeedback.setGrade(studentMark);
-        quizFeedback.setMaxGrade(quizService.getFullMark(quizId));
+        quizFeedback.setMaxGrade(quizService.getById(courseId,quizId).getQuestionNum());
         quizFeedback.setComment("Automated quiz grading");
         quizFeedbackService.create(quizFeedback);
         return studentMark;

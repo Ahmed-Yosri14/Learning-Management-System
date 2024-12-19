@@ -1,7 +1,9 @@
 package org.lms.service;
 
+import jakarta.transaction.Transactional;
 import org.lms.entity.Course;
 import org.lms.entity.Assessment.Quiz;
+import org.lms.entity.Question;
 import org.lms.repository.QuizRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,6 +21,8 @@ public class QuizService {
 
     @Autowired
     private NotificationService notificationService;
+    @Autowired
+    private QuestionService questionService;
 
     public boolean create(Long courseId, Quiz quiz)
     {
@@ -105,7 +109,60 @@ public class QuizService {
             return false;
         }
     }
-    public Double getFullMark(Long id){
-        return quizRepository.findFullMark(id);
+    @Transactional
+    public boolean removeQuestionsFromQuiz(Long courseId, Long quizId, List<Long> questionIds) {
+        try {
+            Quiz quiz = quizRepository.findById(quizId).orElse(null);
+            if (quiz == null || !quiz.getCourse().getId().equals(courseId)) {
+                return false;
+            }
+            for (Long questionId : questionIds) {
+                Question question = questionService.getById(courseId,questionId);
+                if(question == null){
+                    continue;
+                }
+                quiz.getQuestions().remove(question);
+            }
+            quizRepository.save(quiz);
+            return true;
+
+        } catch (Exception e) {
+            e.printStackTrace(); // Debugging purposes
+            return false;
+        }
     }
+    @Transactional
+    public boolean addQuestionstoQuiz(Long courseId, Long quizId, List<Long> questionIds) {
+        try {
+            Quiz quiz = quizRepository.findById(quizId).orElse(null);
+            if (quiz == null || !quiz.getCourse().getId().equals(courseId)) {
+                return false;
+            }
+            for (Long questionId : questionIds) {
+                Question question = questionService.getById(courseId,questionId);
+                if(question == null){
+                    continue;
+                }
+                if(quiz.getQuestions().contains(question)){
+                    continue;
+                }
+
+                quiz.getQuestions().add(question);
+            }
+            quizRepository.save(quiz);
+            return true;
+
+        } catch (Exception e) {
+            e.printStackTrace(); // Debugging purposes
+            return false;
+        }
+    }
+    public List<Question> getByIdForStudent(Long courseId,Long id){
+        Quiz quiz = quizRepository.findById(id).orElse(null);
+        if(quiz == null || !quiz.getCourse().getId().equals(courseId)){
+            return null;
+        }
+        return quiz.getQuestions();
+    }
+
 }

@@ -6,6 +6,8 @@ import lombok.Setter;
 import org.lms.entity.Answer.AnswerFormat;
 import org.lms.entity.Assessment.Quiz;
 
+import java.util.List;
+
 @Getter
 @Setter
 @Entity
@@ -21,8 +23,12 @@ public class Question {
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(nullable = false)
     private AnswerFormat answerFormat;
-    private Double mark;
+
+    @ManyToMany(mappedBy = "questions", cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
+    private List<Quiz> quizzes;
+
     @ManyToOne
     @JoinColumn(nullable = false)
-    private Quiz quiz;
+    private Course course;
+
 }
