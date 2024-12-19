@@ -30,23 +30,12 @@ public class QuizSubmissionService {
         return quizSubmissionRepository.findById(id).get();
     }
 
-//    public boolean existsById(
-//            Long courseId,
-//            Long quizId,
-//            Long id
-//    ){
-//        QuizSubmission quizSubmission = getById(id);
-//        return quizSubmissionRepository.existsById(id)
-//                && quizService.existsById(courseId, quizId)
-//                && assignmentSubmission.getAssignment().getId().equals(quizId);
-//    }
-
     public QuizSubmission getSubmition(Long courseId, Long quizId, Long studentId) {
-           Quiz quiz = quizService.getById(courseId, quizId) ;
-           if(quiz == null) return null;
-           if(!Objects.equals(quiz.getCourse().getId(), courseId)) return null;
-           QuizSubmission quizSubmission = quizSubmissionRepository.findByQuizAndStudent(quiz,(Student) appUserService.getById(studentId));
-           return quizSubmission;
+        Quiz quiz = quizService.getById(courseId, quizId) ;
+        if(quiz == null) return null;
+        if(!Objects.equals(quiz.getCourse().getId(), courseId)) return null;
+        QuizSubmission quizSubmission = quizSubmissionRepository.findByQuizAndStudent(quiz,(Student) appUserService.getById(studentId));
+        return quizSubmission;
     }
     public List<QuizSubmission> getAllSubmitions(Long courseId, Long quizId){
         Quiz quiz = quizService.getById(courseId, quizId) ;
@@ -62,7 +51,7 @@ public class QuizSubmissionService {
         if(student == null) return false;
         if(!Objects.equals(quiz.getCourse().getId(), courseId)) return false;
 
-//        System.out.println("lol2");
+
         quizSubmission.setQuiz(quiz);
 //        System.out.println("lol3");
         quizSubmission.setStudent(student);
@@ -83,23 +72,23 @@ public class QuizSubmissionService {
         for(QuestionAnswer pair : StudentAnswer) {
             Long questionId = pair.getQuestionId();
             String answer = pair.getAnswer();
-            Question question = questionService.getById(courseId,quizId,questionId);
+            Question question = questionService.getById(courseId,questionId);
             if(question==null) {
                 return null;
             }
             if(question.getAnswerFormat().getCorrectAnswer().equals(answer)) {
-                studentMark += question.getMark();
+                studentMark += 1.0;
             }
         }
         QuizFeedback quizFeedback = new QuizFeedback();
         quizFeedback.setQuizSubmission(quizSubmission);
         quizFeedback.setGrade(studentMark);
-        quizFeedback.setMaxGrade(quizService.getFullMark(quizId));
+        quizFeedback.setMaxGrade(quizService.getById(courseId,quizId).getQuestionNum());
         quizFeedback.setComment("Automated quiz grading");
         quizFeedbackService.create(quizFeedback);
         return studentMark;
     }
     public boolean existsByStudentIdAndQuizId(Long studentId, Long quizId){
         return quizSubmissionRepository.existsByStudentIdAndQuizId(studentId,quizId);
-    }
+}
 }

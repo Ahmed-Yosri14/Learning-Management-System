@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("api/course/{courseid}/quiz/{quizid}/question")
+@RequestMapping("api/course/{courseid}/question")
 public class QuestionRestController {
 
     @Autowired
@@ -21,23 +21,23 @@ public class QuestionRestController {
     private AuthorizationManager authorizationManager;
 
     @PutMapping("")
-    public ResponseEntity<String> create(@PathVariable("courseid") Long courseId, @PathVariable("quizid") Long quizId, @RequestBody Question question) {
+    public ResponseEntity<String> create(@PathVariable("courseid") Long courseId, @RequestBody Question question) {
         if(!(authorizationManager.isInstructor(courseId)))
         {
             return ResponseEntity.status(403).body("You are not allowed to edit this quiz");
         }
-        if (questionService.create(courseId, quizId, question)) {
+        if (questionService.create(courseId, question)) {
             return ResponseEntity.ok("Question created successfully!");
         }
         return ResponseEntity.badRequest().body("Something went wrong while creating the question.");
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Question> getById(@PathVariable("courseid") Long courseId, @PathVariable("quizid") Long quizId,@PathVariable("id") Long id) {
+    public ResponseEntity<Question> getById(@PathVariable("courseid") Long courseId, @PathVariable("id") Long id) {
         if (!authorizationManager.hasAccess(courseId)) {
             return ResponseEntity.status(403).body(null);
         }
-        Question question = questionService.getById(courseId,quizId,id);
+        Question question = questionService.getById(courseId,id);
         if (question == null) {
             return ResponseEntity.notFound().build();
         }
@@ -45,11 +45,11 @@ public class QuestionRestController {
     }
 
     @GetMapping("")
-    public ResponseEntity<List<Question>> getAll(@PathVariable("courseid") Long courseId,@PathVariable("quizid") Long quizId) {
+    public ResponseEntity<List<Question>> getAll(@PathVariable("courseid") Long courseId) {
         if (!authorizationManager.hasAccess(courseId)) {
             return ResponseEntity.status(403).body(null);
         }
-        List<Question> questions = questionService.getAll(courseId,quizId);
+        List<Question> questions = questionService.getAll(courseId);
         if (questions != null && !questions.isEmpty()) {
             return ResponseEntity.ok(questions);
         }
@@ -57,7 +57,7 @@ public class QuestionRestController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<String> update(@PathVariable("courseid") Long courseId, @PathVariable("quizid") Long quizId, @PathVariable("id") Long id, @Valid @RequestBody Question question, BindingResult result) {
+    public ResponseEntity<String> update(@PathVariable("courseid") Long courseId, @PathVariable("id") Long id, @Valid @RequestBody Question question, BindingResult result) {
         if(result.hasErrors()) {
             StringBuilder errorMessages = new StringBuilder();
             result.getAllErrors().forEach(error -> errorMessages.append(error.getDefaultMessage()).append("\n"));
@@ -67,19 +67,19 @@ public class QuestionRestController {
         {
             return ResponseEntity.status(403).body("You are not allowed to edit this question");
         }
-        if (questionService.update(courseId, quizId, id, question)) {
+        if (questionService.update(courseId,  id, question)) {
             return ResponseEntity.ok("Question updated successfully!");
         }
         return ResponseEntity.badRequest().body("Something went wrong while updating the question.");
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> delete(@PathVariable("courseid") Long courseId, @PathVariable("quizid") Long quizId, @PathVariable("id") Long id) {
+    public ResponseEntity<String> delete(@PathVariable("courseid") Long courseId,  @PathVariable("id") Long id) {
         if(!(authorizationManager.isInstructor(courseId)))
         {
             return ResponseEntity.status(403).body("You are not allowed to edit this question");
         }
-        if (questionService.delete(courseId, quizId, id)) {
+        if (questionService.delete(courseId, id)) {
             return ResponseEntity.ok("Question deleted successfully!");
         }
         return ResponseEntity.badRequest().body("Something went wrong while deleting the question.");

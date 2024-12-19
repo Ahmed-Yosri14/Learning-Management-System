@@ -3,15 +3,12 @@ package org.lms.service;
 import org.lms.entity.Answer.AnswerFormat;
 import org.lms.entity.Course;
 import org.lms.entity.Question;
-import org.lms.entity.Assessment.Quiz;
 import org.lms.repository.AnswerFormatRepository;
 import org.lms.repository.QuestionRepository;
-import org.lms.service.Assessment.QuizService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Objects;
 
 @Service
 public class QuestionService {
@@ -21,27 +18,20 @@ public class QuestionService {
     @Autowired
     private CourseService courseService;
 
-    @Autowired
-    private QuizService quizService;
 
     @Autowired
     private AnswerFormatRepository answerFormatRepository;
 
-    public boolean create(Long courseId, Long quizId, Question question) {
+    public boolean create(Long courseId, Question question) {
         try {
-            if (courseService.getById(courseId) == null) {
+            Course course = courseService.getById(courseId);
+            if (course == null) {
                 System.out.println("Course not found");
                 return false;
             }
 
-            Quiz quiz = quizService.getById(courseId, quizId);
-            if (quiz == null) {
-                System.out.println("Quiz not found");
-                return false;
-            }
 
-            question.setQuiz(quiz);
-
+            question.setCourse(course);
             if (question.getAnswerFormat() != null) {
                 AnswerFormat savedAnswerFormat = answerFormatRepository.save(question.getAnswerFormat());
                 question.setAnswerFormat(savedAnswerFormat);
@@ -60,26 +50,20 @@ public class QuestionService {
     }
 
 
-    public boolean update(Long courseId, Long quizId, Long questionId, Question updatedQuestion) {
+    public boolean update(Long courseId, Long questionId, Question updatedQuestion) {
         try {
             Course course = courseService.getById(courseId);
             if (course == null) {
                 System.out.println("Course not found.");
                 return false;
             }
-
-            Quiz quiz = quizService.getById(courseId, quizId);
-            if (quiz == null || !quiz.getCourse().getId().equals(course.getId())) {
-                System.out.println("Quiz not found or does not belong to the specified course.");
+            if (!course.getId().equals(courseId)) {
+                System.out.println("Course id does not match");
                 return false;
             }
-
             Question existingQuestion = questionRepository.findById(questionId).orElse(null);
-            if (existingQuestion == null || !existingQuestion.getQuiz().getId().equals(quizId)) {
-                System.out.println("Question not found or does not belong to the specified quiz.");
-                return false;
-            }
 
+            assert existingQuestion != null;
             if (updatedQuestion.getQuestionStatement() != null) {
                 existingQuestion.setQuestionStatement(updatedQuestion.getQuestionStatement());
             }
@@ -101,11 +85,13 @@ public class QuestionService {
         }
     }
 
-    public Question getById(Long courseId,Long quizId,Long id)
-    {
+    public Question getById(Long courseId, Long id) {
         try {
-            Question question = questionRepository.findById(id).get();
-            if (question.getQuiz() != null && question.getQuiz().getId().equals(quizId)&&question.getQuiz().getCourse().getId().equals(courseId)) {
+            Question question = null;
+            if (questionRepository.findById(id).isPresent()) {
+                question = questionRepository.findById(id).get();
+            }
+            if (question !=null && question.getCourse().getId().equals(courseId)) {
                 return question;
             } else {
                 System.out.println("Question not found or does not belong to the specified course.");
@@ -116,25 +102,25 @@ public class QuestionService {
             return null;
         }
     }
-    public List<Question> getAll(Long courseId,Long quizId){
+
+    public List<Question> getAll(Long courseId) {
         try {
             Course course = courseService.getById(courseId);
-            if(course == null){
+            if (course == null) {
                 return null;
             }
-            return questionRepository.findAllByQuizId(quizId);
+            return questionRepository.findAllByCourseId(courseId);
         } catch (Exception e) {
             System.out.println("Error fetching question for course ID " + courseId + ": " + e.getMessage());
             return null;
         }
     }
-    public boolean delete(Long courseId, Long quizId,Long id) {
+
+    public boolean delete(Long courseId, Long id) {
         try {
-            if (courseService.getById(courseId)==null || quizService.getById(courseId,quizId)==null|| !Objects.equals(courseService.getById(courseId).getId(), quizService.getById(courseId, quizId).getId())) {
-                return false;
-            }
+            Course course = courseService.getById(courseId);
             Question question = questionRepository.findById(id).orElse(null);
-            if (question == null || !question.getQuiz().getId().equals(quizId)) {
+            if (course == null || question == null || question.getCourse().getId().equals(courseId)  ) {
                 return false;
             }
             questionRepository.deleteById(id);

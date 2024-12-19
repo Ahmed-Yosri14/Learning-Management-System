@@ -6,6 +6,8 @@ import lombok.Setter;
 import org.lms.entity.Answer.AnswerFormat;
 import org.lms.entity.Assessment.Quiz;
 
+import java.util.List;
+
 @Getter
 @Setter
 @Entity
@@ -22,9 +24,8 @@ public class Question {
     @JoinColumn(nullable = false)
     private AnswerFormat answerFormat;
 
-    private Double mark;
-
     @ManyToOne
     @JoinColumn(nullable = false)
-    private Quiz quiz;
+    private Course course;
+
 }
