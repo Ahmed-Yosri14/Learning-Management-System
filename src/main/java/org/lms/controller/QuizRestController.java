@@ -27,7 +27,7 @@ public class QuizRestController {
         }
         return ResponseEntity.badRequest().body("Something went wrong");
     }
-    @DeleteMapping("/{quizId}/deletequestionsdeletequestions")
+    @DeleteMapping("/{quizId}/deletequestions")
     public ResponseEntity<String> removeQuestionFromQuiz(@PathVariable("courseid") Long courseId, @PathVariable("quizId") Long quizId,@RequestBody List<Long>questions) {
         if (!authorizationManager.isInstructor(courseId)) {
             return ResponseEntity.status(403).body("You are not allowed to edit this quiz.");
