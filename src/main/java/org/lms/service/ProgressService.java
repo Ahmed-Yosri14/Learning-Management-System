@@ -27,15 +27,21 @@ public class ProgressService {
     public List<QuizFeedback> getQuizScores(Long courseId) {
         return quizFeedbackRepository.findAllByCourseId(courseId);
     }
+    public List<QuizFeedback> getQuizScoresByCourseIdAndStudentId(Long courseId, Long studentId) {
+        return quizFeedbackRepository.findByCourseIdAndStudentId(courseId, studentId);
+    }
 
     public List<AssignmentFeedback> getAssignmentFeedbacks(Long courseId) {
         return assignmentFeedbackRepository.findByCourseId(courseId);
     }
+    public List<AssignmentFeedback> getAssignmentFeedbacksByCourseAndStudent(Long courseId, Long studentId) {
+        return assignmentFeedbackRepository.findByCourseIdAndStudentId(courseId, studentId);
+    }
+
     public List<Attendance> getAttendanceRecords( Long courseId) {
         return attendanceRepository.findByCourseId( courseId);
     }
     public List<Attendance> getAttendanceRecordsPerStudent( Long courseId,Long studentId) {
         return attendanceRepository.findByCourseIdAndStudentId(courseId, studentId);
     }
-
 }
