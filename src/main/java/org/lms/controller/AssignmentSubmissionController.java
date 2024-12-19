@@ -1,5 +1,6 @@
 package org.lms.controller;
 
+import org.lms.AuthorizationManager;
 import org.lms.entity.Submission.AssignmentSubmission;
 import org.lms.service.AssignmentSubmissionService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,15 +16,17 @@ public class AssignmentSubmissionController {
 
     @Autowired
     private AssignmentSubmissionService assignmentSubmissionService;
-    @PostMapping
+    @Autowired
+    private AuthorizationManager authorizationManager;
+
+    @PostMapping("")
     public ResponseEntity<String> submitAssignment(
             @PathVariable Long courseId,
             @PathVariable Long assignmentId,
-            @RequestParam("studentId") Long studentId,
             @RequestParam("file") MultipartFile file) {
         try
         {
-            boolean success = assignmentSubmissionService.create(courseId, assignmentId, studentId, file);
+            boolean success = assignmentSubmissionService.create(courseId, assignmentId, authorizationManager.getCurrentUserId(), file);
             if (success)
             {
                 return ResponseEntity.ok("Assignment submitted successfully.");

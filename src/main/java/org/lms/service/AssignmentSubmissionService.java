@@ -94,6 +94,7 @@ public class AssignmentSubmissionService {
             assignmentSubmission.setFilePath(filePath);
 
             assignmentSubmissionRepository.save(assignmentSubmission);
+            return true;
         }
         catch(Exception e){
             System.out.println(e);

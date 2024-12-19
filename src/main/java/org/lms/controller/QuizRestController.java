@@ -34,7 +34,7 @@ public class QuizRestController {
         return ResponseEntity.badRequest().body("Something went wrong");
     }
     @PreAuthorize("hasRole('INSTRUCTOR')")
-    @DeleteMapping("/{quizId}/deletequestionsdeletequestions")
+    @DeleteMapping("/{quizId}/deletequestions")
     public ResponseEntity<String> removeQuestionFromQuiz(@PathVariable("courseid") Long courseId, @PathVariable("quizId") Long quizId,@RequestBody List<Long>questions) {
         if (!quizService.existsById(courseId, quizId)) {
             return ResponseEntity.status(404).body("Quiz not found.");
