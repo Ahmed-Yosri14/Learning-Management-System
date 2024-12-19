@@ -59,6 +59,9 @@ public class UserRestController {
     @PreAuthorize("hasRole('ADMIN')")
     @PatchMapping("/{id}")
     public ResponseEntity<String> update(@PathVariable("id") Long id, @RequestBody AppUser user) {
+        if (!appUserService.existsById(id)){
+            return ResponseEntity.status(404).body("User not found");
+        }
         if (appUserService.update(id, user)){
             return ResponseEntity.ok("All good!");
         }
@@ -68,6 +71,9 @@ public class UserRestController {
     @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     public ResponseEntity<String> delete(@PathVariable("id") Long id) {
+        if (!appUserService.existsById(id)){
+            return ResponseEntity.status(404).body("User not found");
+        }
         if (appUserService.delete(id)){
             return ResponseEntity.ok("All good!");
         }
