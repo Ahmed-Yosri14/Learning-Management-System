@@ -24,13 +24,14 @@ public class CourseService {
             courseRepository.save(course);
             return true;
         }
-        catch(Exception e){}
+        catch(Exception e){
+            System.out.println(e);
+        }
         return false;
     }
     public boolean update(Long id, Course course) {
         try {
-            assert existsById(id);
-            Course oldCourse = courseRepository.findById(id).get();
+            Course oldCourse = getById(id);
             if (course.getName() != null){
                 oldCourse.setName(course.getName());
             }
@@ -50,7 +51,6 @@ public class CourseService {
     }
     public boolean delete(Long id) {
         try {
-            assert existsById(id);
             courseRepository.deleteById(id);
             return true;
         }
