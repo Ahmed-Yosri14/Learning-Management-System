@@ -2,7 +2,7 @@ package org.lms.controller;
 
 import org.lms.AuthorizationManager;
 import org.lms.entity.Feedback.AssignmentFeedback;
-import org.lms.service.AssignmentFeedbackService;
+import org.lms.service.Feedback.AssignmentFeedbackService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;

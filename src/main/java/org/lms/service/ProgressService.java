@@ -13,29 +13,23 @@ import java.util.List;
 
 @Service
 public class ProgressService {
-
-
     @Autowired
     private AttendanceRepository attendanceRepository;
-
     @Autowired
     private QuizFeedbackRepository quizFeedbackRepository;
-
     @Autowired
     private AssignmentFeedbackRepository assignmentFeedbackRepository;
 
     public List<QuizFeedback> getQuizScores(Long courseId) {
         return quizFeedbackRepository.findAllByCourseId(courseId);
     }
-
     public List<AssignmentFeedback> getAssignmentFeedbacks(Long courseId) {
         return assignmentFeedbackRepository.findByCourseId(courseId);
     }
-    public List<Attendance> getAttendanceRecords( Long courseId) {
+    public List<Attendance> getAttendanceRecords(Long courseId) {
         return attendanceRepository.findByCourseId( courseId);
     }
-    public List<Attendance> getAttendanceRecordsPerStudent( Long courseId,Long studentId) {
+    public List<Attendance> getAttendanceRecordsPerStudent(Long courseId, Long studentId) {
         return attendanceRepository.findByCourseIdAndStudentId(courseId, studentId);
     }
-
 }

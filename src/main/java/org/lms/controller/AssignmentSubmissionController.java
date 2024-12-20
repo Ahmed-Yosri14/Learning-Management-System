@@ -2,9 +2,10 @@ package org.lms.controller;
 
 import org.lms.AuthorizationManager;
 import org.lms.entity.Submission.AssignmentSubmission;
-import org.lms.service.AssignmentSubmissionService;
+import org.lms.service.Submission.AssignmentSubmissionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -19,63 +20,75 @@ public class AssignmentSubmissionController {
     @Autowired
     private AuthorizationManager authorizationManager;
 
-    @PostMapping("")
+    @PreAuthorize("hasRole('STUDENT')")
+    @PutMapping("")
     public ResponseEntity<String> submitAssignment(
             @PathVariable Long courseId,
             @PathVariable Long assignmentId,
-            @RequestParam("file") MultipartFile file) {
-        try
-        {
-            boolean success = assignmentSubmissionService.create(courseId, assignmentId, authorizationManager.getCurrentUserId(), file);
-            if (success)
-            {
-                return ResponseEntity.ok("Assignment submitted successfully.");
-            }
-            else
-            {
-                return ResponseEntity.badRequest().body("Failed to submit the assignment.");
-            }
+            @RequestParam("file") MultipartFile file
+    ) {
+//        if (!assignmentSubmissionService.assignmentService.existsById(courseId, assignmentId)) {
+//            return ResponseEntity.status(404).body("Assignment not found.");
+//        }
+        if (!authorizationManager.isEnrolled(courseId)) {
+            return ResponseEntity.status(403).body("You don't have permission to submit.");
         }
-        catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().body("Error: " + e.getMessage());
+        if (assignmentSubmissionService.create(courseId, assignmentId, authorizationManager.getCurrentUserId(), file)){
+            return ResponseEntity.ok("Submission uploaded successfully.");
         }
-        catch (Exception e)
-        {
-            return ResponseEntity.status(500).body("Internal Server Error: " + e.getMessage());
-        }
+        return ResponseEntity.badRequest().body("Something went wrong during submission.");
     }
 
+    @PreAuthorize("hasRole('STUDENT')")
     @DeleteMapping("/{submissionId}")
     public ResponseEntity<String> deleteSubmission(
             @PathVariable Long courseId,
             @PathVariable Long assignmentId,
-            @PathVariable Long assignmentSubmissionId
+            @PathVariable Long submissionId
     ) {
-        try {
-            boolean success = assignmentSubmissionService.delete(courseId, assignmentId, assignmentSubmissionId);
-            if (success) {
-                return ResponseEntity.ok("Submission deleted successfully.");
-            } else {
-                return ResponseEntity.badRequest().body("Failed to delete the submission.");
-            }
-        } catch (Exception e) {
-            return ResponseEntity.status(500).body("Internal Server Error: " + e.getMessage());
+        if (!assignmentSubmissionService.existsById(courseId, assignmentId, submissionId)) {
+            return ResponseEntity.status(404).body("Submission not found.");
         }
+        if (!authorizationManager.ownsSubmission(submissionId)) {
+            return ResponseEntity.status(403).body("You don't have permission to delete this submission.");
+        }
+        if (assignmentSubmissionService.delete(courseId, assignmentId, submissionId)) {
+            return ResponseEntity.ok("Submission deleted successfully.");
+        }
+        return ResponseEntity.badRequest().body("Something went wrong during deletion.");
     }
 
-    // we have to restrict the access to this method
+    @GetMapping("/{submissionId}")
+    public ResponseEntity<AssignmentSubmission> getSubmissionById(
+            @PathVariable Long courseId,
+            @PathVariable Long assignmentId,
+            @PathVariable Long submissionId
+    ){
+        if (!assignmentSubmissionService.existsById(courseId, assignmentId, submissionId)) {
+            return ResponseEntity.status(404).body(null);
+        }
+        if (!authorizationManager.isAdminOrInstructor(courseId) && !authorizationManager.ownsSubmission(submissionId)) {
+            return ResponseEntity.status(403).body(null);
+        }
+        AssignmentSubmission assignmentSubmission = assignmentSubmissionService.getById(courseId, assignmentId, submissionId);
+        if (assignmentSubmission == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(assignmentSubmission);
+    }
+
+    @PreAuthorize( "hasRole('INSTRUCTOR') or hasRole('ADMIN')")
     @GetMapping
     public ResponseEntity<List<AssignmentSubmission>> getAllSubmissions(
             @PathVariable Long courseId,
-            @PathVariable Long assignmentId) {
-        try {
-            List<AssignmentSubmission> assignmentSubmissions = assignmentSubmissionService.getAllByAssignmentId(courseId, assignmentId);
-            if (assignmentSubmissions == null || assignmentSubmissions.isEmpty()) {
-                return ResponseEntity.noContent().build();
-            }
-            return ResponseEntity.ok(assignmentSubmissions);
-        } catch (Exception e) {
-            return ResponseEntity.status(500).body(null);
+            @PathVariable Long assignmentId
+    ){
+//        if (!assignmentSubmissionService.assignmentService.existsById(courseId, assignmentId)) {
+//            return ResponseEntity.status(404).body(null);
+//        }
+        if (!authorizationManager.isAdminOrInstructor(courseId)){
+            return ResponseEntity.status(403).build();
         }
+        return ResponseEntity.ok(assignmentSubmissionService.getAllByAssignmentId(courseId, assignmentId));
     }
 }
