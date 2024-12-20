@@ -18,16 +18,35 @@ public class VisualizationRestController {
     private VisualizationService visualizationService;
     @Autowired
     private AuthorizationManager authorizationManager;
-    @GetMapping("")
+    @GetMapping("/scores")
     ResponseEntity<String> getVisualization(@PathVariable("courseId") Long courseId) throws IOException {
         try{
             if(authorizationManager.isAdminOrInstructor(courseId)){
-                String filePath = visualizationService.generatePieChart(courseId);
+                String filePath = visualizationService.generateScoresPieChart(courseId);
+                if (filePath == null){ResponseEntity.badRequest().body("No data to visualize.");}
                 return ResponseEntity.ok("Pie chart is generated successfully at " + filePath);
             }
             else{
                 System.out.println("You do not have permission to access this resource");
-                return ResponseEntity.status(403).body("You are not allowed to generate sheets");
+                return ResponseEntity.status(403).body("You are not allowed to generate Charts");
+            }
+        }
+        catch(Exception e){
+            e.printStackTrace();
+            return ResponseEntity.badRequest().body("Something went wrong while creating the PieChart.");
+        }
+    }
+    @GetMapping("/attendance")
+    ResponseEntity<String> getAttendanceVisualization(@PathVariable("courseId") Long courseId) throws IOException {
+        try{
+            if(authorizationManager.isAdminOrInstructor(courseId)){
+                String filePath = visualizationService.generateAttendancePieChart(courseId);
+                if (filePath == null){ResponseEntity.badRequest().body("No data to visualize.");}
+                return ResponseEntity.ok("Pie chart is generated successfully at " + filePath);
+            }
+            else{
+                System.out.println("You do not have permission to access this resource");
+                return ResponseEntity.status(403).body("You are not allowed to generate Charts");
             }
         }
         catch(Exception e){

@@ -80,7 +80,7 @@ public class ExcelGeneratorService {
             total += feedback.getGrade();
             maxTotal += feedback.getMaxGrade();
         }
-        return total/maxTotal*100;
+        return total/(maxTotal > 0 ? maxTotal : 1)*100;
     }
 
     private Double assignmentGradesTotal(Long courseId,Long studentId){
@@ -91,13 +91,13 @@ public class ExcelGeneratorService {
             total+= feedback.getGrade();
             maxTotal += feedback.getMaxGrade();
         }
-        return total/maxTotal*100;
+        return total/(maxTotal > 0 ? maxTotal : 1)*100;
     }
 
     private Double attendanceTracker(Long courseId,Long studentId){
         List<Attendance> attendances = progressService.getAttendanceRecordsPerStudent(courseId, studentId);
         double lessonCount = lessonService.getAll(courseId).size();
         double attendanceCount = attendances.size();
-        return attendanceCount/lessonCount*100;
+        return attendanceCount/(lessonCount > 0 ? lessonCount : 1)*100;
     }
 }
