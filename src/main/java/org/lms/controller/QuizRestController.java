@@ -4,6 +4,8 @@ import org.lms.AuthorizationManager;
 import org.lms.entity.Assessment.Quiz;
 import org.lms.entity.Question;
 import org.lms.service.Assessment.QuizService;
+import org.lms.service.CourseService;
+import org.lms.service.QuestionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -18,11 +20,10 @@ public class QuizRestController {
     private QuizService quizService;
     @Autowired
     private AuthorizationManager authorizationManager;
-
     @PreAuthorize("hasRole('INSTRUCTOR')")
     @PutMapping("")
     public ResponseEntity<String> createQuiz(@PathVariable("courseid") Long courseId, @RequestBody Quiz quiz) {
-        if (!quizService.courseService.existsById(courseId)) {
+        if (!quizService.courseExistsById(courseId)) {
             return ResponseEntity.status(404).body("Course not found.");
         }
         if (!authorizationManager.isInstructor(courseId)) {
@@ -107,7 +108,7 @@ public class QuizRestController {
     }
     @GetMapping("")
     public ResponseEntity<List<Quiz>> getAll(@PathVariable("courseid") Long courseId) {
-        if (!quizService.courseService.existsById(courseId)) {
+        if (!quizService.courseExistsById(courseId)) {
             return ResponseEntity.status(404).body(null);
         }
         if (!authorizationManager.hasAccess(courseId)) {

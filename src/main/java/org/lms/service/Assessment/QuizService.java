@@ -10,6 +10,7 @@ import org.lms.entity.StudentQuiz;
 import org.lms.entity.User.Student;
 import org.lms.repository.QuizRepository;
 import org.lms.repository.StudentQuizRepository;
+import org.lms.service.CourseService;
 import org.lms.service.QuestionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -27,6 +28,8 @@ public class QuizService extends AssessmentService {
     private StudentQuizRepository studentQuizRepository;
     @Autowired
     private AuthorizationManager authorizationManager;
+    @Autowired
+    private CourseService courseService;
 
     public boolean create(Long courseId, Quiz quiz)
     {
@@ -147,5 +150,11 @@ public class QuizService extends AssessmentService {
 
         return randomizedQuestions;
     }
+
+    public boolean courseExistsById(Long courseId){
+        return courseService.existsById(courseId);
+    }
+
+
 }
 
