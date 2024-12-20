@@ -30,8 +30,7 @@ public class VisualizationService {
         DefaultPieDataset dataset = new DefaultPieDataset();
         int[]grades = getStudentsTotalGrades(courseId);
         for (int i = 0; i < grades.length; i++) {
-//            dataset.setValue((i * 10) + "%", (grades[i] / (double) grades.length) * 100);
-            dataset.setValue((i * 10) + "%", (double)(i*100));
+            dataset.setValue((i * 10) + "%", (grades[i] / (double) grades.length) * 100);
         }
         JFreeChart pieChart = ChartFactory.createPieChart(
                 "Grades Percentage Distribution - Course " + courseId,
