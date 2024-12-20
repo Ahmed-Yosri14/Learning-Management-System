@@ -25,8 +25,6 @@ public class ExcelGeneratorService {
     private LessonService lessonService;
     @Autowired
     private EnrollmentService enrollmentService;
-    @Autowired
-    private UserService userService;
 
     public String generateStudentProgressExcel(Long courseId) throws IOException {
         Workbook workbook = new XSSFWorkbook();

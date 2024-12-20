@@ -2,7 +2,6 @@ package org.lms.controller;
 
 import org.lms.AuthorizationManager;
 import org.lms.service.ExcelGeneratorService;
-import org.lms.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -28,14 +27,14 @@ public class ExcelGeneratingRestController {
         try {
             if (authorizationManager.isAdminOrInstructor(courseId)) {
                 String filePath = excelGeneratingService.generateStudentProgressExcel(courseId);
-                return ResponseEntity.ok("Excel sheet generated successfully!");
+                return ResponseEntity.ok("Excel sheet generated successfully at " + filePath);
             } else {
                 return ResponseEntity.status(403).body("You are not allowed to generate sheets");
             }
 
         } catch (IOException e) {
             e.printStackTrace();
-            return ResponseEntity.badRequest().body("Something went wrong while creating the question.");
+            return ResponseEntity.badRequest().body("Something went wrong while creating the Sheet.");
         }
     }
 //    @GetMapping("")
