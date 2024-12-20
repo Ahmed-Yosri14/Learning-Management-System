@@ -26,6 +26,7 @@ public class VisualizationRestController {
                 return ResponseEntity.ok("Pie chart is generated successfully at " + filePath);
             }
             else{
+                System.out.println("You do not have permission to access this resource");
                 return ResponseEntity.status(403).body("You are not allowed to generate sheets");
             }
         }

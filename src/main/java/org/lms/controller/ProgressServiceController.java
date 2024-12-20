@@ -23,6 +23,12 @@ public class ProgressServiceController {
         return ResponseEntity.ok(quizScores);
     }
 
+    @GetMapping("/quiz-scores/{courseId}/student/{studentId}")
+    public ResponseEntity<List<QuizFeedback>> getQuizScores(@PathVariable Long courseId,@PathVariable Long studentId) {
+        List<QuizFeedback> quizScores = progressService.getQuizScoresByCourseIdAndStudentId(courseId,studentId);
+        return ResponseEntity.ok(quizScores);
+    }
+
     @GetMapping("/assignment-scores/{courseId}")
     public ResponseEntity<List<AssignmentFeedback>> getAssignmentSubmissions(@PathVariable Long courseId) {
         List<AssignmentFeedback> assignmentFeedbacks = progressService.getAssignmentFeedbacks(courseId);

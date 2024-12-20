@@ -14,8 +14,8 @@ public interface AssignmentFeedbackRepository extends JpaRepository<AssignmentFe
     @Query("SELECT l FROM AssignmentFeedback l WHERE l.assignmentSubmission.id = :assignmentSubmissionId")
     List<AssignmentFeedback> findAllByAssignmentSubmissionId(Long assignmentSubmissionId);
 
-    @Query("SELECT l FROM AssignmentFeedback l WHERE l.assignmentSubmission.assignment.course.id= : courseId")
+    @Query("SELECT l FROM AssignmentFeedback l WHERE l.assignmentSubmission.assignment.course.id= :courseId")
     List<AssignmentFeedback> findByCourseId(@Param("courseId") Long courseId);
-    @Query("SELECT l FROM AssignmentFeedback l WHERE l.assignmentSubmission.assignment.course.id= : courseId and l.assignmentSubmission.student.id = :studentId")
+    @Query("SELECT l FROM AssignmentFeedback l WHERE l.assignmentSubmission.assignment.course.id= :courseId and l.assignmentSubmission.student.id = :studentId")
     List<AssignmentFeedback> findByCourseIdAndStudentId(@Param("courseId") Long courseId,@Param("studentId")Long studentId);
 }

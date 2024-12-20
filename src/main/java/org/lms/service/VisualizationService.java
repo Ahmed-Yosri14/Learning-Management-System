@@ -50,10 +50,12 @@ public class VisualizationService {
         Long studentId = student.getId();
         double score = 0;
         double maxScore = 0;
-        List<QuizFeedback>quizzes = progressService.getQuizScoresByCourseIdAndStudentId(courseId, studentId);
+        System.out.println(studentId);
+        System.out.println(courseId);
+        List<QuizFeedback> quizScores = progressService.getQuizScoresByCourseIdAndStudentId(courseId,studentId);
         List<AssignmentFeedback>assignmentFeedbacks = progressService.getAssignmentFeedbacksByCourseAndStudent(courseId, studentId);
         List<Attendance>attendances = progressService.getAttendanceRecordsPerStudent(courseId, studentId);
-        for (QuizFeedback quizFeedback : quizzes) {
+        for (QuizFeedback quizFeedback : quizScores) {
             score += quizFeedback.getGrade();
             maxScore += quizFeedback.getMaxGrade();
         }
