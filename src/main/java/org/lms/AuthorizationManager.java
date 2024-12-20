@@ -7,7 +7,7 @@ import org.lms.entity.User.AppUser;
 import org.lms.entity.User.Student;
 import org.lms.service.CourseService;
 import org.lms.service.EnrollmentService;
-import org.lms.service.SubmissionService;
+import org.lms.service.Submission.SubmissionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;

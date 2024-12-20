@@ -1,4 +1,4 @@
-package org.lms.service;
+package org.lms.service.Feedback;
 
 import org.lms.entity.Feedback.Feedback;
 import org.lms.repository.FeedbackRepository;

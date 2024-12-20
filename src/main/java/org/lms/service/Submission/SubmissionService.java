@@ -1,4 +1,4 @@
-package org.lms.service;
+package org.lms.service.Submission;
 
 import org.lms.entity.Submission.Submission;
 import org.lms.repository.SubmissionRepository;
