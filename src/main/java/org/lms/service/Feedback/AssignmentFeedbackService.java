@@ -1,5 +1,6 @@
 package org.lms.service.Feedback;
 
+import lombok.Getter;
 import org.lms.entity.Feedback.AssignmentFeedback;
 import org.lms.repository.AssignmentFeedbackRepository;
 import org.lms.service.Submission.AssignmentSubmissionService;
@@ -14,6 +15,7 @@ public class AssignmentFeedbackService extends FeedbackService {
     @Autowired
     private AssignmentFeedbackRepository assignmentFeedbackRepository;
 
+    @Getter
     @Autowired
     private AssignmentSubmissionService assignmentSubmissionService;
 
@@ -32,16 +34,9 @@ public class AssignmentFeedbackService extends FeedbackService {
     }
 
 
-    public AssignmentFeedback getById(
-            Long courseId,
-            Long assignmentId,
-            Long assignmentSubmissionId,
-            Long id
-    ){
+    public AssignmentFeedback getById(Long id){
         try {
-            assert existsById(courseId, assignmentId, assignmentSubmissionId, id);
-
-            return (AssignmentFeedback)getById(id);
+            return (AssignmentFeedback)super.getById(id);
         }
         catch(Exception e){
             System.out.println(e);
@@ -49,14 +44,8 @@ public class AssignmentFeedbackService extends FeedbackService {
         return null;
     }
 
-    public List<AssignmentFeedback> getAllByAssignmentSubmissionId(
-            Long courseId,
-            Long assignmentId,
-            Long assignmentSubmissionId
-    ){
+    public List<AssignmentFeedback> getAllByAssignmentSubmissionId(Long assignmentSubmissionId){
         try {
-            assert assignmentSubmissionService.existsById(courseId, assignmentId, assignmentSubmissionId);
-
             return assignmentFeedbackRepository.findAllByAssignmentSubmissionId(assignmentSubmissionId);
         }
         catch(Exception e){
@@ -65,16 +54,10 @@ public class AssignmentFeedbackService extends FeedbackService {
         return null;
     }
 
-    public boolean create(
-            Long courseId,
-            Long assignmentId,
-            Long assignmentSubmissionId,
-            AssignmentFeedback assignmentFeedback
+    public boolean create(Long assignmentSubmissionId, AssignmentFeedback assignmentFeedback
     ){
 
         try {
-            assert assignmentSubmissionService.existsById(courseId, assignmentId, assignmentSubmissionId);
-
             assignmentFeedback.setAssignmentSubmission(
                     assignmentSubmissionService.getById(assignmentSubmissionId));
 
@@ -87,40 +70,11 @@ public class AssignmentFeedbackService extends FeedbackService {
         return false;
     }
 
-    public boolean update(
-            Long courseId,
-            Long assignmentId,
-            Long assignmentSubmissionId,
-            Long id,
-            AssignmentFeedback assignmentFeedback
-    ){
-
-        try {
-            assert existsById(courseId, assignmentId, assignmentSubmissionId, id);
-
-            return update(id, assignmentFeedback);
-        }
-        catch(Exception e){
-            System.out.println(e);
-        }
-        return false;
+    public boolean update(Long id, AssignmentFeedback assignmentFeedback){
+        return super.update(id, assignmentFeedback);
     }
 
-    public boolean delete(
-            Long courseId,
-            Long assignmentId,
-            Long assignmentSubmissionId,
-            Long id
-    ){
-
-        try {
-            assert existsById(courseId, assignmentId, assignmentSubmissionId, id);
-
-            return delete(id);
-        }
-        catch(Exception e){
-            System.out.println(e);
-        }
-        return false;
+    public boolean delete(Long id){
+        return super.delete(id);
     }
 }

@@ -19,7 +19,6 @@ public class FeedbackService {
     }
     public boolean update(Long id, Feedback feedback){
         try {
-            assert existsById(id);
 
             Feedback oldFeedBack = getById(id);
 
@@ -33,6 +32,7 @@ public class FeedbackService {
                 oldFeedBack.setComment(feedback.getComment());
             }
             feedbackRepository.save(oldFeedBack);
+            return true;
         }
         catch(Exception e){
             System.out.println(e);

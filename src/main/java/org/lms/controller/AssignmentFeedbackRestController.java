@@ -29,13 +29,16 @@ public class AssignmentFeedbackRestController {
             @PathVariable Long assignmentSubmissionId,
             @RequestBody AssignmentFeedback assignmentFeedback
     ) {
+        if (!assignmentFeedbackService.getAssignmentSubmissionService().existsById(courseId, assignmentId, assignmentSubmissionId)){
+            return ResponseEntity.status(404).build();
+        }
         if (!authorizationManager.isInstructor(courseId)){
             return ResponseEntity.status(403).build();
         }
-        if (assignmentFeedbackService.create(courseId, assignmentId, assignmentSubmissionId, assignmentFeedback)) {
-            return ResponseEntity.ok("All good!");
+        if (assignmentFeedbackService.create(assignmentSubmissionId, assignmentFeedback)) {
+            return ResponseEntity.ok().build();
         }
-        return ResponseEntity.badRequest().body("Something went wrong");
+        return ResponseEntity.badRequest().build();
     }
 
     // instructor
@@ -48,14 +51,16 @@ public class AssignmentFeedbackRestController {
             @PathVariable Long id,
             @RequestBody AssignmentFeedback assignmentFeedback
     ){
-
+        if (!assignmentFeedbackService.existsById(courseId, assignmentId, assignmentSubmissionId, id)){
+            return ResponseEntity.status(404).build();
+        }
         if (!authorizationManager.isInstructor(courseId)){
             return ResponseEntity.status(403).build();
         }
-        if (assignmentFeedbackService.update(courseId, assignmentId, id, assignmentSubmissionId, assignmentFeedback)) {
-            return ResponseEntity.ok("All good!");
+        if (assignmentFeedbackService.update(assignmentSubmissionId, assignmentFeedback)){
+            return ResponseEntity.ok().build();
         }
-        return ResponseEntity.badRequest().body("Something went wrong");
+        return ResponseEntity.badRequest().build();
     }
 
     // instructor
@@ -67,14 +72,16 @@ public class AssignmentFeedbackRestController {
             @PathVariable Long assignmentSubmissionId,
             @PathVariable Long id
     ){
-
+        if (!assignmentFeedbackService.existsById(courseId, assignmentId, assignmentSubmissionId, id)){
+            return ResponseEntity.status(404).build();
+        }
         if (!authorizationManager.isInstructor(courseId)){
             return ResponseEntity.status(403).build();
         }
-        if (assignmentFeedbackService.delete(courseId, assignmentSubmissionId, assignmentId, id)) {
-            return ResponseEntity.ok("All good!");
+        if (assignmentFeedbackService.delete(id)){
+            return ResponseEntity.ok().build();
         }
-        return ResponseEntity.badRequest().body("Something went wrong");
+        return ResponseEntity.badRequest().build();
     }
 
     // all
@@ -85,11 +92,13 @@ public class AssignmentFeedbackRestController {
             @PathVariable Long assignmentSubmissionId,
             @PathVariable Long id
     ){
-
+        if (!assignmentFeedbackService.existsById(courseId, assignmentId, assignmentSubmissionId, id)){
+            return ResponseEntity.status(404).build();
+        }
         if (!canAccessDetails(courseId, assignmentSubmissionId)){
             return ResponseEntity.status(403).build();
         }
-        AssignmentFeedback assignmentFeedback = assignmentFeedbackService.getById(courseId, assignmentId, assignmentSubmissionId, id);
+        AssignmentFeedback assignmentFeedback = assignmentFeedbackService.getById(id);
         if (assignmentFeedback == null) {
             return ResponseEntity.notFound().build();
         }
@@ -103,10 +112,13 @@ public class AssignmentFeedbackRestController {
             @PathVariable Long assignmentId,
             @PathVariable Long assignmentSubmissionId
     ){
+        if (!assignmentFeedbackService.getAssignmentSubmissionService().existsById(courseId, assignmentId, assignmentSubmissionId)){
+            return ResponseEntity.status(404).build();
+        }
         if (!canAccessDetails(courseId, assignmentSubmissionId)){
             return ResponseEntity.status(403).build();
         }
-        List<AssignmentFeedback> feedbackList = assignmentFeedbackService.getAllByAssignmentSubmissionId(courseId, assignmentId, assignmentSubmissionId);
+        List<AssignmentFeedback> feedbackList = assignmentFeedbackService.getAllByAssignmentSubmissionId(assignmentSubmissionId);
         if (feedbackList == null) {
             return ResponseEntity.notFound().build();
         }
