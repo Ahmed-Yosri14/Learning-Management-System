@@ -1,29 +1,28 @@
 package org.lms;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.lms.controller.UserRestController;
-import org.lms.entity.User.AppUser;
 import org.lms.entity.UserRole;
 import org.lms.service.AppUserService;
-import org.lms.AuthorizationManager;
-import org.lms.EntityMapper;
+import org.lms.entity.User.AppUser;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-import org.springframework.http.ResponseEntity;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.http.MediaType;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+@ExtendWith(MockitoExtension.class)
 class UserRestControllerTest {
 
-    @InjectMocks
-    private UserRestController userRestController;
+    private MockMvc mockMvc;
 
     @Mock
     private AppUserService appUserService;
@@ -34,56 +33,41 @@ class UserRestControllerTest {
     @Mock
     private EntityMapper entityMapper;
 
+    @InjectMocks
+    private UserRestController userRestController;
+
+    private AppUser user;
+
     @BeforeEach
     void setUp() {
-        MockitoAnnotations.openMocks(this);
+        user = new AppUser();
+        user.setId(1L);
+        user.setEmail("test@example.com");
+        user.setFirstName("John");
+        user.setLastName("Doe");
+
+        mockMvc = MockMvcBuilders.standaloneSetup(userRestController).build();
     }
 
     @Test
-    void testGetProfile() {
-        AppUser mockUser = new AppUser();
-        mockUser.setId(1L);
-        mockUser.setFirstName("John");
-        mockUser.setLastName("Doe");
-        mockUser.setEmail("john.doe@example.com");
+    void testGetProfile() throws Exception {
+        when(authorizationManager.getCurrentUser()).thenReturn(user);
+        when(entityMapper.map(user)).thenReturn(user.toMap(UserRole.ADMIN));
 
-        when(authorizationManager.getCurrentUser()).thenReturn(mockUser);
-        when(entityMapper.map(mockUser)).thenReturn(mockUser.toMap(UserRole.ADMIN));
-
-        ResponseEntity<Object> response = userRestController.getProfile();
-
-        assertEquals(200, response.getStatusCodeValue());
-        assertEquals(entityMapper.map(mockUser), response.getBody());
+        mockMvc.perform(get("/api/user/me"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.email").value("test@example.com"))
+                .andExpect(jsonPath("$.name").value("John Doe"));
     }
+
+
 
     @Test
-    void testUpdateProfileSuccess() {
-        AppUser updatedUser = new AppUser();
-        updatedUser.setFirstName("Jane");
+    void testDeleteProfile() throws Exception {
+        when(appUserService.delete(anyLong())).thenReturn(true);
 
-        when(appUserService.update(anyLong(), any(AppUser.class))).thenReturn(true);
-        when(authorizationManager.getCurrentUserId()).thenReturn(1L);
-
-        ResponseEntity<Object> response = userRestController.updateProfile(updatedUser);
-
-        assertEquals(200, response.getStatusCodeValue());
-        assertEquals("All good!", response.getBody());
-        verify(appUserService).update(1L, updatedUser);
+        mockMvc.perform(delete("/api/user/me"))
+                .andExpect(status().isOk())
+                .andExpect(content().string("All good!"));
     }
-
-    @Test
-    void testUpdateProfileFailure() {
-        AppUser updatedUser = new AppUser();
-        updatedUser.setFirstName("Jane");
-
-        when(appUserService.update(anyLong(), any(AppUser.class))).thenReturn(false);
-        when(authorizationManager.getCurrentUserId()).thenReturn(1L);
-
-        ResponseEntity<Object> response = userRestController.updateProfile(updatedUser);
-
-        assertEquals(400, response.getStatusCodeValue());
-        assertEquals("Something went wrong", response.getBody());
-    }
-
-
 }

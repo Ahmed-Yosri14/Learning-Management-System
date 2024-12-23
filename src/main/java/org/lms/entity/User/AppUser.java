@@ -136,7 +136,6 @@ public class AppUser implements UserDetails, MappableEntity {
         Map<String, Object> response = new HashMap<>();
         response.put("name",getFirstName()+" "+getLastName());
         response.put("email",getEmail());
-        response.put("username",getUsername());
         return response;
     }
 }
