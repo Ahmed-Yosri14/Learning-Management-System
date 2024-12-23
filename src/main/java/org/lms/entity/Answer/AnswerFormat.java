@@ -5,6 +5,9 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.lms.entity.UserRole;
+
+import java.util.Map;
 
 @Getter
 @Setter
@@ -29,4 +32,6 @@ public abstract class AnswerFormat {
 
     @Column(nullable = false)
     private String correctAnswer;
+
+    public abstract Map<String,Object> toMap(UserRole role);
 }

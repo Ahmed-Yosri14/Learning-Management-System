@@ -4,11 +4,25 @@ import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
 import lombok.Getter;
 import lombok.Setter;
+import org.lms.entity.UserRole;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @Getter
 @Setter
 @Entity
 @DiscriminatorValue("MCQ")
 public class MCQAnswer extends AnswerFormat {
-    private String[] options; // Options for multiple-choice questions
+    private String[] options;
+
+    @Override
+    public Map<String, Object> toMap(UserRole role) {
+        Map<String, Object> response = new HashMap<>();
+        response.put("options", options);
+        if (!UserRole.STUDENT.equals(role)) {
+            response.put("correct answer", getCorrectAnswer());
+        }
+        return response;
+    }
 }

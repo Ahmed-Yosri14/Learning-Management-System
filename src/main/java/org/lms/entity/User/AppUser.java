@@ -13,7 +13,9 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 @Entity
@@ -125,5 +127,13 @@ public class AppUser implements UserDetails {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public java.util.Map<String, Object> toMap(UserRole role) {
+        Map<String, Object> response = new HashMap<>();
+        response.put("name",getFirstName()+" "+getLastName());
+        response.put("email",getEmail());
+        response.put("username",getUsername());
+        return response;
     }
 }
