@@ -1,6 +1,7 @@
 package org.lms.controller;
 
 import org.lms.AuthorizationManager;
+import org.lms.EntityMapper;
 import org.lms.entity.Submission.AssignmentSubmission;
 import org.lms.service.Submission.AssignmentSubmissionService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,7 +10,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.List;
+import java.util.ArrayList;
 
 @RestController
 @RequestMapping("/api/course/{courseId}/assignment/{assignmentId}/submission")
@@ -19,6 +20,8 @@ public class AssignmentSubmissionController {
     private AssignmentSubmissionService assignmentSubmissionService;
     @Autowired
     private AuthorizationManager authorizationManager;
+    @Autowired
+    private EntityMapper entityMapper;
 
     @PreAuthorize("hasRole('STUDENT')")
     @PutMapping("")
@@ -59,7 +62,7 @@ public class AssignmentSubmissionController {
     }
 
     @GetMapping("/{submissionId}")
-    public ResponseEntity<AssignmentSubmission> getSubmissionById(
+    public ResponseEntity<Object> getSubmissionById(
             @PathVariable Long courseId,
             @PathVariable Long assignmentId,
             @PathVariable Long submissionId
@@ -74,12 +77,12 @@ public class AssignmentSubmissionController {
         if (assignmentSubmission == null) {
             return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.ok(assignmentSubmission);
+        return ResponseEntity.ok(entityMapper.map(assignmentSubmission));
     }
 
     @PreAuthorize( "hasRole('INSTRUCTOR') or hasRole('ADMIN')")
     @GetMapping
-    public ResponseEntity<List<AssignmentSubmission>> getAllSubmissions(
+    public ResponseEntity<Object> getAllSubmissions(
             @PathVariable Long courseId,
             @PathVariable Long assignmentId
     ){
@@ -89,6 +92,6 @@ public class AssignmentSubmissionController {
         if (!authorizationManager.isAdminOrInstructor(courseId)){
             return ResponseEntity.status(403).build();
         }
-        return ResponseEntity.ok(assignmentSubmissionService.getAllByAssignmentId(courseId, assignmentId));
+        return ResponseEntity.ok(entityMapper.map(new ArrayList<>(assignmentSubmissionService.getAllByAssignmentId(courseId, assignmentId))));
     }
 }

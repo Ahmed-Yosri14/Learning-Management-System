@@ -1,6 +1,7 @@
 package org.lms.controller;
 
 import org.lms.AuthorizationManager;
+import org.lms.EntityMapper;
 import org.lms.entity.Course;
 import org.lms.service.CourseService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,7 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import java.util.ArrayList;
 
 
 @RestController
@@ -19,6 +20,8 @@ public class CourseRestController {
 
     @Autowired
     private AuthorizationManager authorizationManager;
+    @Autowired
+    private EntityMapper entityMapper;
 
     // instructor
     @PreAuthorize("hasRole('INSTRUCTOR')")
@@ -63,16 +66,16 @@ public class CourseRestController {
 
     // all
     @GetMapping("/{id}")
-    public ResponseEntity<Course> getById(@PathVariable("id") Long id) {
+    public ResponseEntity<Object> getById(@PathVariable("id") Long id) {
         Course course = courseService.getById(id);
         if (course == null) {
             return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.ok(course);
+        return ResponseEntity.ok(entityMapper.map(course));
     }
     // all
     @GetMapping("")
-    public List<Course> getAll() {
-        return courseService.getAll();
+    public ResponseEntity<Object> getAll() {
+        return ResponseEntity.ok(entityMapper.map(new ArrayList<>(courseService.getAll())));
     }
 }
