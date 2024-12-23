@@ -52,7 +52,7 @@ public class AttendanceRestController {
     @PreAuthorize("hasRole('INSTRUCTOR') or hasRole('ADMIN')")
     @GetMapping("")
     public ResponseEntity<List<Student>> getAll(@PathVariable("courseId") Long courseId, @PathVariable("lessonId") Long lessonId) {
-        if (!authorizationManager.isAdminOrInstructor(courseId)){
+        if (!authorizationManager.isAdminOrInstructor(courseId)) {
             return ResponseEntity.status(403).build();
         }
         return ResponseEntity.ok(attendanceService.getByLessonId(lessonId, courseId));

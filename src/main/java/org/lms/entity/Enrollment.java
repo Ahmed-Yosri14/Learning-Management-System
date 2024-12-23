@@ -16,7 +16,7 @@ import java.util.Map;
                 @UniqueConstraint(columnNames = {"student_id", "course_id"})
         }
 )
-public class Enrollment {
+public class Enrollment implements MappableEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -30,7 +30,7 @@ public class Enrollment {
     @JoinColumn(nullable = false)
     private Student student;
 
-    public Map<String, Object> toMap(){
+    public Map<String, Object> toMap(UserRole role){
         Map<String, Object> map = new HashMap<>();
         map.put("id", getId());
         map.put("courseId", getCourse().getId());

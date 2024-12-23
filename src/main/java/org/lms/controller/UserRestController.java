@@ -2,6 +2,7 @@ package org.lms.controller;
 
 
 import org.lms.AuthorizationManager;
+import org.lms.EntityMapper;
 import org.lms.entity.User.AppUser;
 import org.lms.entity.UserRole;
 import org.lms.service.AppUserService;
@@ -11,7 +12,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
-import java.util.List;
 
 @RestController
 @RequestMapping("api/user")
@@ -23,10 +23,13 @@ public class UserRestController {
     @Autowired
     private AuthorizationManager authorizationManager;
 
+    @Autowired
+    private EntityMapper entityMapper;
+
     // all
     @GetMapping("/me")
     public ResponseEntity<Object> getProfile(){
-        return ResponseEntity.ok( authorizationManager.getCurrentUser().toMap(authorizationManager.getCurrentUser().getRoles()));
+        return ResponseEntity.ok(entityMapper.map(authorizationManager.getCurrentUser()));
     }
     // all
     @PatchMapping("/me")
@@ -77,17 +80,12 @@ public class UserRestController {
         if (user == null) {
             return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.ok(user);
+        return ResponseEntity.ok(entityMapper.map(user));
     }
     // admin
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("")
-    public ResponseEntity<List<Object>> getAll(@RequestParam(required = false) UserRole role) {
-        List<AppUser>data = appUserService.getAll(role);
-        List<Object>list = new ArrayList<>();
-        for (AppUser appUser : data) {
-            list.add(appUser.toMap(authorizationManager.getCurrentUser().getRoles()));
-        }
-        return ResponseEntity.ok(list);
+    public ResponseEntity<Object> getAll(@RequestParam(required = false) UserRole role) {
+        return ResponseEntity.ok(entityMapper.map(new ArrayList<>(appUserService.getAll(role))));
     }
 }

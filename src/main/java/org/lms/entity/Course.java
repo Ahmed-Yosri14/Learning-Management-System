@@ -12,7 +12,7 @@ import java.util.Map;
 @Getter
 @Setter
 @Entity
-public class Course {
+public class Course implements MappableEntity {
     public Course() {}
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -30,7 +30,7 @@ public class Course {
     @JoinColumn(nullable = false)
     private Instructor instructor;
 
-    public Map<String, Object> toMap(){
+    public Map<String, Object> toMap(UserRole role){
         Map<String, Object> data = new HashMap<>();
         data.put("id", getId());
         data.put("name", getName());
