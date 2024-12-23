@@ -38,6 +38,11 @@ public class ProgressServiceController {
         List<AssignmentFeedback> assignmentFeedbacks = progressService.getAssignmentFeedbacks(courseId);
         return ResponseEntity.ok(entityMapper.map(new ArrayList<>(assignmentFeedbacks)));
     }
+    @GetMapping("/assignment-scores/{courseId}/student/{studentId}")
+    public ResponseEntity<Object> getAssignmentSubmissionsByStudent(@PathVariable Long courseId,@PathVariable Long studentId) {
+        List<AssignmentFeedback> assignmentFeedbacks = progressService.getAssignmentFeedbacksByCourseAndStudent(courseId,studentId);
+        return ResponseEntity.ok(entityMapper.map(new ArrayList<>(assignmentFeedbacks)));
+    }
 
     @GetMapping("/attendance/{courseId}")
     public ResponseEntity<Object> getAttendanceRecords(@PathVariable Long courseId) {

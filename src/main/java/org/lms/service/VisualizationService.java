@@ -29,7 +29,11 @@ public class VisualizationService {
         if(grades == null){return null;}
         for (int i = 0; i < grades.length; i++) {
             if(grades[i] == 0)continue;
-            dataset.setValue("From "+ (i*10)+ "% to " +((i+1) * 10) + "%", (grades[i] / (double) grades.length) * 100);
+            String s =  (i*10)+"% ";
+            if (Math.min((i) * 10,100)!=100){
+                s="From "+ (i*10)+ "% to " +Math.min((i+1) * 10,100) + "%";
+            }
+            dataset.setValue(s, (grades[i] / (double) grades.length) * 100);
         }
         JFreeChart pieChart = ChartFactory.createPieChart(
                 ChartName + courseId,
