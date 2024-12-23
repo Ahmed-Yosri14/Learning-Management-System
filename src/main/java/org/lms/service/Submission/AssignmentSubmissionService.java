@@ -28,66 +28,58 @@ public class AssignmentSubmissionService {
     @Autowired
     private AppUserService appUserService;
 
-    public boolean existsById(
-            Long courseId,
-            Long assignmentId,
-            Long id
-    ){
-
-        AssignmentSubmission assignmentSubmission = getById(id);
-        return assignmentSubmissionRepository.existsById(id)
-                && assignmentService.existsById(courseId, assignmentId)
-                && assignmentSubmission.getAssignment().getId().equals(assignmentId);
-    }
-
-    public AssignmentSubmission getById(
-            Long id
-    ){
-        return assignmentSubmissionRepository.findById(id).get();
-    }
-
-    public AssignmentSubmission getById(
-            Long courseId,
-            Long assignmentId,
-            Long id
-    ){
-
+    public boolean existsById(Long courseId, Long assignmentId, Long id) {
         try {
-            assert existsById(courseId, assignmentId, id);
+            AssignmentSubmission assignmentSubmission = assignmentSubmissionRepository.findById(id).orElse(null);
+            return assignmentSubmissionRepository.existsById(id)
+                    && assignmentService.existsById(courseId, assignmentId)
+                    && assignmentSubmission != null
+                    && assignmentSubmission.getAssignment().getId().equals(assignmentId);
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    public AssignmentSubmission getById(Long id) {
+        try {
+            return assignmentSubmissionRepository.findById(id).orElse(null);
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    public AssignmentSubmission getById(Long courseId, Long assignmentId, Long id) {
+        try {
+            if (!existsById(courseId, assignmentId, id)) {
+                return null;
+            }
             return getById(id);
+        } catch (Exception e) {
+            return null;
         }
-        catch(Exception e){
-            System.out.println(e);
-        }
-        return null;
     }
 
-    public List<AssignmentSubmission> getAllByAssignmentId(
-            Long courseId,
-            Long assignmentId
-    ){
-
+    public List<AssignmentSubmission> getAllByAssignmentId(Long courseId, Long assignmentId) {
         try {
-            assert assignmentService.existsById(courseId, assignmentId);
-
+            if (!assignmentService.existsById(courseId, assignmentId)) {
+                return null;
+            }
             return assignmentSubmissionRepository.findAllByAssignmentId(assignmentId);
+        } catch (Exception e) {
+            return null;
         }
-        catch(Exception e){
-            System.out.println(e);
-        }
-        return null;
     }
 
-    public boolean create (
-            Long courseId,
-            Long assignmentId,
-            Long studentId,
-            MultipartFile file
-    ){
+    public boolean create(Long courseId, Long assignmentId, Long studentId, MultipartFile file) {
         try {
-            assert assignmentService.existsById(courseId, assignmentId);
+            if (!assignmentService.existsById(courseId, assignmentId)) {
+                return false;
+            }
 
             Assignment assignment = assignmentService.getById(courseId, assignmentId);
+            if (assignment == null) {
+                return false;
+            }
 
             String filePath = fileStorageService.storeFile(file);
             AssignmentSubmission assignmentSubmission = new AssignmentSubmission();
@@ -97,27 +89,20 @@ public class AssignmentSubmissionService {
 
             assignmentSubmissionRepository.save(assignmentSubmission);
             return true;
+        } catch (Exception e) {
+            return false;
         }
-        catch(Exception e){
-            System.out.println(e);
-        }
-        return false;
     }
 
-    public boolean delete(
-            Long courseId,
-            Long assignmentId,
-            Long id
-    ){
-
+    public boolean delete(Long courseId, Long assignmentId, Long id) {
         try {
-            assert existsById(courseId, assignmentId, id);
+            if (!existsById(courseId, assignmentId, id)) {
+                return false;
+            }
             assignmentSubmissionRepository.deleteById(id);
             return true;
+        } catch (Exception e) {
+            return false;
         }
-        catch(Exception e){
-            System.out.println(e);
-        }
-        return false;
     }
 }
