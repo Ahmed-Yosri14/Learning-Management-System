@@ -24,7 +24,7 @@ public class UserRestController {
 
     // all
     @GetMapping("/me")
-    public ResponseEntity<?> getProfile(){
+    public ResponseEntity<AppUser> getProfile(){
         return ResponseEntity.ok(authorizationManager.getCurrentUser());
     }
     // all
@@ -44,16 +44,6 @@ public class UserRestController {
         return ResponseEntity.badRequest().body("Something went wrong");
     }
 
-    // admin
-    @PreAuthorize("hasRole('ADMIN')")
-    @PutMapping("")
-    public ResponseEntity<String> create(@RequestBody AppUser user) {
-        if (appUserService.create(user)){
-            return ResponseEntity.ok("All good!");
-        }
-        return ResponseEntity.badRequest().body("Something went wrong");
-
-    }
     // admin
     @PreAuthorize("hasRole('ADMIN')")
     @PatchMapping("/{id}")
