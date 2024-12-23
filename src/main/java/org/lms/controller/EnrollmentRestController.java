@@ -2,14 +2,14 @@ package org.lms.controller;
 
 
 import org.lms.AuthorizationManager;
-import org.lms.entity.User.Student;
+import org.lms.EntityMapper;
 import org.lms.service.EnrollmentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import java.util.ArrayList;
 
 @RestController
 @RequestMapping("api/course/{courseId}/enrollment")
@@ -20,6 +20,8 @@ public class EnrollmentRestController {
 
     @Autowired
     private AuthorizationManager authorizationManager;
+    @Autowired
+    private EntityMapper entityMapper;
 
     // student
     @PreAuthorize("hasRole('STUDENT')")
@@ -66,10 +68,10 @@ public class EnrollmentRestController {
     // instructor & admin
     @PreAuthorize("hasRole('INSTRUCTOR') or hasRole('ADMIN')")
     @GetMapping("")
-    public ResponseEntity<List<Student>> getAll(@PathVariable("courseId") Long courseId) {
+    public ResponseEntity<Object> getAll(@PathVariable("courseId") Long courseId) {
         if (!authorizationManager.isAdminOrInstructor(courseId)){
             return ResponseEntity.status(403).build();
         }
-        return ResponseEntity.ok(enrollmentService.getByCourseId(courseId));
+        return ResponseEntity.ok(entityMapper.map(new ArrayList<>(enrollmentService.getByCourseId(courseId))));
     }
 }

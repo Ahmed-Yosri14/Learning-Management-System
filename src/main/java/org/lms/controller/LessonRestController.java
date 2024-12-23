@@ -1,6 +1,7 @@
 package org.lms.controller;
 
 import org.lms.AuthorizationManager;
+import org.lms.EntityMapper;
 import org.lms.entity.Lesson;
 import org.lms.service.LessonService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,7 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import java.util.ArrayList;
 @RestController
 @RequestMapping("api/course/{courseId}/lesson")
 public class LessonRestController {
@@ -17,6 +18,8 @@ public class LessonRestController {
 
     @Autowired
     private AuthorizationManager authorizationManager;
+    @Autowired
+    private EntityMapper entityMapper;
 
     // instructor
     @PreAuthorize("hasRole('INSTRUCTOR')")
@@ -58,7 +61,7 @@ public class LessonRestController {
     }
     // all
     @GetMapping("/{id}")
-    public ResponseEntity<Lesson> getById(@PathVariable("courseId") Long courseId, @PathVariable("id") Long id) {
+    public ResponseEntity<Object> getById(@PathVariable("courseId") Long courseId, @PathVariable("id") Long id) {
         if (!authorizationManager.hasAccess(courseId)){
             return ResponseEntity.status(403).build();
         }
@@ -66,14 +69,14 @@ public class LessonRestController {
         if (lesson == null) {
             return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.ok(lesson);
+        return ResponseEntity.ok(entityMapper.map(lesson));
     }
     // all
     @GetMapping("")
-    public ResponseEntity<List<Lesson>> getAll(@PathVariable("courseId") Long courseId) {
+    public ResponseEntity<Object> getAll(@PathVariable("courseId") Long courseId) {
         if (!authorizationManager.hasAccess(courseId)){
             return ResponseEntity.status(403).build();
         }
-        return ResponseEntity.ok(lessonService.getAll(courseId));
+        return ResponseEntity.ok(entityMapper.map(new ArrayList<>(lessonService.getAll(courseId))));
     }
 }

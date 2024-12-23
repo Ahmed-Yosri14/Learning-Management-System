@@ -89,9 +89,7 @@ public class AssignmentSubmissionController {
             @PathVariable Long courseId,
             @PathVariable Long assignmentId
     ) {
-//        if (!assignmentSubmissionService.assignmentService.existsById(courseId, assignmentId)) {
-//            return ResponseEntity.status(404).body(null);
-//        }
+
         if (!authorizationManager.isAdminOrInstructor(courseId)) {
             return ResponseEntity.status(403).build();
         }

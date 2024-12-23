@@ -1,6 +1,7 @@
 package org.lms.controller;
 
 import org.lms.AuthorizationManager;
+import org.lms.EntityMapper;
 import org.lms.entity.CourseMaterial;
 import org.lms.service.CourseMaterialService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +10,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -19,6 +21,8 @@ public class CourseMaterialRestController {
 
     @Autowired
     private AuthorizationManager authorizationManager;
+    @Autowired
+    private EntityMapper entityMapper;
 
     @PreAuthorize("hasRole('INSTRUCTOR')")
     @PutMapping("")
@@ -45,13 +49,13 @@ public class CourseMaterialRestController {
     }
     @PreAuthorize("hasRole('INSTRUCTOR')||hasRole('STUDENT')||hasRole('ADMIN')")
     @GetMapping("")
-    public ResponseEntity<List<CourseMaterial>> getMaterialsByCourse(@PathVariable Long courseId) {
+    public ResponseEntity<Object> getMaterialsByCourse(@PathVariable Long courseId) {
         if (!authorizationManager.hasAccess(courseId)){
             return ResponseEntity.status(403).build();
         }
         List<CourseMaterial> courseMaterialList = courseMaterialService.getAllByCourseId(courseId);
         if (courseMaterialList != null) {
-            return ResponseEntity.ok(courseMaterialList);
+            return ResponseEntity.ok(entityMapper.map(new ArrayList<>(courseMaterialList)));
         }
         return ResponseEntity.notFound().build();
     }
