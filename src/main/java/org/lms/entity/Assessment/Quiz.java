@@ -26,7 +26,7 @@ public class Quiz extends Assessment {
 
 
     private Double questionNum;
-    public Map toMap(UserRole role){
+    public Map<String,Object> toMap(UserRole role){
         Map<String, Object> response = new HashMap<>();
         response.put("question title", this.getTitle());
         response.put("number of questions", questionNum);
@@ -36,6 +36,5 @@ public class Quiz extends Assessment {
             response.put(question.getId().toString(),question.toMap(role));
         }
         return response;
-
     }
 }

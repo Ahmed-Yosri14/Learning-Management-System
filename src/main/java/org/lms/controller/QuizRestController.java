@@ -12,6 +12,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/course/{courseid}/quiz")
@@ -76,36 +77,18 @@ public class QuizRestController {
         }
         return ResponseEntity.badRequest().body("Something went wrong");
     }
-    @PreAuthorize("hasRole('INSTRUCTOR') or hasRole('ADMIN')")
     @GetMapping("/{id}")
-    public ResponseEntity<Quiz> getById(@PathVariable("courseid") Long courseId, @PathVariable("id") Long id) {
+    public ResponseEntity<Map<String,Object>> getById(@PathVariable("courseid") Long courseId, @PathVariable("id") Long id) {
         if (!quizService.existsById(courseId, id)) {
             return ResponseEntity.status(404).body(null);
         }
-        if (!authorizationManager.isAdminOrInstructor(courseId)) {
-            return ResponseEntity.status(403).body(null);
-        }
-        Quiz quiz = quizService.getById(courseId,id);
+        Map<String,Object> quiz = quizService.getById(courseId,id);
         if (quiz == null) {
             return ResponseEntity.notFound().build();
         }
         return ResponseEntity.ok(quiz);
     }
-    @PreAuthorize("hasRole('STUDENT')")
-    @GetMapping("/student/{id}")
-    public ResponseEntity<List<Question>> getByIdForStudent(@PathVariable("courseid") Long courseId, @PathVariable("id") Long id) {
-        if (!quizService.existsById(courseId, id)) {
-            return ResponseEntity.status(404).body(null);
-        }
-        if (!authorizationManager.isEnrolled(courseId)) {
-            return ResponseEntity.status(403).body(null);
-        }
-        List<Question> questions = quizService.getQuestionsForStudent(courseId,id);
-        if (questions== null) {
-            return ResponseEntity.notFound().build();
-        }
-        return ResponseEntity.ok(questions);
-    }
+
     @GetMapping("")
     public ResponseEntity<List<Quiz>> getAll(@PathVariable("courseid") Long courseId) {
         if (!quizService.courseExistsById(courseId)) {
