@@ -2,9 +2,7 @@ package org.lms.controller;
 
 import org.lms.AuthorizationManager;
 import org.lms.EntityMapper;
-import org.lms.entity.Feedback.AssignmentFeedback;
 import org.lms.entity.Feedback.QuizFeedback;
-import org.lms.service.Feedback.FeedbackService;
 import org.lms.service.Feedback.QuizFeedbackService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -40,11 +38,11 @@ public class QuizFeedbackRestController {
         if (!canAccessDetails(courseId, quizSubmissionId)){
             return ResponseEntity.status(403).build();
         }
-        AssignmentFeedback assignmentFeedback = quizFeedbackService.getById(courseId, quizId, quizSubmissionId, id);
-        if (assignmentFeedback == null) {
+        QuizFeedback quizFeedback = quizFeedbackService.getById(courseId, quizId, quizSubmissionId, id);
+        if (quizFeedback == null) {
             return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.ok(entityMapper.map(assignmentFeedback));
+        return ResponseEntity.ok(entityMapper.map(quizFeedback));
     }
 
     // all

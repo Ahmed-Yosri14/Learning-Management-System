@@ -11,11 +11,19 @@ public class FeedbackService {
     @Autowired
     private FeedbackRepository feedbackRepository;
 
-    public boolean existsById(Long id){
-        return feedbackRepository.existsById(id);
+    public boolean existsById(Long id) {
+        try {
+            return feedbackRepository.existsById(id);
+        } catch(Exception e) {
+            return false;
+        }
     }
-    public Feedback getById(Long id){
-        return feedbackRepository.findById(id).get();
+    public Feedback getById(Long id) {
+        try {
+            return feedbackRepository.findById(id).orElse(null);
+        } catch(Exception e) {
+            return null;
+        }
     }
     public boolean update(Long id, Feedback feedback){
         try {

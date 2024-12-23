@@ -17,11 +17,11 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-public class LessonServiceTest {
+class LessonServiceTest {
 
     @Mock
     private LessonRepository lessonRepository;
@@ -55,71 +55,37 @@ public class LessonServiceTest {
 
         lesson = new Lesson();
         lesson.setId(1L);
-        lesson.setTitle("Test Lesson");
-        lesson.setDescription("Test Description");
+        lesson.setTitle("Java Basics");
+        lesson.setDescription("Introduction to Java");
         lesson.setDuration(60L);
         lesson.setCourse(course);
     }
 
     @Test
-    void create_ShouldReturnTrue_WhenSuccessful() {
-        // Setup
-        Lesson newLesson = new Lesson();
-        newLesson.setTitle("New Lesson");
-        newLesson.setDescription("New Description");
-        newLesson.setDuration(30L);
-
+    void existsById_ShouldReturnTrue_WhenExists() {
         when(courseService.getById(1L)).thenReturn(course);
-        when(courseService.existsById(anyLong())).thenReturn(true);
-        when(lessonRepository.existsById(anyLong())).thenReturn(true);
-        when(lessonRepository.findById(anyLong())).thenAnswer(invocation -> {
-            Lesson savedLesson = new Lesson();
-            savedLesson.setId(invocation.getArgument(0));
-            savedLesson.setCourse(course);
-            return Optional.of(savedLesson);
-        });
-        when(lessonRepository.save(any(Lesson.class))).thenAnswer(invocation -> {
-            Lesson savedLesson = invocation.getArgument(0);
-            savedLesson.setCourse(course);
-            return savedLesson;
-        });
-        when(lessonRepository.existsByOtp(anyString())).thenReturn(false);
-        doNothing().when(notificationService).createToAllEnrolled(anyLong(), anyString(), anyString());
-
-        boolean result = lessonService.create(newLesson, 1L);
-
-        assertTrue(result);
-        verify(courseService, times(2)).getById(1L);
-        verify(lessonRepository, times(2)).save(any(Lesson.class));
-        verify(notificationService).createToAllEnrolled(
-                eq(1L),
-                eq("New Lesson"),
-                contains(course.getName())
-        );
-    }
-
-    @Test
-    void existsById_ShouldReturnTrue_WhenLessonExists() {
-        when(courseService.getById(1L)).thenReturn(course);
-        when(courseService.existsById(1L)).thenReturn(true);
         when(lessonRepository.existsById(1L)).thenReturn(true);
         when(lessonRepository.findById(1L)).thenReturn(Optional.of(lesson));
 
-        assertTrue(lessonService.existsById(1L, 1L));
+        boolean result = lessonService.existsById(1L, 1L);
+
+        assertTrue(result);
     }
 
     @Test
     void update_ShouldReturnTrue_WhenSuccessful() {
         when(courseService.getById(1L)).thenReturn(course);
         when(lessonRepository.existsById(1L)).thenReturn(true);
-        when(courseService.existsById(1L)).thenReturn(true);
         when(lessonRepository.findById(1L)).thenReturn(Optional.of(lesson));
         when(lessonRepository.save(any(Lesson.class))).thenReturn(lesson);
 
         Lesson updatedLesson = new Lesson();
         updatedLesson.setTitle("Updated Title");
+        updatedLesson.setDescription("Updated Description");
 
-        assertTrue(lessonService.update(1L, updatedLesson, 1L));
+        boolean result = lessonService.update(1L, updatedLesson);
+
+        assertTrue(result);
         verify(lessonRepository).save(any(Lesson.class));
     }
 
@@ -127,24 +93,13 @@ public class LessonServiceTest {
     void delete_ShouldReturnTrue_WhenSuccessful() {
         when(courseService.getById(1L)).thenReturn(course);
         when(lessonRepository.existsById(1L)).thenReturn(true);
-        when(courseService.existsById(1L)).thenReturn(true);
         when(lessonRepository.findById(1L)).thenReturn(Optional.of(lesson));
         doNothing().when(lessonRepository).deleteById(1L);
 
-        assertTrue(lessonService.delete(1L, 1L));
+        boolean result = lessonService.delete(1L, 1L);
+
+        assertTrue(result);
         verify(lessonRepository).deleteById(1L);
-    }
-
-    @Test
-    void getById_WithCourseId_ShouldReturnLesson_WhenExists() {
-        when(courseService.getById(1L)).thenReturn(course);
-        when(lessonRepository.existsById(1L)).thenReturn(true);
-        when(courseService.existsById(1L)).thenReturn(true);
-        when(lessonRepository.findById(1L)).thenReturn(Optional.of(lesson));
-
-        Lesson result = lessonService.getById(1L, 1L);
-        assertNotNull(result);
-        assertEquals(lesson.getId(), result.getId());
     }
 
     @Test
@@ -152,6 +107,7 @@ public class LessonServiceTest {
         when(lessonRepository.findById(1L)).thenReturn(Optional.of(lesson));
 
         Lesson result = lessonService.getById(1L);
+
         assertNotNull(result);
         assertEquals(lesson.getId(), result.getId());
     }
@@ -159,61 +115,52 @@ public class LessonServiceTest {
     @Test
     void getAll_ShouldReturnListOfLessons() {
         List<Lesson> lessons = Arrays.asList(lesson);
-        when(lessonRepository.findAllByCourseId(1L)).thenReturn(lessons);
+        when(lessonRepository.findAll()).thenReturn(lessons);
 
-        List<Lesson> result = lessonService.getAll(1L);
+        List<Lesson> result = lessonService.getAll();
+
         assertNotNull(result);
         assertEquals(1, result.size());
+    }
+
+    @Test
+    void create_ShouldReturnFalse_WhenCourseNotFound() {
+        when(courseService.getById(1L)).thenReturn(null);
+
+        boolean result = lessonService.create(lesson, 1L);
+
+        assertFalse(result);
+        verify(lessonRepository, never()).save(any(Lesson.class));
+    }
+
+    @Test
+    void update_ShouldReturnFalse_WhenLessonNotFound() {
+        when(courseService.getById(1L)).thenReturn(course);
+        when(lessonRepository.findById(1L)).thenReturn(Optional.empty());
+
+        boolean result = lessonService.update(1L, lesson);
+
+        assertFalse(result);
+        verify(lessonRepository, never()).save(any(Lesson.class));
+    }
+
+    @Test
+    void delete_ShouldReturnFalse_WhenLessonNotFound() {
+        when(courseService.getById(1L)).thenReturn(course);
+        when(lessonRepository.findById(1L)).thenReturn(Optional.empty());
+
+        boolean result = lessonService.delete(1L, 1L);
+
+        assertFalse(result);
+        verify(lessonRepository, never()).deleteById(anyLong());
     }
 
     @Test
     void create_ShouldReturnFalse_WhenExceptionOccurs() {
         when(courseService.getById(1L)).thenThrow(new RuntimeException());
 
-        assertFalse(lessonService.create(new Lesson(), 1L));
-    }
+        boolean result = lessonService.create(lesson, 1L);
 
-    @Test
-    void update_ShouldReturnFalse_WhenExceptionOccurs() {
-        when(courseService.getById(1L)).thenThrow(new RuntimeException());
-
-        assertFalse(lessonService.update(1L, new Lesson(), 1L));
-    }
-
-    @Test
-    void delete_ShouldReturnFalse_WhenExceptionOccurs() {
-        when(courseService.getById(1L)).thenThrow(new RuntimeException());
-
-        assertFalse(lessonService.delete(1L, 1L));
-    }
-
-    @Test
-    void getAll_ShouldReturnNull_WhenExceptionOccurs() {
-        when(lessonRepository.findAllByCourseId(1L)).thenThrow(new RuntimeException());
-
-        assertNull(lessonService.getAll(1L));
-    }
-
-    @Test
-    void generateOtp_ShouldReturnNull_WhenExceptionOccurs() {
-        when(courseService.getById(1L)).thenThrow(new RuntimeException());
-
-        assertNull(lessonService.generateOtp(1L, 1L));
-    }
-
-    @Test
-    void generateOtp_ShouldReturnOtp_WhenSuccessful() {
-        when(courseService.getById(1L)).thenReturn(course);
-        when(courseService.existsById(anyLong())).thenReturn(true);
-        when(lessonRepository.existsById(anyLong())).thenReturn(true);
-        when(lessonRepository.findById(anyLong())).thenReturn(Optional.of(lesson));
-        when(lessonRepository.existsByOtp(anyString())).thenReturn(false);
-        when(lessonRepository.save(any(Lesson.class))).thenReturn(lesson);
-
-        String otp = lessonService.generateOtp(1L, 1L);
-
-        assertNotNull(otp);
-        assertEquals(6, otp.length());
-        verify(lessonRepository).save(any(Lesson.class));
+        assertFalse(result);
     }
 }

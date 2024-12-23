@@ -2,6 +2,7 @@ package org.lms.service.Feedback;
 
 import lombok.Getter;
 import org.lms.entity.Feedback.AssignmentFeedback;
+import org.lms.entity.Submission.AssignmentSubmission;
 import org.lms.repository.AssignmentFeedbackRepository;
 import org.lms.service.Submission.AssignmentSubmissionService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,20 +55,19 @@ public class AssignmentFeedbackService extends FeedbackService {
         return null;
     }
 
-    public boolean create(Long assignmentSubmissionId, AssignmentFeedback assignmentFeedback
-    ){
-
+    public boolean create(Long assignmentSubmissionId, AssignmentFeedback assignmentFeedback) {
         try {
-            assignmentFeedback.setAssignmentSubmission(
-                    assignmentSubmissionService.getById(assignmentSubmissionId));
-
+            AssignmentSubmission submission = assignmentSubmissionService.getById(assignmentSubmissionId);
+            if (submission == null) {
+                return false;
+            }
+            assignmentFeedback.setAssignmentSubmission(submission);
             assignmentFeedbackRepository.save(assignmentFeedback);
             return true;
-        }
-        catch(Exception e){
+        } catch(Exception e) {
             System.out.println(e);
+            return false;
         }
-        return false;
     }
 
     public boolean update(Long id, AssignmentFeedback assignmentFeedback){
