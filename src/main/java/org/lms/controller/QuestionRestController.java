@@ -1,14 +1,18 @@
 package org.lms.controller;
 
+import jakarta.persistence.EntityManager;
 import jakarta.validation.Valid;
 import org.lms.AuthorizationManager;
+import org.lms.EntityMapper;
 import org.lms.entity.Question;
 import org.lms.service.QuestionService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.orm.jpa.hibernate.SpringImplicitNamingStrategy;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -20,6 +24,8 @@ public class QuestionRestController {
     @Autowired
     private AuthorizationManager authorizationManager;
 
+    @Autowired
+    private EntityMapper entityMapper;
     @PutMapping("")
     public ResponseEntity<String> create(@PathVariable("courseid") Long courseId, @RequestBody Question question) {
         if(!(authorizationManager.isInstructor(courseId)))
@@ -33,7 +39,7 @@ public class QuestionRestController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Question> getById(@PathVariable("courseid") Long courseId, @PathVariable("id") Long id) {
+    public ResponseEntity<Object> getById(@PathVariable("courseid") Long courseId, @PathVariable("id") Long id) {
         if (!authorizationManager.hasAccess(courseId)) {
             return ResponseEntity.status(403).body(null);
         }
@@ -41,11 +47,11 @@ public class QuestionRestController {
         if (question == null) {
             return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.ok(question);
+        return ResponseEntity.ok(entityMapper.map(question));
     }
 
     @GetMapping("")
-    public ResponseEntity<List<Question>> getAll(@PathVariable("courseid") Long courseId) {
+    public ResponseEntity<Object> getAll(@PathVariable("courseid") Long courseId) {
         if (!authorizationManager.hasAccess(courseId)) {
             return ResponseEntity.status(403).body(null);
         }
@@ -53,7 +59,7 @@ public class QuestionRestController {
         if (questions != null && !questions.isEmpty()) {
             return ResponseEntity.ok(questions);
         }
-        return ResponseEntity.ok().body(questions);
+        return ResponseEntity.ok().body(entityMapper.map(new ArrayList<>(questions)));
     }
 
     @PutMapping("/{id}")

@@ -1,14 +1,17 @@
 package org.lms.controller;
 
 import org.lms.AuthorizationManager;
+import org.lms.EntityMapper;
 import org.lms.entity.Submission.AssignmentSubmission;
 import org.lms.service.Submission.AssignmentSubmissionService;
+import org.lms.service.Submission.SubmissionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -19,6 +22,9 @@ public class AssignmentSubmissionController {
     private AssignmentSubmissionService assignmentSubmissionService;
     @Autowired
     private AuthorizationManager authorizationManager;
+
+    @Autowired
+    private EntityMapper entityMapper;
 
     @PreAuthorize("hasRole('STUDENT')")
     @PutMapping("")
@@ -33,7 +39,7 @@ public class AssignmentSubmissionController {
         if (!authorizationManager.isEnrolled(courseId)) {
             return ResponseEntity.status(403).body("You don't have permission to submit.");
         }
-        if (assignmentSubmissionService.create(courseId, assignmentId, authorizationManager.getCurrentUserId(), file)){
+        if (assignmentSubmissionService.create(courseId, assignmentId, authorizationManager.getCurrentUserId(), file)) {
             return ResponseEntity.ok("Submission uploaded successfully.");
         }
         return ResponseEntity.badRequest().body("Something went wrong during submission.");
@@ -59,11 +65,11 @@ public class AssignmentSubmissionController {
     }
 
     @GetMapping("/{submissionId}")
-    public ResponseEntity<AssignmentSubmission> getSubmissionById(
+    public ResponseEntity<Object> getSubmissionById(
             @PathVariable Long courseId,
             @PathVariable Long assignmentId,
             @PathVariable Long submissionId
-    ){
+    ) {
         if (!assignmentSubmissionService.existsById(courseId, assignmentId, submissionId)) {
             return ResponseEntity.status(404).body(null);
         }
@@ -74,21 +80,22 @@ public class AssignmentSubmissionController {
         if (assignmentSubmission == null) {
             return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.ok(assignmentSubmission);
+        return ResponseEntity.ok(entityMapper.map(assignmentSubmission));
     }
 
-    @PreAuthorize( "hasRole('INSTRUCTOR') or hasRole('ADMIN')")
+    @PreAuthorize("hasRole('INSTRUCTOR') or hasRole('ADMIN')")
     @GetMapping
-    public ResponseEntity<List<AssignmentSubmission>> getAllSubmissions(
+    public ResponseEntity<Object> getAllSubmissions(
             @PathVariable Long courseId,
             @PathVariable Long assignmentId
-    ){
+    ) {
 //        if (!assignmentSubmissionService.assignmentService.existsById(courseId, assignmentId)) {
 //            return ResponseEntity.status(404).body(null);
 //        }
-        if (!authorizationManager.isAdminOrInstructor(courseId)){
+        if (!authorizationManager.isAdminOrInstructor(courseId)) {
             return ResponseEntity.status(403).build();
         }
-        return ResponseEntity.ok(assignmentSubmissionService.getAllByAssignmentId(courseId, assignmentId));
+        List<AssignmentSubmission> assignmentSubmissions = assignmentSubmissionService.getAllByAssignmentId(courseId, assignmentId);
+        return ResponseEntity.ok(entityMapper.map(new ArrayList<>(assignmentSubmissions)));
     }
 }

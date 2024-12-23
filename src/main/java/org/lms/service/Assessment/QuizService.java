@@ -17,7 +17,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
 @Service
 public class QuizService extends AssessmentService {
@@ -55,11 +54,10 @@ public class QuizService extends AssessmentService {
     public boolean delete(Long courseId, Long id) {
         return super.deleteAssessment(courseId, id);
     }
-    public Map<String,Object> getById(Long courseId, Long id)
+    public Quiz getById(Long courseId, Long id)
     {
         try {
-            Quiz quiz = (Quiz) super.getById(id);
-            return quiz.toMap(authorizationManager.);
+            return (Quiz) super.getById(id);
         } catch (Exception e) {
             System.out.println("Error retrieving quiz: " + e.getMessage());
         }
@@ -124,7 +122,34 @@ public class QuizService extends AssessmentService {
             return false;
         }
     }
+    public List<Question> getQuestionsForStudent(Long courseId, Long quizId) {
+        Quiz quiz = quizRepository.findById(quizId).orElse(null);
 
+        if (quiz == null || !quiz.getCourse().getId().equals(courseId)) {
+            return null;
+        }
+        Student student = (Student)authorizationManager.getCurrentUser();
+        StudentQuiz existingInstance = studentQuizRepository.findByStudentIdAndQuizId(student.getId(), quizId).orElse(null);
+
+        if (existingInstance != null) {
+            return existingInstance.getQuestions();
+        }
+        List<Question> allQuestions = quiz.getQuestions();
+        if (allQuestions.size() < quiz.getQuestionNum()) {
+            throw new IllegalArgumentException("Not enough questions in the quiz to fulfill questionNum.");
+        }
+
+        Collections.shuffle(allQuestions);
+        List<Question> randomizedQuestions = allQuestions.subList(0, quiz.getQuestionNum().intValue());
+
+        StudentQuiz newInstance = new StudentQuiz();
+        newInstance.setStudent(student);
+        newInstance.setQuiz(quiz);
+        newInstance.setQuestions(randomizedQuestions);
+        studentQuizRepository.save(newInstance);
+
+        return randomizedQuestions;
+    }
 
     public boolean courseExistsById(Long courseId){
         return courseService.existsById(courseId);
@@ -132,4 +157,3 @@ public class QuizService extends AssessmentService {
 
 
 }
-

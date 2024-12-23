@@ -1,12 +1,15 @@
 package org.lms.controller;
 
 import org.lms.AuthorizationManager;
+import org.lms.EntityMapper;
 import org.lms.entity.Submission.QuizSubmission;
+import org.lms.service.Assessment.QuizService;
 import org.lms.service.Submission.QuizSubmissionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -18,39 +21,41 @@ public class QuizSubmissionRestController {
     @Autowired
     private AuthorizationManager authorizationManager;
 
+    @Autowired
+    private EntityMapper entityMapper;
     @GetMapping("/mine")
-    public ResponseEntity<QuizSubmission> getMySubmission(@PathVariable("courseid") Long courseId, @PathVariable("quizid") Long quizId) {
+    public ResponseEntity<Object> getMySubmission(@PathVariable("courseid") Long courseId, @PathVariable("quizid") Long quizId) {
         if (!authorizationManager.isEnrolled(courseId)) {
             return ResponseEntity.status(403).body(null);
         }
         QuizSubmission submitedForm = quizSubmissionService.getSubmition(courseId, quizId, authorizationManager.getCurrentUserId());
         if (submitedForm != null) {
-            return ResponseEntity.ok(submitedForm);
+            return ResponseEntity.ok(entityMapper.map(submitedForm));
         }
         return ResponseEntity.status(404).body(null);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<QuizSubmission> getStudentSubmission(@PathVariable("courseid") Long courseId, @PathVariable("quizid") Long quizId, @PathVariable("id") Long studentId) {
+    public ResponseEntity<Object> getStudentSubmission(@PathVariable("courseid") Long courseId, @PathVariable("quizid") Long quizId, @PathVariable("id") Long studentId) {
         if (!authorizationManager.isAdminOrInstructor(courseId)) {
             return ResponseEntity.status(403).body(null);
         }
 
         QuizSubmission submitedForm = quizSubmissionService.getSubmition(courseId, quizId, studentId);
         if (submitedForm != null) {
-            return ResponseEntity.ok(submitedForm);
+            return ResponseEntity.ok(entityMapper.map(submitedForm));
         }
         return ResponseEntity.status(404).body(null);
     }
 
     @GetMapping("")
-    public ResponseEntity<List<QuizSubmission>> getSubmissions(@PathVariable("courseid") Long courseId, @PathVariable("quizid") Long quizId) {
+    public ResponseEntity<Object> getSubmissions(@PathVariable("courseid") Long courseId, @PathVariable("quizid") Long quizId) {
         if (!authorizationManager.isAdminOrInstructor(courseId)) {
             return ResponseEntity.status(403).body(null);
         }
         List<QuizSubmission> submitedForms = quizSubmissionService.getAllSubmitions(courseId, quizId);
         if (submitedForms != null && !submitedForms.isEmpty()) {
-            return ResponseEntity.ok(submitedForms);
+            return ResponseEntity.ok(entityMapper.map(new ArrayList<>(submitedForms)));
         }
         return ResponseEntity.ok().body(submitedForms);
     }

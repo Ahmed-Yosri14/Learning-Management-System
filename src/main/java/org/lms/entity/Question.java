@@ -4,16 +4,14 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import org.lms.entity.Answer.AnswerFormat;
-import org.lms.entity.Assessment.Quiz;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 @Getter
 @Setter
 @Entity
-public class Question {
+public class Question implements MappableEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -29,13 +27,11 @@ public class Question {
     @ManyToOne
     @JoinColumn(nullable = false)
     private Course course;
-
-    public Map toMap(UserRole role)
+    public Map<String, Object> toMap(UserRole role)
     {
         Map<String, Object> response = new HashMap<>();
         response.put("questionStatement", questionStatement);
         response.put("answerFormat", answerFormat.toMap(role));
         return response;
     }
-
 }

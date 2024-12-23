@@ -55,11 +55,8 @@ public class QuizSubmissionService {
         if(!Objects.equals(quiz.getCourse().getId(), courseId)) return false;
 
         quizSubmission.setQuiz(quiz);
-//        System.out.println("lol3");
         quizSubmission.setStudent(student);
-//        System.out.println("lol4");
         quizSubmissionRepository.save(quizSubmission);
-//        System.out.println("lol5");
         return true;
     }
     public Double grading(QuizSubmission quizSubmission, Long quizId, Long studentId, Long courseId){
@@ -94,5 +91,5 @@ public class QuizSubmissionService {
     }
     public boolean existsByStudentIdAndQuizId(Long studentId, Long quizId){
         return quizSubmissionRepository.existsByStudentIdAndQuizId(studentId,quizId);
-}
+    }
 }

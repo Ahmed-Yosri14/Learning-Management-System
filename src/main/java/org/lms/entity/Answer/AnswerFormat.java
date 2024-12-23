@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.lms.entity.MappableEntity;
 import org.lms.entity.UserRole;
 
 import java.util.Map;
@@ -25,7 +26,7 @@ import java.util.Map;
         @JsonSubTypes.Type(value = TrueFalseAnswer.class, name = "TRUE_FALSE"),
         @JsonSubTypes.Type(value = WrittenAnswer.class, name = "WRITTEN")
 })
-public abstract class AnswerFormat {
+public abstract class AnswerFormat implements MappableEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

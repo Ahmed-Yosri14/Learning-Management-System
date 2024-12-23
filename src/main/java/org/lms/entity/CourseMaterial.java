@@ -10,7 +10,7 @@ import java.util.Map;
 @Getter
 @Setter
 @Entity
-public class CourseMaterial {
+public class CourseMaterial implements MappableEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
@@ -25,7 +25,7 @@ public class CourseMaterial {
     @Column(nullable = false)
     private String filePath;
 
-    public Map<String, Object> toMap(){
+    public Map<String, Object> toMap(UserRole role){
         Map<String, Object> map = new HashMap<>();
         map.put("id", getId());
         map.put("courseId", getCourse().getId());

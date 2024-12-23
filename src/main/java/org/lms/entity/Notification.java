@@ -11,7 +11,7 @@ import java.util.Map;
 @Getter
 @Setter
 @Entity
-public class Notification {
+public class Notification implements MappableEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -29,7 +29,7 @@ public class Notification {
     @JoinColumn(nullable = false)
     private AppUser user;
 
-    public Map<String, Object> toMap() {
+    public Map<String, Object> toMap(UserRole role) {
         Map<String, Object> map = new HashMap<>();
         map.put("id", getId());
         map.put("title", getTitle());

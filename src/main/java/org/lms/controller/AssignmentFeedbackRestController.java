@@ -1,6 +1,7 @@
 package org.lms.controller;
 
 import org.lms.AuthorizationManager;
+import org.lms.EntityMapper;
 import org.lms.entity.Feedback.AssignmentFeedback;
 import org.lms.service.Feedback.AssignmentFeedbackService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -20,10 +22,13 @@ public class AssignmentFeedbackRestController {
     @Autowired
     private AuthorizationManager authorizationManager;
 
+    @Autowired
+    private EntityMapper entityMapper;
+
     // instructor
     @PreAuthorize("hasRole('INSTRUCTOR')")
     @PutMapping("")
-    public ResponseEntity<String> create(
+    public ResponseEntity<Object> create(
             @PathVariable Long courseId,
             @PathVariable Long assignmentId,
             @PathVariable Long assignmentSubmissionId,
@@ -44,7 +49,7 @@ public class AssignmentFeedbackRestController {
     // instructor
     @PreAuthorize("hasRole('INSTRUCTOR')")
     @PatchMapping("/{id}")
-    public ResponseEntity<String> update(
+    public ResponseEntity<Object> update(
             @PathVariable Long courseId,
             @PathVariable Long assignmentId,
             @PathVariable Long assignmentSubmissionId,
@@ -66,7 +71,7 @@ public class AssignmentFeedbackRestController {
     // instructor
     @PreAuthorize("hasRole('INSTRUCTOR')")
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> delete(
+    public ResponseEntity<Object> delete(
             @PathVariable Long courseId,
             @PathVariable Long assignmentId,
             @PathVariable Long assignmentSubmissionId,
@@ -86,7 +91,7 @@ public class AssignmentFeedbackRestController {
 
     // all
     @GetMapping("{id}")
-    public ResponseEntity<AssignmentFeedback> getById(
+    public ResponseEntity<Object> getById(
             @PathVariable Long courseId,
             @PathVariable Long assignmentId,
             @PathVariable Long assignmentSubmissionId,
@@ -102,12 +107,12 @@ public class AssignmentFeedbackRestController {
         if (assignmentFeedback == null) {
             return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.ok(assignmentFeedback);
+        return ResponseEntity.ok(entityMapper.map(assignmentFeedback));
     }
 
     // all
     @GetMapping("")
-    public ResponseEntity<List<AssignmentFeedback>> getAll(
+    public ResponseEntity<Object> getAll(
             @PathVariable Long courseId,
             @PathVariable Long assignmentId,
             @PathVariable Long assignmentSubmissionId
@@ -122,7 +127,7 @@ public class AssignmentFeedbackRestController {
         if (feedbackList == null) {
             return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.ok(feedbackList);
+        return ResponseEntity.ok(entityMapper.map(new ArrayList<>(feedbackList)));
     }
 
     private boolean canAccessDetails(Long courseId, Long submissionId){

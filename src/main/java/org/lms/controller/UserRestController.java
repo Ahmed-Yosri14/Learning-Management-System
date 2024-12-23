@@ -2,6 +2,7 @@ package org.lms.controller;
 
 
 import org.lms.AuthorizationManager;
+import org.lms.EntityMapper;
 import org.lms.entity.User.AppUser;
 import org.lms.entity.UserRole;
 import org.lms.service.AppUserService;
@@ -10,7 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import java.util.ArrayList;
 
 @RestController
 @RequestMapping("api/user")
@@ -22,14 +23,17 @@ public class UserRestController {
     @Autowired
     private AuthorizationManager authorizationManager;
 
+    @Autowired
+    private EntityMapper entityMapper;
+
     // all
     @GetMapping("/me")
-    public ResponseEntity<AppUser> getProfile(){
-        return ResponseEntity.ok(authorizationManager.getCurrentUser());
+    public ResponseEntity<Object> getProfile(){
+        return ResponseEntity.ok(entityMapper.map(authorizationManager.getCurrentUser()));
     }
     // all
     @PatchMapping("/me")
-    public ResponseEntity<String> updateProfile(@RequestBody AppUser user){
+    public ResponseEntity<Object> updateProfile(@RequestBody AppUser user){
         if (appUserService.update(authorizationManager.getCurrentUserId(), user)){
             return ResponseEntity.ok("All good!");
         }
@@ -37,7 +41,7 @@ public class UserRestController {
     }
     // all
     @DeleteMapping("/me")
-    public ResponseEntity<String> deleteProfile(){
+    public ResponseEntity<Object> deleteProfile(){
         if (appUserService.delete(authorizationManager.getCurrentUserId())){
             return ResponseEntity.ok("All good!");
         }
@@ -47,7 +51,7 @@ public class UserRestController {
     // admin
     @PreAuthorize("hasRole('ADMIN')")
     @PatchMapping("/{id}")
-    public ResponseEntity<String> update(@PathVariable("id") Long id, @RequestBody AppUser user) {
+    public ResponseEntity<Object> update(@PathVariable("id") Long id, @RequestBody AppUser user) {
         if (!appUserService.existsById(id)){
             return ResponseEntity.status(404).body("User not found");
         }
@@ -59,7 +63,7 @@ public class UserRestController {
     // admin
     @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> delete(@PathVariable("id") Long id) {
+    public ResponseEntity<Object> delete(@PathVariable("id") Long id) {
         if (!appUserService.existsById(id)){
             return ResponseEntity.status(404).body("User not found");
         }
@@ -71,17 +75,17 @@ public class UserRestController {
     // admin
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/{id}")
-    public ResponseEntity<AppUser> getById(@PathVariable("id") Long id) {
+    public ResponseEntity<Object> getById(@PathVariable("id") Long id) {
         AppUser user = appUserService.getById(id);
         if (user == null) {
             return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.ok(user);
+        return ResponseEntity.ok(entityMapper.map(user));
     }
     // admin
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("")
-    public List<AppUser> getAll(@RequestParam(required = false) UserRole role) {
-        return appUserService.getAll(role);
+    public ResponseEntity<Object> getAll(@RequestParam(required = false) UserRole role) {
+        return ResponseEntity.ok(entityMapper.map(new ArrayList<>(appUserService.getAll(role))));
     }
 }
