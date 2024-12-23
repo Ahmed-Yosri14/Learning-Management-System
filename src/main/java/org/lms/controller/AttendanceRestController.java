@@ -2,6 +2,7 @@ package org.lms.controller;
 
 
 import org.lms.AuthorizationManager;
+import org.lms.EntityMapper;
 import org.lms.dao.request.AttendanceRequest;
 import org.lms.service.AttendanceService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +21,8 @@ public class AttendanceRestController {
 
     @Autowired
     AuthorizationManager authorizationManager;
+    @Autowired
+    private EntityMapper entityMapper;
 
     // student
     @PreAuthorize("hasRole('STUDENT')")
@@ -54,6 +57,6 @@ public class AttendanceRestController {
         if (!authorizationManager.isAdminOrInstructor(courseId)) {
             return ResponseEntity.status(403).build();
         }
-        return ResponseEntity.ok(new ArrayList<>(attendanceService.getByLessonId(lessonId, courseId)));
+        return ResponseEntity.ok(entityMapper.map(new ArrayList<>(attendanceService.getByLessonId(lessonId, courseId))));
     }
 }
