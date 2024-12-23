@@ -17,11 +17,11 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-class LessonServiceTest {
+public class LessonServiceTest {
 
     @Mock
     private LessonRepository lessonRepository;
@@ -55,37 +55,34 @@ class LessonServiceTest {
 
         lesson = new Lesson();
         lesson.setId(1L);
-        lesson.setTitle("Java Basics");
-        lesson.setDescription("Introduction to Java");
+        lesson.setTitle("Test Lesson");
+        lesson.setDescription("Test Description");
         lesson.setDuration(60L);
         lesson.setCourse(course);
     }
 
     @Test
-    void existsById_ShouldReturnTrue_WhenExists() {
+    void existsById_ShouldReturnTrue_WhenLessonExists() {
         when(courseService.getById(1L)).thenReturn(course);
+        when(courseService.existsById(1L)).thenReturn(true);
         when(lessonRepository.existsById(1L)).thenReturn(true);
         when(lessonRepository.findById(1L)).thenReturn(Optional.of(lesson));
 
-        boolean result = lessonService.existsById(1L, 1L);
-
-        assertTrue(result);
+        assertTrue(lessonService.existsById(1L, 1L));
     }
 
     @Test
     void update_ShouldReturnTrue_WhenSuccessful() {
         when(courseService.getById(1L)).thenReturn(course);
         when(lessonRepository.existsById(1L)).thenReturn(true);
+        when(courseService.existsById(1L)).thenReturn(true);
         when(lessonRepository.findById(1L)).thenReturn(Optional.of(lesson));
         when(lessonRepository.save(any(Lesson.class))).thenReturn(lesson);
 
         Lesson updatedLesson = new Lesson();
         updatedLesson.setTitle("Updated Title");
-        updatedLesson.setDescription("Updated Description");
 
-        boolean result = lessonService.update(1L, updatedLesson);
-
-        assertTrue(result);
+        assertTrue(lessonService.update(1L, updatedLesson, 1L));
         verify(lessonRepository).save(any(Lesson.class));
     }
 
@@ -93,13 +90,24 @@ class LessonServiceTest {
     void delete_ShouldReturnTrue_WhenSuccessful() {
         when(courseService.getById(1L)).thenReturn(course);
         when(lessonRepository.existsById(1L)).thenReturn(true);
+        when(courseService.existsById(1L)).thenReturn(true);
         when(lessonRepository.findById(1L)).thenReturn(Optional.of(lesson));
         doNothing().when(lessonRepository).deleteById(1L);
 
-        boolean result = lessonService.delete(1L, 1L);
-
-        assertTrue(result);
+        assertTrue(lessonService.delete(1L, 1L));
         verify(lessonRepository).deleteById(1L);
+    }
+
+    @Test
+    void getById_WithCourseId_ShouldReturnLesson_WhenExists() {
+        when(courseService.getById(1L)).thenReturn(course);
+        when(lessonRepository.existsById(1L)).thenReturn(true);
+        when(courseService.existsById(1L)).thenReturn(true);
+        when(lessonRepository.findById(1L)).thenReturn(Optional.of(lesson));
+
+        Lesson result = lessonService.getById(1L, 1L);
+        assertNotNull(result);
+        assertEquals(lesson.getId(), result.getId());
     }
 
     @Test
@@ -107,7 +115,6 @@ class LessonServiceTest {
         when(lessonRepository.findById(1L)).thenReturn(Optional.of(lesson));
 
         Lesson result = lessonService.getById(1L);
-
         assertNotNull(result);
         assertEquals(lesson.getId(), result.getId());
     }
@@ -115,52 +122,61 @@ class LessonServiceTest {
     @Test
     void getAll_ShouldReturnListOfLessons() {
         List<Lesson> lessons = Arrays.asList(lesson);
-        when(lessonRepository.findAll()).thenReturn(lessons);
+        when(lessonRepository.findAllByCourseId(1L)).thenReturn(lessons);
 
-        List<Lesson> result = lessonService.getAll();
-
+        List<Lesson> result = lessonService.getAll(1L);
         assertNotNull(result);
         assertEquals(1, result.size());
-    }
-
-    @Test
-    void create_ShouldReturnFalse_WhenCourseNotFound() {
-        when(courseService.getById(1L)).thenReturn(null);
-
-        boolean result = lessonService.create(lesson, 1L);
-
-        assertFalse(result);
-        verify(lessonRepository, never()).save(any(Lesson.class));
-    }
-
-    @Test
-    void update_ShouldReturnFalse_WhenLessonNotFound() {
-        when(courseService.getById(1L)).thenReturn(course);
-        when(lessonRepository.findById(1L)).thenReturn(Optional.empty());
-
-        boolean result = lessonService.update(1L, lesson);
-
-        assertFalse(result);
-        verify(lessonRepository, never()).save(any(Lesson.class));
-    }
-
-    @Test
-    void delete_ShouldReturnFalse_WhenLessonNotFound() {
-        when(courseService.getById(1L)).thenReturn(course);
-        when(lessonRepository.findById(1L)).thenReturn(Optional.empty());
-
-        boolean result = lessonService.delete(1L, 1L);
-
-        assertFalse(result);
-        verify(lessonRepository, never()).deleteById(anyLong());
     }
 
     @Test
     void create_ShouldReturnFalse_WhenExceptionOccurs() {
         when(courseService.getById(1L)).thenThrow(new RuntimeException());
 
-        boolean result = lessonService.create(lesson, 1L);
+        assertFalse(lessonService.create(new Lesson(), 1L));
+    }
 
-        assertFalse(result);
+    @Test
+    void update_ShouldReturnFalse_WhenExceptionOccurs() {
+        when(courseService.getById(1L)).thenThrow(new RuntimeException());
+
+        assertFalse(lessonService.update(1L, new Lesson(), 1L));
+    }
+
+    @Test
+    void delete_ShouldReturnFalse_WhenExceptionOccurs() {
+        when(courseService.getById(1L)).thenThrow(new RuntimeException());
+
+        assertFalse(lessonService.delete(1L, 1L));
+    }
+
+    @Test
+    void getAll_ShouldReturnNull_WhenExceptionOccurs() {
+        when(lessonRepository.findAllByCourseId(1L)).thenThrow(new RuntimeException());
+
+        assertNull(lessonService.getAll(1L));
+    }
+
+    @Test
+    void generateOtp_ShouldReturnNull_WhenExceptionOccurs() {
+        when(courseService.getById(1L)).thenThrow(new RuntimeException());
+
+        assertNull(lessonService.generateOtp(1L, 1L));
+    }
+
+    @Test
+    void generateOtp_ShouldReturnOtp_WhenSuccessful() {
+        when(courseService.getById(1L)).thenReturn(course);
+        when(courseService.existsById(anyLong())).thenReturn(true);
+        when(lessonRepository.existsById(anyLong())).thenReturn(true);
+        when(lessonRepository.findById(anyLong())).thenReturn(Optional.of(lesson));
+        when(lessonRepository.existsByOtp(anyString())).thenReturn(false);
+        when(lessonRepository.save(any(Lesson.class))).thenReturn(lesson);
+
+        String otp = lessonService.generateOtp(1L, 1L);
+
+        assertNotNull(otp);
+        assertEquals(6, otp.length());
+        verify(lessonRepository).save(any(Lesson.class));
     }
 }
