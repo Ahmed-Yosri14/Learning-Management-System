@@ -1,5 +1,4 @@
 package org.lms.controller;
-
 import org.lms.AuthorizationManager;
 import org.lms.EntityMapper;
 import org.lms.entity.Course;
@@ -8,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.ArrayList;
 
 
@@ -78,4 +76,5 @@ public class CourseRestController {
     public ResponseEntity<Object> getAll() {
         return ResponseEntity.ok(entityMapper.map(new ArrayList<>(courseService.getAll())));
     }
+
 }
