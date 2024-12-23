@@ -57,13 +57,18 @@ public class QuestionService {
                 System.out.println("Course not found.");
                 return false;
             }
-            if (!course.getId().equals(courseId)) {
+
+            Question existingQuestion = questionRepository.findById(questionId).orElse(null);
+            if (existingQuestion == null) {
+                System.out.println("Question not found.");
+                return false;
+            }
+
+            if (!existingQuestion.getCourse().getId().equals(courseId)) {
                 System.out.println("Course id does not match");
                 return false;
             }
-            Question existingQuestion = questionRepository.findById(questionId).orElse(null);
 
-            assert existingQuestion != null;
             if (updatedQuestion.getQuestionStatement() != null) {
                 existingQuestion.setQuestionStatement(updatedQuestion.getQuestionStatement());
             }
@@ -75,7 +80,6 @@ public class QuestionService {
             }
 
             questionRepository.save(existingQuestion);
-
             System.out.println("Question successfully updated!");
             return true;
         } catch (Exception e) {
@@ -120,7 +124,7 @@ public class QuestionService {
         try {
             Course course = courseService.getById(courseId);
             Question question = questionRepository.findById(id).orElse(null);
-            if (course == null || question == null || question.getCourse().getId().equals(courseId)  ) {
+            if (course == null || question == null || !question.getCourse().getId().equals(courseId)  ) {
                 return false;
             }
             questionRepository.deleteById(id);

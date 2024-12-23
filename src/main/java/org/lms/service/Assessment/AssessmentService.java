@@ -21,61 +21,64 @@ public class AssessmentService {
         Course course = courseService.getById(courseId);
         Assessment assessment = assessmentRepository.findById(id).orElse(null);
         return assessmentRepository.existsById(id)
-                && courseService.existsById(id)
+                && courseService.existsById(courseId)
+                && course != null && assessment != null
                 && course.getId().equals(assessment.getCourse().getId());
     }
-    public boolean createAssessment(Long courseId, Assessment assessment)
-    {
-        try{
-            assert courseService.existsById(courseId);
-            Course course = courseService.getById(courseId);
 
+    public boolean createAssessment(Long courseId, Assessment assessment) {
+        try {
+            if (!courseService.existsById(courseId)) {
+                return false;
+            }
+            Course course = courseService.getById(courseId);
             assessment.setCourse(course);
             assessmentRepository.save(assessment);
             return true;
-        }catch (Exception e){
+        } catch (Exception e) {
             System.out.println(e);
+            return false;
         }
-        return false;
     }
-    public boolean updateAssessment(Long courseId, Long id, Assessment assessment)
-    {
-        try{
-            assert existsById(courseId, id);
+
+    public boolean updateAssessment(Long courseId, Long id, Assessment assessment) {
+        try {
+            if (!existsById(courseId, id)) {
+                return false;
+            }
 
             Assessment oldAssessment = assessmentRepository.findById(id).get();
-            if (assessment.getTitle() != null){
+            if (assessment.getTitle() != null) {
                 oldAssessment.setTitle(assessment.getTitle());
             }
-            if (assessment.getDescription() != null){
+            if (assessment.getDescription() != null) {
                 oldAssessment.setDescription(assessment.getDescription());
             }
-            if (assessment.getDuration() != null){
+            if (assessment.getDuration() != null) {
                 oldAssessment.setDuration(assessment.getDuration());
-            }
-            if(assessment.getDescription() != null){
-                oldAssessment.setDescription(assessment.getDescription());
             }
             assessmentRepository.save(oldAssessment);
             return true;
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             System.out.println(e);
+            return false;
         }
-        return false;
     }
+
     public boolean deleteAssessment(Long courseId, Long id) {
         try {
-            assert existsById(courseId, id);
+            if (!existsById(courseId, id)) {
+                return false;
+            }
             assessmentRepository.deleteById(id);
             return true;
         } catch (Exception e) {
             System.out.println(e);
+            return false;
         }
-        return false;
     }
-    public Assessment getById(Long id)
-    {
+
+    public Assessment getById(Long id) {
         return assessmentRepository.findById(id).orElse(null);
     }
 }
