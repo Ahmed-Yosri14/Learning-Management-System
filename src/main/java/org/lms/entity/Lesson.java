@@ -4,6 +4,9 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @Getter
 @Setter
 @Entity
@@ -26,4 +29,15 @@ public class Lesson {
     @ManyToOne
     @JoinColumn
     private Course course;
+
+    public Map<String, Object> toMap(){
+        Map<String, Object> map = new HashMap<>();
+        map.put("id", getId());
+        map.put("title", getTitle());
+        map.put("description", getDescription());
+        map.put("duration", getDuration());
+        map.put("otp", getOtp());
+        map.put("courseId", getCourse().getId());
+        return map;
+    }
 }

@@ -5,6 +5,9 @@ import lombok.Getter;
 import lombok.Setter;
 import org.lms.entity.User.AppUser;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @Getter
 @Setter
 @Entity
@@ -25,4 +28,14 @@ public class Notification {
     @ManyToOne
     @JoinColumn(nullable = false)
     private AppUser user;
+
+    public Map<String, Object> toMap() {
+        Map<String, Object> map = new HashMap<>();
+        map.put("id", getId());
+        map.put("title", getTitle());
+        map.put("content", getContent());
+        map.put("isRead", getIsRead());
+        map.put("userId", getUser().getId());
+        return map;
+    }
 }
