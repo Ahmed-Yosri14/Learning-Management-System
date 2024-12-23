@@ -43,7 +43,7 @@ public class NotificationService {
             notification.setTitle(title);
             notification.setContent(content);
             notificationRepository.save(notification);
-//            emailService.sendEmail(user.getEmail(), title, content);
+            emailService.sendEmail(user.getEmail(), title, content);
             return true;
         }
         catch(Exception e){
