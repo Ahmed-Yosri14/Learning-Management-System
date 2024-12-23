@@ -84,9 +84,8 @@ REST API endpoints:
 ## 💻 Technical Stack
 - **Framework**: Spring Boot
 - **Security**: Spring Security with JWT
-- **Database**: JPA/Hibernate
-- **API Documentation**: Swagger/OpenAPI
-- **Build Tool**: Maven/Gradle
+- **Database**: JPA/Hibernate (H2)
+- **Build Tool**: Maven
 - **Testing**: JUnit, Mockito
 
 ## 🛠️ Setup & Installation
@@ -112,14 +111,11 @@ spring.datasource.password=your_password
 ./mvnw spring-boot:run
 ```
 
-## 📚 API Documentation
-Access Swagger UI: `http://localhost:8080/swagger-ui.html`
 
 ## 🔐 Security
 - JWT-based authentication
 - Role-based access control
 - Password encryption
-- Session management
 
 ## 🔄 Database Schema
 The system uses a relational database with tables corresponding to the entity classes shown in the project structure.
@@ -129,16 +125,6 @@ The system uses a relational database with tables corresponding to the entity cl
 ./mvnw test
 ```
 
-## 📦 Deployment
-1. Build the JAR file
-```bash
-./mvnw package
-```
-
-2. Run the JAR file
-```bash
-java -jar target/lms-0.0.1-SNAPSHOT.jar
-```
 
 ## 🤝 Contributing
 1. Fork the repository
