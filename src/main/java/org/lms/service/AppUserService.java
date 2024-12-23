@@ -37,12 +37,7 @@ public class AppUserService implements UserService {
             if (user.getLastName() != null){
                 oldUser.setLastName(user.getLastName());
             }
-            if (user.getEmail() != null){
-                oldUser.setEmail(user.getEmail());
-            }
-            if (user.getPassword() != null){
-                oldUser.setPassword(user.getPassword());
-            }
+
 
             userRepository.save(oldUser);
             return true;
