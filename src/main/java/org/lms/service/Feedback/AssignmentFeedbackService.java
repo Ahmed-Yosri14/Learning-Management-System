@@ -4,6 +4,7 @@ import lombok.Getter;
 import org.lms.entity.Feedback.AssignmentFeedback;
 import org.lms.entity.Submission.AssignmentSubmission;
 import org.lms.repository.AssignmentFeedbackRepository;
+import org.lms.service.NotificationService;
 import org.lms.service.Submission.AssignmentSubmissionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,6 +20,9 @@ public class AssignmentFeedbackService extends FeedbackService {
     @Getter
     @Autowired
     private AssignmentSubmissionService assignmentSubmissionService;
+
+    @Autowired
+    private NotificationService notificationService;
 
 
     public boolean existsById(
@@ -63,6 +67,14 @@ public class AssignmentFeedbackService extends FeedbackService {
             }
             assignmentFeedback.setAssignmentSubmission(submission);
             assignmentFeedbackRepository.save(assignmentFeedback);
+            notificationService.create(
+                    assignmentFeedback.getAssignmentSubmission().getStudent().getId(),
+                    "Assignment feedback",
+                    "Manual feedback for quiz in \'"
+                            + assignmentFeedback.getAssignmentSubmission().getAssignment().getTitle()
+                            + "\'. Your grade is " + assignmentFeedback.getGrade()
+                            + " out of " + assignmentFeedback.getMaxGrade()
+            );
             return true;
         } catch(Exception e) {
             System.out.println(e);

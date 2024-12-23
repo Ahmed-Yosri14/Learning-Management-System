@@ -2,6 +2,7 @@ package org.lms.service.Feedback;
 
 import org.lms.entity.Feedback.QuizFeedback;
 import org.lms.repository.QuizFeedbackRepository;
+import org.lms.service.NotificationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -12,6 +13,8 @@ public class QuizFeedbackService extends FeedbackService {
 
     @Autowired
     QuizFeedbackRepository quizFeedbackRepository;
+    @Autowired
+    private NotificationService notificationService;
 
     public boolean existsById(Long courseId, Long quizId, Long quizSubmissionId, Long id) {
         try {
@@ -40,6 +43,14 @@ public class QuizFeedbackService extends FeedbackService {
     public boolean create(QuizFeedback quizFeedback) {
         try {
             quizFeedbackRepository.save(quizFeedback);
+            notificationService.create(
+                    quizFeedback.getQuizSubmission().getStudent().getId(),
+                    "Automated quiz feedback",
+                    "Automated feedback for quiz in \'"
+                            + quizFeedback.getQuizSubmission().getQuiz().getTitle()
+                            + "\'. Your grade is " + quizFeedback.getGrade()
+                            + " out of " + quizFeedback.getMaxGrade()
+                    );
             return true;
         } catch(Exception e) {
             return false;
