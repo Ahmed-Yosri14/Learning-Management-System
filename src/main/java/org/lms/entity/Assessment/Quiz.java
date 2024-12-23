@@ -6,7 +6,6 @@ import lombok.Setter;
 import org.lms.entity.Question;
 import org.lms.entity.UserRole;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -27,15 +26,11 @@ public class Quiz extends Assessment {
 
     private Double questionNum;
     public Map toMap(UserRole role){
-        Map<String, Object> response = new HashMap<>();
-        response.put("question title", this.getTitle());
-        response.put("number of questions", questionNum);
-        response.put("duration", this.getDuration());
-        response.put("start Date", this.getStartDate());
+        Map<String, Object> map = super.toMap(role);
+        map.put("numberOfQuestions", questionNum);
         for(Question question : questions){
-            response.put(question.getId().toString(),question.toMap(role));
+            map.put(question.getId().toString(),question.toMap(role));
         }
-        return response;
-
+        return map;
     }
 }
