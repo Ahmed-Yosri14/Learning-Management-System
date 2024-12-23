@@ -1,10 +1,9 @@
-package org.lms;
+package org.lms.controller;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.lms.AuthorizationManager;
 import org.lms.EntityMapper;
-import org.lms.controller.AssignmentRestController;
 import org.lms.entity.Assessment.Assignment;
 import org.lms.entity.Course;
 import org.lms.service.Assessment.AssignmentService;

@@ -1,7 +1,8 @@
-package org.lms;
+package org.lms.controller;
 
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.lms.controller.UserRestController;
+import org.lms.AuthorizationManager;
+import org.lms.EntityMapper;
 import org.lms.entity.UserRole;
 import org.lms.service.AppUserService;
 import org.lms.entity.User.AppUser;
@@ -10,7 +11,6 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 

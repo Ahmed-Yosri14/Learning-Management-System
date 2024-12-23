@@ -1,12 +1,9 @@
-package org.lms;
+package org.lms.controller;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.lms.controller.QuizRestController;
-import org.lms.entity.Assessment.Quiz;
 import org.lms.service.Assessment.QuizService;
 import org.lms.AuthorizationManager;
-import org.lms.entity.Question;
 import org.lms.service.QuestionService;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;

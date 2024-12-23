@@ -1,8 +1,7 @@
-package org.lms;
+package org.lms.controller;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.lms.controller.EnrollmentRestController;
 import org.lms.service.EnrollmentService;
 import org.lms.AuthorizationManager;
 import org.lms.EntityMapper;

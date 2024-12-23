@@ -134,7 +134,9 @@ public class AppUser implements UserDetails, MappableEntity {
 
     public java.util.Map<String, Object> toMap(UserRole role) {
         Map<String, Object> response = new HashMap<>();
-        response.put("name",getFirstName()+" "+getLastName());
+        response.put("id", getId());
+        response.put("firstName", getFirstName());
+        response.put("lastName", getLastName());
         response.put("email",getEmail());
         return response;
     }

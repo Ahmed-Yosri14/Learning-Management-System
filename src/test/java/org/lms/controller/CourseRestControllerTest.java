@@ -1,12 +1,10 @@
-package org.lms;
+package org.lms.controller;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.lms.controller.CourseRestController;
 import org.lms.entity.Course;
 import org.lms.service.CourseService;
 import org.lms.AuthorizationManager;
-import org.lms.EntityMapper;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;

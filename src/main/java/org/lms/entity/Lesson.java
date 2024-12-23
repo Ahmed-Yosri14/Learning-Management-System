@@ -36,7 +36,9 @@ public class Lesson implements MappableEntity {
         map.put("title", getTitle());
         map.put("description", getDescription());
         map.put("duration", getDuration());
-        map.put("otp", getOtp());
+        if (role != UserRole.STUDENT) {
+            map.put("otp", getOtp());
+        }
         map.put("courseId", getCourse().getId());
         return map;
     }

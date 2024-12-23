@@ -1,8 +1,7 @@
-package org.lms;
+package org.lms.controller;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.lms.controller.AttendanceRestController;
 import org.lms.dao.request.AttendanceRequest;
 import org.lms.service.AttendanceService;
 import org.lms.AuthorizationManager;
