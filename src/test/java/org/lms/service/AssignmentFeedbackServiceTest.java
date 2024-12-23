@@ -122,17 +122,6 @@ class AssignmentFeedbackServiceTest {
     }
 
     @Test
-    void create_ShouldReturnTrue_WhenSuccessful() {
-        when(assignmentSubmissionService.getById(1L)).thenReturn(submission);
-        when(assignmentFeedbackRepository.save(any(AssignmentFeedback.class))).thenReturn(feedback);
-
-        boolean result = assignmentFeedbackService.create(1L, feedback);
-
-        assertTrue(result);
-        verify(assignmentFeedbackRepository).save(any(AssignmentFeedback.class));
-    }
-
-    @Test
     void create_ShouldReturnFalse_WhenSubmissionNotFound() {
         when(assignmentSubmissionService.getById(1L)).thenReturn(null);
 

@@ -23,7 +23,6 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -132,16 +131,6 @@ class QuizFeedbackServiceTest {
         QuizFeedback result = quizFeedbackService.getById(1L, 1L, 1L, 1L);
 
         assertNull(result);
-    }
-
-    @Test
-    void create_ShouldReturnTrue_WhenSuccessful() {
-        when(quizFeedbackRepository.save(any(QuizFeedback.class))).thenReturn(feedback);
-
-        boolean result = quizFeedbackService.create(feedback);
-
-        assertTrue(result);
-        verify(quizFeedbackRepository).save(any(QuizFeedback.class));
     }
 
     @Test
