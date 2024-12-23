@@ -50,7 +50,7 @@ public class QuizRestController {
     }
     @PreAuthorize("hasRole('INSTRUCTOR')")
     @PutMapping("/{quizId}/addquestions")
-    public ResponseEntity<String> addQuestionstoQuiz(@PathVariable("courseid") Long courseId, @PathVariable("quizId") Long quizId,@RequestBody List<Long>questions) {
+    public ResponseEntity<String> addQuestionsToQuiz(@PathVariable("courseid") Long courseId, @PathVariable("quizId") Long quizId,@RequestBody List<Long>questions) {
         if (!quizService.existsById(courseId, quizId)) {
             return ResponseEntity.status(404).body("Quiz not found.");
         }
