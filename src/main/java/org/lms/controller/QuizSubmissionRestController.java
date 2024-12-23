@@ -19,7 +19,7 @@ public class QuizSubmissionRestController {
     private AuthorizationManager authorizationManager;
 
     @GetMapping("/mine")
-    public ResponseEntity<QuizSubmission> getMySubmition(@PathVariable("courseid") Long courseId, @PathVariable("quizid") Long quizId) {
+    public ResponseEntity<QuizSubmission> getMySubmission(@PathVariable("courseid") Long courseId, @PathVariable("quizid") Long quizId) {
         if (!authorizationManager.isEnrolled(courseId)) {
             return ResponseEntity.status(403).body(null);
         }
@@ -31,7 +31,7 @@ public class QuizSubmissionRestController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<QuizSubmission> getStudentSubmition(@PathVariable("courseid") Long courseId, @PathVariable("quizid") Long quizId, @PathVariable("id") Long studentId) {
+    public ResponseEntity<QuizSubmission> getStudentSubmission(@PathVariable("courseid") Long courseId, @PathVariable("quizid") Long quizId, @PathVariable("id") Long studentId) {
         if (!authorizationManager.isAdminOrInstructor(courseId)) {
             return ResponseEntity.status(403).body(null);
         }
@@ -44,7 +44,7 @@ public class QuizSubmissionRestController {
     }
 
     @GetMapping("")
-    public ResponseEntity<List<QuizSubmission>> getSubmitions(@PathVariable("courseid") Long courseId, @PathVariable("quizid") Long quizId) {
+    public ResponseEntity<List<QuizSubmission>> getSubmissions(@PathVariable("courseid") Long courseId, @PathVariable("quizid") Long quizId) {
         if (!authorizationManager.isAdminOrInstructor(courseId)) {
             return ResponseEntity.status(403).body(null);
         }
