@@ -4,9 +4,6 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import org.lms.entity.Answer.AnswerFormat;
-import org.lms.entity.Assessment.Quiz;
-
-import java.util.List;
 
 @Getter
 @Setter
@@ -27,5 +24,4 @@ public class Question {
     @ManyToOne
     @JoinColumn(nullable = false)
     private Course course;
-
 }

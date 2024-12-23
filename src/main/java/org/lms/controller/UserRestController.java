@@ -24,8 +24,7 @@ public class UserRestController {
 
     // all
     @GetMapping("/me")
-    public ResponseEntity<AppUser> getProfile(){
-        
+    public ResponseEntity<?> getProfile(){
         return ResponseEntity.ok(authorizationManager.getCurrentUser());
     }
     // all

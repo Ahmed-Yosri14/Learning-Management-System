@@ -4,6 +4,9 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @Getter
 @Setter
 @Entity
@@ -21,4 +24,13 @@ public class CourseMaterial {
 
     @Column(nullable = false)
     private String filePath;
+
+    public Map<String, Object> toMap(){
+        Map<String, Object> map = new HashMap<>();
+        map.put("id", getId());
+        map.put("courseId", getCourse().getId());
+        map.put("fileName", getFileName());
+        map.put("filePath", getFilePath());
+        return map;
+    }
 }

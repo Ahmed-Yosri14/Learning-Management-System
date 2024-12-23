@@ -1,5 +1,6 @@
 package org.lms.entity.User;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import jakarta.persistence.*;
@@ -44,6 +45,7 @@ public class AppUser implements UserDetails {
     private String lastName;
 
     @Column(nullable = false)
+    @JsonIgnore
     private String password;
 
     private UserRole roles;
