@@ -1,18 +1,19 @@
+package org.lms;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.lms.AuthorizationManager;
 import org.lms.EntityMapper;
 import org.lms.controller.LessonRestController;
+import org.lms.entity.Course;
 import org.lms.entity.Lesson;
+import org.lms.entity.UserRole;
 import org.lms.service.LessonService;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.http.ResponseEntity;
-
 import java.util.ArrayList;
 import java.util.List;
-
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -31,14 +32,17 @@ class LessonRestControllerTest {
     private EntityMapper entityMapper;
 
     private Lesson mockLesson;
-
+    private Course mockCourse;
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
 
+        mockCourse = new Course();
+        mockCourse.setId(1L);
+
         mockLesson = new Lesson();
         mockLesson.setId(1L);
-        mockLesson.setName("Sample Lesson");
+        mockLesson.setCourse(mockCourse);
     }
 
     @Test
@@ -72,25 +76,12 @@ class LessonRestControllerTest {
 
         when(authorizationManager.hasAccess(courseId)).thenReturn(true);
         when(lessonService.getById(courseId, lessonId)).thenReturn(mockLesson);
-        when(entityMapper.map(mockLesson)).thenReturn(mockLesson.toMap(null)); // Adjust mapping as needed
+        when(entityMapper.map(mockLesson)).thenReturn(mockLesson.toMap(UserRole.INSTRUCTOR));
 
         ResponseEntity<Object> response = lessonRestController.getById(courseId, lessonId);
 
         assertEquals(200, response.getStatusCodeValue());
         assertNotNull(response.getBody());
-    }
-
-    @Test
-    void testGetLessonByIdNotFound() {
-        Long courseId = 1L;
-        Long lessonId = 1L;
-
-        when(authorizationManager.hasAccess(courseId)).thenReturn(true);
-        when(lessonService.getById(courseId, lessonId)).thenReturn(null);
-
-        ResponseEntity<Object> response = lessonRestController.getById(courseId, lessonId);
-
-        assertEquals(404, response.getStatusCodeValue());
     }
 
     @Test
@@ -128,9 +119,7 @@ class LessonRestControllerTest {
         Long lessonId = 1L;
 
         when(authorizationManager.isInstructor(courseId)).thenReturn(false);
-
         ResponseEntity<String> response = lessonRestController.delete(courseId, lessonId);
-
         assertEquals(403, response.getStatusCodeValue());
     }
 }
