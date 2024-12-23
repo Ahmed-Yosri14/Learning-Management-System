@@ -1,8 +1,10 @@
 package org.lms.controller;
 
 import org.lms.AuthorizationManager;
+import org.lms.EntityMapper;
 import org.lms.entity.Feedback.AssignmentFeedback;
 import org.lms.entity.Feedback.QuizFeedback;
+import org.lms.service.Feedback.FeedbackService;
 import org.lms.service.Feedback.QuizFeedbackService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -11,6 +13,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -23,9 +26,11 @@ public class QuizFeedbackRestController {
     @Autowired
     private AuthorizationManager authorizationManager;
 
+    @Autowired
+    private EntityMapper entityMapper;
     // all
     @GetMapping("{id}")
-    public ResponseEntity<AssignmentFeedback> getById(
+    public ResponseEntity<Object> getById(
             @PathVariable Long courseId,
             @PathVariable Long quizId,
             @PathVariable Long quizSubmissionId,
@@ -39,12 +44,12 @@ public class QuizFeedbackRestController {
         if (assignmentFeedback == null) {
             return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.ok(assignmentFeedback);
+        return ResponseEntity.ok(entityMapper.map(assignmentFeedback));
     }
 
     // all
     @GetMapping("")
-    public ResponseEntity<List<QuizFeedback>> getAll(
+    public ResponseEntity<Object> getAll(
             @PathVariable Long courseId,
             @PathVariable Long quizId,
             @PathVariable Long quizSubmissionId
@@ -56,7 +61,7 @@ public class QuizFeedbackRestController {
         if (feedbackList == null) {
             return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.ok(feedbackList);
+        return ResponseEntity.ok(entityMapper.map(new ArrayList<>(feedbackList)));
     }
 
     private boolean canAccessDetails(Long courseId, Long submissionId){

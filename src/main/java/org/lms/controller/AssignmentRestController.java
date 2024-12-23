@@ -1,12 +1,15 @@
 package org.lms.controller;
 
+import jakarta.persistence.EntityManager;
 import org.lms.AuthorizationManager;
+import org.lms.EntityMapper;
 import org.lms.entity.Assessment.Assignment;
 import org.lms.service.Assessment.AssignmentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -18,7 +21,8 @@ public class AssignmentRestController {
 
     @Autowired
     private AuthorizationManager authorizationManager;
-
+    @Autowired
+    private EntityMapper entityMapper;
     @PutMapping("")
     public ResponseEntity<String> createAssignment(@PathVariable("courseid") Long courseId, @RequestBody Assignment assignment) {
         if (!(authorizationManager.isInstructor(courseId))) {
@@ -42,7 +46,7 @@ public class AssignmentRestController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Assignment> getById(@PathVariable("courseid") Long courseId, @PathVariable("id") Long id) {
+    public ResponseEntity<Object> getById(@PathVariable("courseid") Long courseId, @PathVariable("id") Long id) {
         if (!(authorizationManager.hasAccess(courseId))) {
             return ResponseEntity.status(403).body(null);
         }
@@ -50,17 +54,17 @@ public class AssignmentRestController {
         if (assignment == null) {
             return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.ok(assignment);
+        return ResponseEntity.ok(entityMapper.map(assignment));
     }
 
     @GetMapping("")
-    public ResponseEntity<List<Assignment>>  getAll(@PathVariable("courseid") Long courseId) {
+    public ResponseEntity<Object>  getAll(@PathVariable("courseid") Long courseId) {
         if (!(authorizationManager.hasAccess(courseId))) {
             return ResponseEntity.status(403).body(null);
         }
         List<Assignment> assignments = assignmentService.getAll(courseId);
         if (assignments != null && !assignments.isEmpty()) {
-            return ResponseEntity.ok(assignments);
+            return ResponseEntity.ok(entityMapper.map(new ArrayList<>(assignments)));
         }
         return ResponseEntity.ok().body(assignments);
     }

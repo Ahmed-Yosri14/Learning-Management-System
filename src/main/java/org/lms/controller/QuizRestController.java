@@ -1,7 +1,9 @@
 package org.lms.controller;
 
 import org.lms.AuthorizationManager;
+import org.lms.EntityMapper;
 import org.lms.entity.Assessment.Quiz;
+import org.lms.entity.MappableEntity;
 import org.lms.entity.Question;
 import org.lms.service.Assessment.QuizService;
 import org.lms.service.CourseService;
@@ -11,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -20,6 +23,8 @@ public class QuizRestController {
     private QuizService quizService;
     @Autowired
     private AuthorizationManager authorizationManager;
+    @Autowired
+    private EntityMapper entityMapper;
     @PreAuthorize("hasRole('INSTRUCTOR')")
     @PutMapping("")
     public ResponseEntity<String> createQuiz(@PathVariable("courseid") Long courseId, @RequestBody Quiz quiz) {
@@ -78,7 +83,7 @@ public class QuizRestController {
     }
     @PreAuthorize("hasRole('INSTRUCTOR') or hasRole('ADMIN')")
     @GetMapping("/{id}")
-    public ResponseEntity<Quiz> getById(@PathVariable("courseid") Long courseId, @PathVariable("id") Long id) {
+    public ResponseEntity<Object> getById(@PathVariable("courseid") Long courseId, @PathVariable("id") Long id) {
         if (!quizService.existsById(courseId, id)) {
             return ResponseEntity.status(404).body(null);
         }
@@ -89,11 +94,11 @@ public class QuizRestController {
         if (quiz == null) {
             return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.ok(quiz);
+        return ResponseEntity.ok(entityMapper.map((MappableEntity) quiz));
     }
     @PreAuthorize("hasRole('STUDENT')")
     @GetMapping("/student/{id}")
-    public ResponseEntity<List<Question>> getByIdForStudent(@PathVariable("courseid") Long courseId, @PathVariable("id") Long id) {
+    public ResponseEntity<Object> getByIdForStudent(@PathVariable("courseid") Long courseId, @PathVariable("id") Long id) {
         if (!quizService.existsById(courseId, id)) {
             return ResponseEntity.status(404).body(null);
         }
@@ -104,10 +109,10 @@ public class QuizRestController {
         if (questions== null) {
             return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.ok(questions);
+        return ResponseEntity.ok(entityMapper.map(new ArrayList<>(questions)));
     }
     @GetMapping("")
-    public ResponseEntity<List<Quiz>> getAll(@PathVariable("courseid") Long courseId) {
+    public ResponseEntity<Object> getAll(@PathVariable("courseid") Long courseId) {
         if (!quizService.courseExistsById(courseId)) {
             return ResponseEntity.status(404).body(null);
         }
@@ -116,7 +121,7 @@ public class QuizRestController {
         }
         List<Quiz> quizzes = quizService.getAll(courseId);
         if (quizzes != null && !quizzes.isEmpty()) {
-            return ResponseEntity.ok(quizzes);
+            return ResponseEntity.ok(entityMapper.map(new ArrayList<>(quizzes)));
         }
         return ResponseEntity.ok().body(quizzes);
     }

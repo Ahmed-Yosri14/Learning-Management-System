@@ -25,7 +25,7 @@ public class Quiz extends Assessment {
 
 
     private Double questionNum;
-    public Map toMap(UserRole role){
+    public Map<String,Object> toMap(UserRole role){
         Map<String, Object> map = super.toMap(role);
         map.put("numberOfQuestions", questionNum);
         for(Question question : questions){
