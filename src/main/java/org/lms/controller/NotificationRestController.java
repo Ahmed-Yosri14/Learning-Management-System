@@ -19,6 +19,7 @@ public class NotificationRestController {
 
     @Autowired
     private AuthorizationManager authorizationManager;
+
     @Autowired
     private EntityMapper entityMapper;
 

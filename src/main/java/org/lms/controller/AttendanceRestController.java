@@ -17,10 +17,11 @@ import java.util.ArrayList;
 public class AttendanceRestController {
 
     @Autowired
-    AttendanceService attendanceService;
+    private AttendanceService attendanceService;
 
     @Autowired
-    AuthorizationManager authorizationManager;
+    private AuthorizationManager authorizationManager;
+
     @Autowired
     private EntityMapper entityMapper;
 

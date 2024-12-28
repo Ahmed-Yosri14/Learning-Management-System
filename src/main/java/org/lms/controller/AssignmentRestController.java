@@ -1,12 +1,12 @@
 package org.lms.controller;
 
-import jakarta.persistence.EntityManager;
 import org.lms.AuthorizationManager;
 import org.lms.EntityMapper;
 import org.lms.entity.Assessment.Assignment;
 import org.lms.service.Assessment.AssignmentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -21,8 +21,11 @@ public class AssignmentRestController {
 
     @Autowired
     private AuthorizationManager authorizationManager;
+
     @Autowired
     private EntityMapper entityMapper;
+
+    @PreAuthorize("hasRole('INSTRUCTOR')")
     @PutMapping("")
     public ResponseEntity<String> createAssignment(@PathVariable("courseid") Long courseId, @RequestBody Assignment assignment) {
         if (!(authorizationManager.isInstructor(courseId))) {
@@ -34,6 +37,7 @@ public class AssignmentRestController {
         return ResponseEntity.badRequest().body("Something went wrong");
     }
 
+    @PreAuthorize("hasRole('INSTRUCTOR')")
     @PatchMapping("/{id}")
     public ResponseEntity<String> updateAssignment(@PathVariable("courseid") Long courseId, @PathVariable("id") Long id, @RequestBody Assignment assignment) {
         if (!(authorizationManager.isInstructor(courseId))) {
@@ -69,6 +73,7 @@ public class AssignmentRestController {
         return ResponseEntity.ok().body(assignments);
     }
 
+    @PreAuthorize("hasRole('INSTRUCTOR')")
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteAssignment(@PathVariable("courseid") Long courseId, @PathVariable("id") Long id) {
         if (!(authorizationManager.isInstructor(courseId))) {

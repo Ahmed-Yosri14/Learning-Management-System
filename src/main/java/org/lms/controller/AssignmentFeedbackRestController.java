@@ -100,7 +100,7 @@ public class AssignmentFeedbackRestController {
         if (!assignmentFeedbackService.existsById(courseId, assignmentId, assignmentSubmissionId, id)){
             return ResponseEntity.status(404).build();
         }
-        if (!canAccessDetails(courseId, assignmentSubmissionId)){
+        if (!authorizationManager.canAccessSubmissionDetails(courseId, assignmentSubmissionId)){
             return ResponseEntity.status(403).build();
         }
         AssignmentFeedback assignmentFeedback = assignmentFeedbackService.getById(id);
@@ -120,7 +120,7 @@ public class AssignmentFeedbackRestController {
         if (!assignmentFeedbackService.getAssignmentSubmissionService().existsById(courseId, assignmentId, assignmentSubmissionId)){
             return ResponseEntity.status(404).build();
         }
-        if (!canAccessDetails(courseId, assignmentSubmissionId)){
+        if (!authorizationManager.canAccessSubmissionDetails(courseId, assignmentSubmissionId)){
             return ResponseEntity.status(403).build();
         }
         List<AssignmentFeedback> feedbackList = assignmentFeedbackService.getAllByAssignmentSubmissionId(assignmentSubmissionId);
@@ -128,9 +128,5 @@ public class AssignmentFeedbackRestController {
             return ResponseEntity.notFound().build();
         }
         return ResponseEntity.ok(entityMapper.map(new ArrayList<>(feedbackList)));
-    }
-
-    private boolean canAccessDetails(Long courseId, Long submissionId){
-        return authorizationManager.isAdminOrInstructor(courseId) || authorizationManager.ownsSubmission(submissionId);
     }
 }

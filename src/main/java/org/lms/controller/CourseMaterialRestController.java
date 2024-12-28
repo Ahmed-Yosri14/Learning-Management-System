@@ -16,11 +16,13 @@ import java.util.List;
 @RestController
 @RequestMapping("api/course/{courseId}/material")
 public class CourseMaterialRestController {
+
     @Autowired
     private CourseMaterialService courseMaterialService;
 
     @Autowired
     private AuthorizationManager authorizationManager;
+
     @Autowired
     private EntityMapper entityMapper;
 
@@ -47,7 +49,7 @@ public class CourseMaterialRestController {
         }
         return ResponseEntity.badRequest().body("Failed to delete material.");
     }
-    @PreAuthorize("hasRole('INSTRUCTOR')||hasRole('STUDENT')||hasRole('ADMIN')")
+
     @GetMapping("")
     public ResponseEntity<Object> getMaterialsByCourse(@PathVariable Long courseId) {
         if (!authorizationManager.hasAccess(courseId)){

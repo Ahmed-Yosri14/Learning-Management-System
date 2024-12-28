@@ -3,10 +3,10 @@ package org.lms.controller;
 import org.lms.AuthorizationManager;
 import org.lms.EntityMapper;
 import org.lms.entity.Submission.QuizSubmission;
-import org.lms.service.Assessment.QuizService;
 import org.lms.service.Submission.QuizSubmissionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -16,13 +16,17 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/course/{courseid}/quiz/{quizid}/submission")
 public class QuizSubmissionRestController {
+
     @Autowired
     private QuizSubmissionService quizSubmissionService;
+
     @Autowired
     private AuthorizationManager authorizationManager;
 
     @Autowired
     private EntityMapper entityMapper;
+
+
     @GetMapping("/mine")
     public ResponseEntity<Object> getMySubmission(@PathVariable("courseid") Long courseId, @PathVariable("quizid") Long quizId) {
         if (!authorizationManager.isEnrolled(courseId)) {
@@ -35,6 +39,7 @@ public class QuizSubmissionRestController {
         return ResponseEntity.status(404).body(null);
     }
 
+    @PreAuthorize("hasRole('ADMIN') or hasRole('INSTRUCTOR')")
     @GetMapping("/{id}")
     public ResponseEntity<Object> getStudentSubmission(@PathVariable("courseid") Long courseId, @PathVariable("quizid") Long quizId, @PathVariable("id") Long studentId) {
         if (!authorizationManager.isAdminOrInstructor(courseId)) {
@@ -48,6 +53,7 @@ public class QuizSubmissionRestController {
         return ResponseEntity.status(404).body(null);
     }
 
+    @PreAuthorize("hasRole('ADMIN') or hasRole('INSTRUCTOR')")
     @GetMapping("")
     public ResponseEntity<Object> getSubmissions(@PathVariable("courseid") Long courseId, @PathVariable("quizid") Long quizId) {
         if (!authorizationManager.isAdminOrInstructor(courseId)) {
@@ -60,12 +66,12 @@ public class QuizSubmissionRestController {
         return ResponseEntity.ok().body(submitedForms);
     }
 
+    @PreAuthorize("hasRole('STUDENT')")
     @PutMapping("")
     public ResponseEntity<String> submit(@PathVariable("courseid") Long courseId, @PathVariable("quizid") Long quizId, @RequestBody QuizSubmission quizSubmission) {
         if (!authorizationManager.isEnrolled(courseId)) {
             return ResponseEntity.status(403).body("You are not allowed to make this operation");
         }
-        System.out.println(quizSubmission);
         if (quizSubmissionService.existsByStudentIdAndQuizId(authorizationManager.getCurrentUserId(), quizId)) {
             throw new IllegalStateException("You have already submitted this quiz.");
         }

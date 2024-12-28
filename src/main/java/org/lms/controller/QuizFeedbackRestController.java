@@ -26,6 +26,7 @@ public class QuizFeedbackRestController {
 
     @Autowired
     private EntityMapper entityMapper;
+
     // all
     @GetMapping("{id}")
     public ResponseEntity<Object> getById(
@@ -35,7 +36,7 @@ public class QuizFeedbackRestController {
             @PathVariable Long id
     ){
 
-        if (!canAccessDetails(courseId, quizSubmissionId)){
+        if (!authorizationManager.canAccessSubmissionDetails(courseId, quizSubmissionId)){
             return ResponseEntity.status(403).build();
         }
         QuizFeedback quizFeedback = quizFeedbackService.getById(courseId, quizId, quizSubmissionId, id);
@@ -52,7 +53,7 @@ public class QuizFeedbackRestController {
             @PathVariable Long quizId,
             @PathVariable Long quizSubmissionId
     ){
-        if (!canAccessDetails(courseId, quizSubmissionId)){
+        if (!authorizationManager.canAccessSubmissionDetails(courseId, quizSubmissionId)){
             return ResponseEntity.status(403).build();
         }
         List<QuizFeedback> feedbackList = quizFeedbackService.getAllByQuizSubmissionId(courseId, quizId, quizSubmissionId);
@@ -60,9 +61,5 @@ public class QuizFeedbackRestController {
             return ResponseEntity.notFound().build();
         }
         return ResponseEntity.ok(entityMapper.map(new ArrayList<>(feedbackList)));
-    }
-
-    private boolean canAccessDetails(Long courseId, Long submissionId){
-        return authorizationManager.isAdminOrInstructor(courseId) || authorizationManager.ownsSubmission(submissionId);
     }
 }

@@ -64,4 +64,7 @@ public class AuthorizationManager {
                 && submissionService.existsById(submissionId)
                 && submission.getStudent().getId().equals(userId);
     }
+    public boolean canAccessSubmissionDetails(Long courseId, Long submissionId){
+        return isAdminOrInstructor(courseId) || ownsSubmission(submissionId);
+    }
 }

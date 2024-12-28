@@ -18,6 +18,7 @@ public class CourseRestController {
 
     @Autowired
     private AuthorizationManager authorizationManager;
+
     @Autowired
     private EntityMapper entityMapper;
 

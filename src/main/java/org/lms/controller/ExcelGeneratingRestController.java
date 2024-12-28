@@ -18,11 +18,12 @@ public class ExcelGeneratingRestController {
 
     @Autowired
     private ExcelGeneratorService excelGeneratingService;
+
     @Autowired
     private AuthorizationManager authorizationManager;
 
     @GetMapping("")
-    @PreAuthorize("hasRole('INSTRUCTOR') || hasRole('INSTRUCTOR')")
+    @PreAuthorize("hasRole('INSTRUCTOR') or hasRole('INSTRUCTOR')")
     public ResponseEntity<String> generateExcel(@PathVariable("courseId") Long courseId) {
         try {
             if (authorizationManager.isAdminOrInstructor(courseId)) {
@@ -37,10 +38,4 @@ public class ExcelGeneratingRestController {
             return ResponseEntity.badRequest().body("Something went wrong while creating the Sheet.");
         }
     }
-//    @GetMapping("")
-//    @PreAuthorize("hasRole('INSTRUCTOR') || hasRole('INSTRUCTOR')")
-//    public ResponseEntity<String> getGeneratedExcelSheet(@PathVariable("courseId") Long courseId) {
-//
-//    }
-
 }

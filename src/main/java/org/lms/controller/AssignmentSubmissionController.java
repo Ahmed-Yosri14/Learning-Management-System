@@ -4,7 +4,6 @@ import org.lms.AuthorizationManager;
 import org.lms.EntityMapper;
 import org.lms.entity.Submission.AssignmentSubmission;
 import org.lms.service.Submission.AssignmentSubmissionService;
-import org.lms.service.Submission.SubmissionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -20,6 +19,7 @@ public class AssignmentSubmissionController {
 
     @Autowired
     private AssignmentSubmissionService assignmentSubmissionService;
+
     @Autowired
     private AuthorizationManager authorizationManager;
 
@@ -33,9 +33,9 @@ public class AssignmentSubmissionController {
             @PathVariable Long assignmentId,
             @RequestParam("file") MultipartFile file
     ) {
-//        if (!assignmentSubmissionService.assignmentService.existsById(courseId, assignmentId)) {
-//            return ResponseEntity.status(404).body("Assignment not found.");
-//        }
+        if (!assignmentSubmissionService.getAssignmentService().existsById(courseId, assignmentId)) {
+            return ResponseEntity.status(404).body("Assignment not found.");
+        }
         if (!authorizationManager.isEnrolled(courseId)) {
             return ResponseEntity.status(403).body("You don't have permission to submit.");
         }
@@ -73,7 +73,7 @@ public class AssignmentSubmissionController {
         if (!assignmentSubmissionService.existsById(courseId, assignmentId, submissionId)) {
             return ResponseEntity.status(404).body(null);
         }
-        if (!authorizationManager.isAdminOrInstructor(courseId) && !authorizationManager.ownsSubmission(submissionId)) {
+        if (!authorizationManager.canAccessSubmissionDetails(courseId, submissionId)) {
             return ResponseEntity.status(403).body(null);
         }
         AssignmentSubmission assignmentSubmission = assignmentSubmissionService.getById(courseId, assignmentId, submissionId);

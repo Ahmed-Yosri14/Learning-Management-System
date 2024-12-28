@@ -6,8 +6,6 @@ import org.lms.entity.Assessment.Quiz;
 import org.lms.entity.MappableEntity;
 import org.lms.entity.Question;
 import org.lms.service.Assessment.QuizService;
-import org.lms.service.CourseService;
-import org.lms.service.QuestionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -19,12 +17,17 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/course/{courseid}/quiz")
 public class QuizRestController {
+
     @Autowired
     private QuizService quizService;
+
     @Autowired
     private AuthorizationManager authorizationManager;
+
     @Autowired
     private EntityMapper entityMapper;
+
+
     @PreAuthorize("hasRole('INSTRUCTOR')")
     @PutMapping("")
     public ResponseEntity<String> createQuiz(@PathVariable("courseid") Long courseId, @RequestBody Quiz quiz) {
@@ -39,6 +42,7 @@ public class QuizRestController {
         }
         return ResponseEntity.badRequest().body("Something went wrong");
     }
+
     @PreAuthorize("hasRole('INSTRUCTOR')")
     @DeleteMapping("/{quizId}/deletequestions")
     public ResponseEntity<String> removeQuestionFromQuiz(@PathVariable("courseid") Long courseId, @PathVariable("quizId") Long quizId,@RequestBody List<Long>questions) {
@@ -53,6 +57,7 @@ public class QuizRestController {
         }
         return ResponseEntity.badRequest().body("Something went wrong while removing the questions from the quiz.");
     }
+
     @PreAuthorize("hasRole('INSTRUCTOR')")
     @PutMapping("/{quizId}/addquestions")
     public ResponseEntity<String> addQuestionsToQuiz(@PathVariable("courseid") Long courseId, @PathVariable("quizId") Long quizId,@RequestBody List<Long>questions) {
@@ -67,6 +72,7 @@ public class QuizRestController {
         }
         return ResponseEntity.badRequest().body("Something went wrong while question the questions from the quiz.");
     }
+
     @PreAuthorize("hasRole('INSTRUCTOR')")
     @PatchMapping("/{id}")
     public ResponseEntity<String> updateQuiz(@PathVariable("courseid") Long courseId, @PathVariable("id") Long id, @RequestBody Quiz quiz, @PathVariable String courseid) {
@@ -81,6 +87,7 @@ public class QuizRestController {
         }
         return ResponseEntity.badRequest().body("Something went wrong");
     }
+
     @PreAuthorize("hasRole('INSTRUCTOR') or hasRole('ADMIN')")
     @GetMapping("/{id}")
     public ResponseEntity<Object> getById(@PathVariable("courseid") Long courseId, @PathVariable("id") Long id) {
@@ -96,6 +103,7 @@ public class QuizRestController {
         }
         return ResponseEntity.ok(entityMapper.map((MappableEntity) quiz));
     }
+
     @PreAuthorize("hasRole('STUDENT')")
     @GetMapping("/student/{id}")
     public ResponseEntity<Object> getByIdForStudent(@PathVariable("courseid") Long courseId, @PathVariable("id") Long id) {
@@ -111,6 +119,7 @@ public class QuizRestController {
         }
         return ResponseEntity.ok(entityMapper.map(new ArrayList<>(questions)));
     }
+
     @GetMapping("")
     public ResponseEntity<Object> getAll(@PathVariable("courseid") Long courseId) {
         if (!quizService.courseExistsById(courseId)) {
@@ -125,6 +134,7 @@ public class QuizRestController {
         }
         return ResponseEntity.ok().body(quizzes);
     }
+
     @PreAuthorize("hasRole('INSTRUCTOR')")
     @DeleteMapping("/{id}")
     public ResponseEntity<String> delete(@PathVariable("courseid") Long courseId,@PathVariable("id") Long id) {

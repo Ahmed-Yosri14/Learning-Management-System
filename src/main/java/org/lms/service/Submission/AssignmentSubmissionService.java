@@ -1,5 +1,6 @@
 package org.lms.service.Submission;
 
+import lombok.Getter;
 import org.lms.entity.Assessment.Assignment;
 import org.lms.entity.Submission.AssignmentSubmission;
 import org.lms.entity.User.Student;
@@ -19,6 +20,7 @@ public class AssignmentSubmissionService {
     @Autowired
     private AssignmentSubmissionRepository assignmentSubmissionRepository;
 
+    @Getter
     @Autowired
     public AssignmentService assignmentService;
 

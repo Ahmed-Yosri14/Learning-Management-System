@@ -1,14 +1,13 @@
 package org.lms.controller;
 
-import jakarta.persistence.EntityManager;
 import jakarta.validation.Valid;
 import org.lms.AuthorizationManager;
 import org.lms.EntityMapper;
 import org.lms.entity.Question;
 import org.lms.service.QuestionService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.orm.jpa.hibernate.SpringImplicitNamingStrategy;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,11 +20,14 @@ public class QuestionRestController {
 
     @Autowired
     private QuestionService questionService;
+
     @Autowired
     private AuthorizationManager authorizationManager;
 
     @Autowired
     private EntityMapper entityMapper;
+
+    @PreAuthorize("hasRole('INSTRUCTOR')")
     @PutMapping("")
     public ResponseEntity<String> create(@PathVariable("courseid") Long courseId, @RequestBody Question question) {
         if(!(authorizationManager.isInstructor(courseId)))
@@ -37,6 +39,7 @@ public class QuestionRestController {
         }
         return ResponseEntity.badRequest().body("Something went wrong while creating the question.");
     }
+
 
     @GetMapping("/{id}")
     public ResponseEntity<Object> getById(@PathVariable("courseid") Long courseId, @PathVariable("id") Long id) {
@@ -62,6 +65,7 @@ public class QuestionRestController {
         return ResponseEntity.ok().body(entityMapper.map(new ArrayList<>(questions)));
     }
 
+    @PreAuthorize("hasRole('INSTRUCTOR')")
     @PutMapping("/{id}")
     public ResponseEntity<String> update(@PathVariable("courseid") Long courseId, @PathVariable("id") Long id, @Valid @RequestBody Question question, BindingResult result) {
         if(result.hasErrors()) {
@@ -79,6 +83,7 @@ public class QuestionRestController {
         return ResponseEntity.badRequest().body("Something went wrong while updating the question.");
     }
 
+    @PreAuthorize("hasRole('INSTRUCTOR')")
     @DeleteMapping("/{id}")
     public ResponseEntity<String> delete(@PathVariable("courseid") Long courseId,  @PathVariable("id") Long id) {
         if(!(authorizationManager.isInstructor(courseId)))

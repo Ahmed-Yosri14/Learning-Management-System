@@ -20,6 +20,7 @@ public class EnrollmentRestController {
 
     @Autowired
     private AuthorizationManager authorizationManager;
+
     @Autowired
     private EntityMapper entityMapper;
 
