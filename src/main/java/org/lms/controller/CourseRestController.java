@@ -39,7 +39,7 @@ public class CourseRestController {
         if (!courseService.existsById(id)){
             return ResponseEntity.status(404).body("Course not found");
         }
-        if (authorizationManager.isInstructor(id)){
+        if (!authorizationManager.isInstructor(id)){
             return ResponseEntity.status(403).body("You're not this course's instructor");
         }
         if (courseService.update(id, course)){
@@ -54,7 +54,7 @@ public class CourseRestController {
         if (!courseService.existsById(id)){
             return ResponseEntity.status(404).body("Course not found");
         }
-        if (authorizationManager.isInstructor(id)){
+        if (!authorizationManager.isInstructor(id)){
             return ResponseEntity.status(403).body("You're not this course's instructor");
         }
         if (courseService.delete(id)){

@@ -27,6 +27,7 @@ public class QuizSubmissionRestController {
     private EntityMapper entityMapper;
 
 
+    @PreAuthorize("hasRole('STUDENT')")
     @GetMapping("/mine")
     public ResponseEntity<Object> getMySubmission(@PathVariable("courseid") Long courseId, @PathVariable("quizid") Long quizId) {
         if (!authorizationManager.isEnrolled(courseId)) {
