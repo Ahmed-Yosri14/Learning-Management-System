@@ -33,14 +33,14 @@ public class QuizSubmissionService {
         return quizSubmissionRepository.findById(id).get();
     }
 
-    public QuizSubmission getSubmition(Long courseId, Long quizId, Long studentId) {
+    public QuizSubmission getSubmission(Long courseId, Long quizId, Long studentId) {
         Quiz quiz = quizService.getById(courseId, quizId) ;
         if(quiz == null) return null;
         if(!Objects.equals(quiz.getCourse().getId(), courseId)) return null;
         QuizSubmission quizSubmission = quizSubmissionRepository.findByQuizAndStudent(quiz,(Student) appUserService.getById(studentId));
         return quizSubmission;
     }
-    public List<QuizSubmission> getAllSubmitions(Long courseId, Long quizId){
+    public List<QuizSubmission> getAllSubmissions(Long courseId, Long quizId){
         Quiz quiz = quizService.getById(courseId, quizId) ;
         if(quiz == null) return null;
         if(!Objects.equals(quiz.getCourse().getId(), courseId)) return null;

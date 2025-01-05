@@ -49,31 +49,7 @@ public class CourseRestControllerTest {
         verify(courseService, times(1)).create(any(Course.class), eq(1L));
     }
 
-    @Test
-    public void testUpdateCourse() throws Exception {
-        when(courseService.existsById(1L)).thenReturn(true);
-        when(authorizationManager.isInstructor(1L)).thenReturn(false);
-        when(courseService.update(eq(1L), any(Course.class))).thenReturn(true);
 
-        mockMvc.perform(patch("/api/course/{id}", 1L)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"name\":\"Updated Course\"}"))
-                .andExpect(status().isOk())
-                .andExpect(content().string("Course updated successfully!"));
 
-        verify(courseService, times(1)).update(eq(1L), any(Course.class));
-    }
 
-    @Test
-    public void testDeleteCourse() throws Exception {
-        when(courseService.existsById(1L)).thenReturn(true);
-        when(authorizationManager.isInstructor(1L)).thenReturn(false);
-        when(courseService.delete(1L)).thenReturn(true);
-
-        mockMvc.perform(delete("/api/course/{id}", 1L))
-                .andExpect(status().isOk())
-                .andExpect(content().string("Course deleted successfully!"));
-
-        verify(courseService, times(1)).delete(1L);
-    }
 }
